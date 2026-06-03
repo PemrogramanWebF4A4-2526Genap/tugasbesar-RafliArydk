@@ -1,4 +1,4 @@
-<?php require_once __DIR__ . '/../layout/header.php'; ?>
+
 <div class="container">
     <h2 class="fw-bold mb-4">Pesanan Saya</h2>
     <div class="table-responsive">
@@ -12,5 +12,4 @@
             </tbody>
         </table>
     </div>
-</div>
-<?php require_once __DIR__ . '/../layout/footer.php'; ?>
+</div>

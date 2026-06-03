@@ -1,4 +1,4 @@
-<?php require_once __DIR__ . '/../layout/header.php'; ?>
+
 <div class="container">
     <h2 class="fw-bold mb-4">Checkout</h2>
     <div class="row">
@@ -26,5 +26,4 @@
             </div>
         </div>
     </div>
-</div>
-<?php require_once __DIR__ . '/../layout/footer.php'; ?>
+</div>

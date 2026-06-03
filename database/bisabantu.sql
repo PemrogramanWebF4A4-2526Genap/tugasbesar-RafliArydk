@@ -201,7 +201,7 @@ INSERT INTO `users` (`name`, `email`, `password`, `role`, `is_verified`, `phone`
 
 -- Pembeli
 INSERT INTO `users` (`name`, `email`, `password`, `role`, `is_verified`, `phone`, `address`) VALUES
-('Rafli Aryadika', 'rafli@bisabantu.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'buyer', 1, '0833333333', 'Bekasi'),
+('Rafli Aryadika', 'rafli@bisabantu.co', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'buyer', 1, '0833333333', 'Bekasi'),
 ('Nasyla Putri', 'nasyla@bisabantu.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'buyer', 1, '0844444444', 'Jakarta Pusat');
 
 -- Kategori

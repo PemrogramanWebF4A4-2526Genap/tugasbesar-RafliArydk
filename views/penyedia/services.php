@@ -1,4 +1,4 @@
-<?php require_once __DIR__ . '/../layout/header.php'; ?>
+
 <div class="container">
     <div class="d-flex justify-content-between align-items-center">
         <h2 class="fw-bold">Kelola Jasa Saya</h2>
@@ -41,5 +41,4 @@
             </div>
         </div>
     </div>
-</div>
-<?php require_once __DIR__ . '/../layout/footer.php'; ?>
+</div>

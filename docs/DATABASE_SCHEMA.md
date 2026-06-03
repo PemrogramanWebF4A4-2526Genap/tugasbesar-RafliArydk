@@ -1,233 +1,220 @@
-# Database Schema – BisaBantu
+# Skema Basis Data (Database Schema) - BisaBantu
 
-**Database name:** `bisabantu`  
-**Engine:** InnoDB (untuk foreign key)  
-**Charset:** utf8mb4_general_ci
+* **Nama Basis Data**: `bisabantu`
+* **Mesin Penyimpanan (Storage Engine)**: InnoDB
+* **Karakter Set (Charset)**: `utf8mb4_general_ci`
 
-## ERD (Entity Relationship Diagram)
-```text
-[users] 1───* [services] *───1 [categories]
-  │               │
-  │               │ 1
-  │               │
-  │               *
-  │         [order_items]
-  │               │
-  │               │ *
-  │               │ 1
-  │         [orders] 1───* [payments]
-  │               │  │
-  │               │  │ 1
-  │               │  │
-  │             * │  │
-  │         [reviews] ─────────────┘
-  │
-  └───* [notifications]
+---
 
-        [invoices]
+## 📊 Entity Relationship Diagram (ERD)
+
+Berikut adalah visualisasi hubungan antartabel di dalam database `bisabantu`:
+
+```mermaid
+erDiagram
+    users ||--o{ services : "menawarkan"
+    users ||--o{ orders : "memesan (buyer)"
+    users ||--o{ orders : "menerima (provider)"
+    users ||--o{ notifications : "menerima"
+    users ||--o{ provider_schedules : "memiliki"
+    categories ||--o{ services : "mengelompokkan"
+    services ||--o{ order_items : "terdapat pada"
+    orders ||--o{ order_items : "memiliki"
+    orders ||--|| payments : "memiliki"
+    orders ||--|| reviews : "memiliki"
+    orders ||--|| invoices : "menghasilkan"
 ```
 
-## Daftar Tabel (10 tabel)
+---
 
-### 1. users
-Menyimpan semua pengguna (pembeli, penyedia jasa, admin).
+## 🗂️ Detail Tabel Database
 
-| Kolom          | Tipe                     | Keterangan                                 |
-|----------------|--------------------------|---------------------------------------------|
-| id             | INT(11) AUTO_INCREMENT   | PRIMARY KEY                                 |
-| name           | VARCHAR(100) NOT NULL    | Nama lengkap                                |
-| email          | VARCHAR(100) NOT NULL    | UNIQUE, untuk login                         |
-| password       | VARCHAR(255) NOT NULL    | Hash bcrypt                                 |
-| role           | ENUM('buyer','provider','admin') NOT NULL | Role pengguna             |
-| is_verified    | TINYINT(1) DEFAULT 0     | Khusus provider: 1 jika sudah diverifikasi admin |
-| phone          | VARCHAR(20)              | Nomor telepon                               |
-| address        | TEXT                     | Alamat lengkap                              |
-| remember_token | VARCHAR(255) NULL        | Untuk fitur "remember me"                   |
-| created_at     | TIMESTAMP DEFAULT CURRENT_TIMESTAMP |                                      |
-| updated_at     | TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP | |
+### 1. `users`
+Menyimpan semua akun pengguna sistem (Pembeli, Penyedia Jasa, dan Administrator).
 
-**Index:** `email` (UNIQUE), `role`, `is_verified`
+| Nama Kolom | Tipe Data | Nullable | Keterangan |
+|---|---|---|---|
+| `id` | `INT(11) AUTO_INCREMENT` | `NO` | **PRIMARY KEY** |
+| `name` | `VARCHAR(100)` | `NO` | Nama lengkap pengguna |
+| `email` | `VARCHAR(100)` | `NO` | Alamat email unik (digunakan untuk login) |
+| `password` | `VARCHAR(255)` | `NO` | Password terenkripsi menggunakan hash Bcrypt |
+| `role` | `ENUM('buyer','provider','admin')` | `NO` | Hak akses pengguna |
+| `is_verified` | `TINYINT(1)` | `YES` | Khusus penyedia jasa: `1` jika sudah diverifikasi admin, `0` jika belum |
+| `phone` | `VARCHAR(20)` | `YES` | Nomor telepon kontak aktif |
+| `address` | `TEXT` | `YES` | Alamat tempat tinggal |
+| `remember_token`| `VARCHAR(255)` | `YES` | Token otentikasi sesi persisten (Remember Me) |
+| `created_at` | `TIMESTAMP` | `NO` | Tanggal pendaftaran akun (default `CURRENT_TIMESTAMP`) |
+| `updated_at` | `TIMESTAMP` | `NO` | Waktu pembaharuan terakhir data akun |
+
+* **Kunci Unik (Unique Key)**: `email`
 
 ---
 
-### 2. categories
-Kategori jasa (misal: Bersih-bersih, Perbaikan, Les Privat).
+### 2. `categories`
+Menyimpan kategori layanan jasa yang disediakan di platform.
 
-| Kolom       | Tipe                     | Keterangan        |
-|-------------|--------------------------|-------------------|
-| id          | INT(11) AUTO_INCREMENT   | PRIMARY KEY       |
-| name        | VARCHAR(50) NOT NULL     | Nama kategori     |
-| description | TEXT                     | Deskripsi opsional |
-| created_at  | TIMESTAMP DEFAULT CURRENT_TIMESTAMP | |
-
----
-
-### 3. services
-Jasa yang ditawarkan oleh penyedia.
-
-| Kolom               | Tipe                       | Keterangan                                        |
-|---------------------|----------------------------|---------------------------------------------------|
-| id                  | INT(11) AUTO_INCREMENT     | PRIMARY KEY                                       |
-| provider_id         | INT(11) NOT NULL           | FOREIGN KEY ke `users.id` (role provider)         |
-| category_id         | INT(11) NOT NULL           | FOREIGN KEY ke `categories.id`                    |
-| title               | VARCHAR(200) NOT NULL      | Judul jasa                                        |
-| description         | TEXT NOT NULL              | Deskripsi lengkap                                 |
-| price               | DECIMAL(12,2) NOT NULL     | Harga per unit                                    |
-| price_unit          | VARCHAR(20) DEFAULT 'per unit' | Satuan: per jam, per kg, per item, dll       |
-| estimated_duration  | VARCHAR(50)                | Estimasi waktu pengerjaan (misal: "2 jam")         |
-| location            | VARCHAR(255) NOT NULL      | Wilayah layanan (kota/kecamatan)                  |
-| image               | VARCHAR(255)               | Nama file gambar (upload ke `assets/uploads/services/`) |
-| is_active           | TINYINT(1) DEFAULT 1       | 1 = aktif (dapat dipesan), 0 = nonaktif sementara |
-| created_at          | TIMESTAMP DEFAULT CURRENT_TIMESTAMP |                                             |
-| updated_at          | TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE |                                      |
-
-**Foreign Key:** `provider_id` → `users(id)` ON DELETE CASCADE  
-**Foreign Key:** `category_id` → `categories(id)` ON DELETE RESTRICT  
-**Index:** `provider_id`, `category_id`, `location`
+| Nama Kolom | Tipe Data | Nullable | Keterangan |
+|---|---|---|---|
+| `id` | `INT(11) AUTO_INCREMENT` | `NO` | **PRIMARY KEY** |
+| `name` | `VARCHAR(50)` | `NO` | Nama kategori (misal: Bersih-bersih, Les Privat, dll) |
+| `description` | `TEXT` | `YES` | Deskripsi singkat mengenai kategori tersebut |
+| `created_at` | `TIMESTAMP` | `NO` | Waktu kategori ditambahkan (default `CURRENT_TIMESTAMP`) |
 
 ---
 
-### 4. orders
-Pesanan yang dibuat oleh pembeli.
+### 3. `services`
+Menyimpan detail jasa/layanan yang ditawarkan oleh Penyedia Jasa (Provider).
 
-| Kolom            | Tipe                        | Keterangan                                                      |
-|------------------|-----------------------------|-----------------------------------------------------------------|
-| id               | INT(11) AUTO_INCREMENT      | PRIMARY KEY                                                     |
-| buyer_id         | INT(11) NOT NULL            | FOREIGN KEY ke `users.id` (role buyer)                          |
-| provider_id      | INT(11) NOT NULL            | FOREIGN KEY ke `users.id` (role provider)                       |
-| order_number     | VARCHAR(20) NOT NULL UNIQUE | Nomor pesanan unik (format: ORD/yyyyMMdd/xxxx)                  |
-| total_price      | DECIMAL(12,2) NOT NULL      | Total harga (price * quantity, belum termasuk biaya admin)      |
-| quantity         | INT(11) NOT NULL DEFAULT 1  | Jumlah unit jasa yang dipesan                                   |
-| service_date     | DATE NOT NULL               | Tanggal pelaksanaan jasa (diisi pembeli)                        |
-| service_address  | TEXT NOT NULL               | Alamat tempat jasa dikerjakan                                   |
-| status           | ENUM('pending','waiting_payment','paid','accepted','in_progress','completed','cancelled') NOT NULL DEFAULT 'pending' | |
-| notes            | TEXT                        | Catatan dari pembeli untuk penyedia jasa                        |
-| created_at       | TIMESTAMP DEFAULT CURRENT_TIMESTAMP |                                                          |
-| updated_at       | TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE |                                            |
+| Nama Kolom | Tipe Data | Nullable | Keterangan |
+|---|---|---|---|
+| `id` | `INT(11) AUTO_INCREMENT` | `NO` | **PRIMARY KEY** |
+| `provider_id` | `INT(11)` | `NO` | **FOREIGN KEY** merujuk ke `users(id)` |
+| `category_id` | `INT(11)` | `NO` | **FOREIGN KEY** merujuk ke `categories(id)` |
+| `title` | `VARCHAR(200)` | `NO` | Judul atau nama layanan jasa |
+| `description` | `TEXT` | `NO` | Deskripsi lengkap penawaran layanan |
+| `price` | `DECIMAL(12,2)` | `NO` | Harga dasar per unit layanan |
+| `price_unit` | `VARCHAR(20)` | `YES` | Satuan unit (default: `'per unit'`, jam, kunjungan, kg, dll) |
+| `estimated_duration`| `VARCHAR(50)` | `YES` | Estimasi lama pengerjaan (misal: `"1-2 jam"`, `"2 hari"`) |
+| `location` | `VARCHAR(255)` | `NO` | Area jangkauan layanan (kota/kecamatan) |
+| `image` | `VARCHAR(255)` | `YES` | Nama file gambar sampel layanan |
+| `is_active` | `TINYINT(1)` | `YES` | Status keaktifan iklan jasa (`1` = Aktif, `0` = Nonaktif) |
+| `created_at` | `TIMESTAMP` | `NO` | Waktu jasa dibuat |
+| `updated_at` | `TIMESTAMP` | `NO` | Waktu pembaharuan terakhir data jasa |
 
-**Foreign Keys:**  
-- `buyer_id` → `users(id)` ON DELETE RESTRICT  
-- `provider_id` → `users(id)` ON DELETE RESTRICT  
-
-**Index:** `order_number` (UNIQUE), `buyer_id`, `provider_id`, `status`, `service_date`
-
----
-
-### 5. order_items
-Detail item pesanan (mendukung satu pesanan berisi beberapa jasa berbeda).  
-Meskipun defaultnya satu pesanan bisa untuk satu jasa, struktur ini memungkinkan ekspansi.
-
-| Kolom          | Tipe                 | Keterangan                                    |
-|----------------|----------------------|-----------------------------------------------|
-| id             | INT(11) AUTO_INCREMENT | PRIMARY KEY                                   |
-| order_id       | INT(11) NOT NULL       | FOREIGN KEY ke `orders.id` ON DELETE CASCADE |
-| service_id     | INT(11) NOT NULL       | FOREIGN KEY ke `services.id`                 |
-| quantity       | INT(11) NOT NULL       | Jumlah unit untuk jasa ini pada pesanan       |
-| price_per_unit | DECIMAL(12,2) NOT NULL | Harga per unit saat checkout (snapshot)       |
-
-**Foreign Key:** `order_id` → `orders(id)` ON DELETE CASCADE  
-**Foreign Key:** `service_id` → `services(id)` ON DELETE RESTRICT
+* **Relasi & Constraint**:
+  * `provider_id` -> `users(id)` ON DELETE CASCADE
+  * `category_id` -> `categories(id)` ON DELETE RESTRICT
 
 ---
 
-### 6. payments
-Data pembayaran untuk setiap pesanan.
+### 4. `orders`
+Menyimpan data ringkasan transaksi pesanan jasa dari pembeli.
 
-| Kolom        | Tipe                           | Keterangan                                        |
-|--------------|--------------------------------|---------------------------------------------------|
-| id           | INT(11) AUTO_INCREMENT         | PRIMARY KEY                                       |
-| order_id     | INT(11) NOT NULL               | FOREIGN KEY ke `orders.id`                        |
-| method       | ENUM('bank_transfer','cash') NOT NULL | Metode pembayaran                           |
-| proof_image  | VARCHAR(255)                   | Nama file bukti transfer (jika method bank_transfer) |
-| status       | ENUM('pending','verified','rejected') DEFAULT 'pending' | |
-| verified_at  | DATETIME NULL                  | Waktu verifikasi oleh admin                       |
-| notes        | TEXT NULL                      | Catatan admin (misal alasan ditolak)              |
-| created_at   | TIMESTAMP DEFAULT CURRENT_TIMESTAMP |                                            |
+| Nama Kolom | Tipe Data | Nullable | Keterangan |
+|---|---|---|---|
+| `id` | `INT(11) AUTO_INCREMENT` | `NO` | **PRIMARY KEY** |
+| `buyer_id` | `INT(11)` | `NO` | **FOREIGN KEY** merujuk ke `users(id)` (Pembeli) |
+| `provider_id` | `INT(11)` | `NO` | **FOREIGN KEY** merujuk ke `users(id)` (Penyedia Jasa) |
+| `order_number` | `VARCHAR(20)` | `NO` | Nomor Invoice Unik (format: `ORD` + tanggal + urutan) |
+| `total_price` | `DECIMAL(12,2)` | `NO` | Akumulasi total harga pesanan |
+| `quantity` | `INT(11)` | `NO` | Jumlah unit jasa yang dipesan |
+| `service_date` | `DATE` | `NO` | Tanggal rencana pengerjaan/kunjungan |
+| `service_address`| `TEXT` | `NO` | Lokasi spesifik pengerjaan jasa |
+| `status` | `ENUM(...)` | `NO` | Status pesanan (`pending`, `waiting_payment`, `paid`, `accepted`, `in_progress`, `completed`, `cancelled`) |
+| `notes` | `TEXT` | `YES` | Instruksi tambahan dari pembeli |
+| `created_at` | `TIMESTAMP` | `NO` | Waktu pembuatan transaksi |
+| `updated_at` | `TIMESTAMP` | `NO` | Waktu update status transaksi terakhir |
 
-**Foreign Key:** `order_id` → `orders(id)` ON DELETE CASCADE  
-**Index:** `order_id`, `status`
-
----
-
-### 7. reviews
-Rating dan komentar dari pembeli untuk jasa yang sudah selesai.
-
-| Kolom       | Tipe                 | Keterangan                                           |
-|-------------|----------------------|------------------------------------------------------|
-| id          | INT(11) AUTO_INCREMENT | PRIMARY KEY                                          |
-| service_id  | INT(11) NOT NULL       | FOREIGN KEY ke `services.id`                         |
-| order_id    | INT(11) NOT NULL       | FOREIGN KEY ke `orders.id` (memastikan review hanya dari pemesan) |
-| user_id     | INT(11) NOT NULL       | FOREIGN KEY ke `users.id` (pembeli yang memberi review) |
-| rating      | TINYINT(1) NOT NULL    | Nilai 1–5                                            |
-| comment     | TEXT                   | Komentar teks                                        |
-| image       | VARCHAR(255)           | Foto hasil pekerjaan (upload ke `assets/uploads/reviews/`) |
-| created_at  | TIMESTAMP DEFAULT CURRENT_TIMESTAMP |                                            |
-
-**Foreign Keys:**  
-- `service_id` → `services(id)` ON DELETE CASCADE  
-- `order_id` → `orders(id)` ON DELETE CASCADE  
-- `user_id` → `users(id)` ON DELETE CASCADE  
-
-**Unique Constraint:** `UNIQUE(order_id)` – satu pesanan hanya boleh satu review.
+* **Kunci Unik (Unique Key)**: `order_number`
+* **Relasi & Constraint**:
+  * `buyer_id` -> `users(id)` ON DELETE RESTRICT
+  * `provider_id` -> `users(id)` ON DELETE RESTRICT
 
 ---
 
-### 8. notifications
-Notifikasi in-app untuk semua role.
+### 5. `order_items`
+Menyimpan rincian item jasa yang dibeli per transaksi (mendukung pengembangan masa depan untuk multi-item checkout).
 
-| Kolom      | Tipe                     | Keterangan                         |
-|------------|--------------------------|------------------------------------|
-| id         | INT(11) AUTO_INCREMENT   | PRIMARY KEY                        |
-| user_id    | INT(11) NOT NULL         | FOREIGN KEY ke `users.id`          |
-| title      | VARCHAR(100) NOT NULL    | Judul notifikasi                   |
-| message    | TEXT NOT NULL            | Isi pesan                          |
-| is_read    | TINYINT(1) DEFAULT 0     | 0 = belum dibaca, 1 = sudah        |
-| created_at | TIMESTAMP DEFAULT CURRENT_TIMESTAMP |                            |
+| Nama Kolom | Tipe Data | Nullable | Keterangan |
+|---|---|---|---|
+| `id` | `INT(11) AUTO_INCREMENT` | `NO` | **PRIMARY KEY** |
+| `order_id` | `INT(11)` | `NO` | **FOREIGN KEY** merujuk ke `orders(id)` |
+| `service_id` | `INT(11)` | `NO` | **FOREIGN KEY** merujuk ke `services(id)` |
+| `quantity` | `INT(11)` | `NO` | Jumlah kuantitas pesanan item |
+| `price_per_unit` | `DECIMAL(12,2)` | `NO` | Snapshot harga per unit jasa pada saat transaksi terjadi |
 
-**Foreign Key:** `user_id` → `users(id)` ON DELETE CASCADE  
-**Index:** `user_id`, `is_read`, `created_at`
-
----
-
-### 9. invoices
-Invoice otomatis yang digenerate saat pembayaran diverifikasi.
-
-| Kolom          | Tipe                 | Keterangan                                        |
-|----------------|----------------------|---------------------------------------------------|
-| id             | INT(11) AUTO_INCREMENT | PRIMARY KEY                                       |
-| order_id       | INT(11) NOT NULL       | FOREIGN KEY ke `orders.id`                        |
-| invoice_number | VARCHAR(20) NOT NULL UNIQUE | Nomor invoice (misal INV/20250515/0001)      |
-| pdf_path       | VARCHAR(255) NOT NULL  | Path file PDF (relatif terhadap root proyek)       |
-| generated_at   | DATETIME NOT NULL      | Waktu generate                                    |
-
-**Foreign Key:** `order_id` → `orders(id)` ON DELETE CASCADE
+* **Relasi & Constraint**:
+  * `order_id` -> `orders(id)` ON DELETE CASCADE
+  * `service_id` -> `services(id)` ON DELETE RESTRICT
 
 ---
 
-### 10. provider_schedules (opsional, untuk fitur jadwal)
-Menyimpan ketersediaan waktu penyedia jasa.
+### 6. `payments`
+Menyimpan data detail pembayaran beserta bukti transfer untuk pesanan tertentu.
 
-| Kolom         | Type                     | Keterangan                          |
-|---------------|--------------------------|-------------------------------------|
-| id            | INT(11) AUTO_INCREMENT   | PRIMARY KEY                         |
-| provider_id   | INT(11) NOT NULL         | FOREIGN KEY ke `users.id`           |
-| day_of_week   | TINYINT(1) NOT NULL      | 0=Senin, 1=Selasa, ..., 6=Minggu    |
-| start_time    | TIME NOT NULL            | Jam mulai (misal 09:00:00)          |
-| end_time      | TIME NOT NULL            | Jam selesai (misal 17:00:00)        |
-| is_available  | TINYINT(1) DEFAULT 1     | Apakah tersedia di slot tersebut    |
+| Nama Kolom | Tipe Data | Nullable | Keterangan |
+|---|---|---|---|
+| `id` | `INT(11) AUTO_INCREMENT` | `NO` | **PRIMARY KEY** |
+| `order_id` | `INT(11)` | `NO` | **FOREIGN KEY** merujuk ke `orders(id)` |
+| `method` | `ENUM('bank_transfer','cash')` | `NO` | Metode pembayaran |
+| `proof_image` | `VARCHAR(255)` | `YES` | Nama file gambar bukti transfer bank |
+| `status` | `ENUM('pending','verified','rejected')` | `YES` | Status validitas pembayaran (default: `'pending'`) |
+| `verified_at` | `DATETIME` | `YES` | Waktu admin memverifikasi pembayaran |
+| `notes` | `TEXT` | `YES` | Catatan dari admin jika pembayaran ditolak |
+| `created_at` | `TIMESTAMP` | `NO` | Waktu unggah bukti pembayaran |
 
-**Foreign Key:** `provider_id` → `users(id)` ON DELETE CASCADE
-
-> Tabel ini opsional, tidak wajib untuk memenuhi jumlah minimal 8 tabel.
+* **Relasi & Constraint**:
+  * `order_id` -> `orders(id)` ON DELETE CASCADE
 
 ---
 
-## Contoh Data Dummy (seed)
+### 7. `reviews`
+Menyimpan rating dan umpan balik pembeli untuk layanan yang telah selesai.
 
-File `database/bisabantu.sql` menyertakan data awal:
-- 1 admin (`admin@bisabantu.com` / `password`)
-- 2 penyedia jasa (sudah diverifikasi)
-- 3 pembeli
-- 5 kategori
-- 10 jasa
-- Beberapa pesanan dengan berbagai status
+| Nama Kolom | Tipe Data | Nullable | Keterangan |
+|---|---|---|---|
+| `id` | `INT(11) AUTO_INCREMENT` | `NO` | **PRIMARY KEY** |
+| `service_id` | `INT(11)` | `NO` | **FOREIGN KEY** merujuk ke `services(id)` |
+| `order_id` | `INT(11)` | `NO` | **FOREIGN KEY** merujuk ke `orders(id)` |
+| `user_id` | `INT(11)` | `NO` | **FOREIGN KEY** merujuk ke `users(id)` (Pembeli) |
+| `rating` | `TINYINT(1)` | `NO` | Nilai kepuasan bernilai `1` hingga `5` |
+| `comment` | `TEXT` | `YES` | Tanggapan tertulis pembeli |
+| `image` | `VARCHAR(255)` | `YES` | Foto hasil pekerjaan |
+| `created_at` | `TIMESTAMP` | `NO` | Waktu pemberian ulasan |
+
+* **Kunci Unik (Unique Key)**: `order_id` (membatasi ulasan agar hanya 1 ulasan per order)
+* **Relasi & Constraint**:
+  * `service_id` -> `services(id)` ON DELETE CASCADE
+  * `order_id` -> `orders(id)` ON DELETE CASCADE
+  * `user_id` -> `users(id)` ON DELETE CASCADE
+
+---
+
+### 8. `notifications`
+Menyimpan pesan notifikasi internal aplikasi bagi seluruh peran pengguna.
+
+| Nama Kolom | Tipe Data | Nullable | Keterangan |
+|---|---|---|---|
+| `id` | `INT(11) AUTO_INCREMENT` | `NO` | **PRIMARY KEY** |
+| `user_id` | `INT(11)` | `NO` | **FOREIGN KEY** merujuk ke `users(id)` |
+| `title` | `VARCHAR(100)` | `NO` | Judul notifikasi |
+| `message` | `TEXT` | `NO` | Isi detail pesan notifikasi |
+| `is_read` | `TINYINT(1)` | `YES` | Status baca (`0` = belum dibaca, `1` = dibaca) |
+| `created_at` | `TIMESTAMP` | `NO` | Waktu notifikasi dikirimkan |
+
+* **Relasi & Constraint**:
+  * `user_id` -> `users(id)` ON DELETE CASCADE
+
+---
+
+### 9. `invoices`
+Menyimpan informasi penomoran invoice pembayaran legal yang digenerate otomatis.
+
+| Nama Kolom | Tipe Data | Nullable | Keterangan |
+|---|---|---|---|
+| `id` | `INT(11) AUTO_INCREMENT` | `NO` | **PRIMARY KEY** |
+| `order_id` | `INT(11)` | `NO` | **FOREIGN KEY** merujuk ke `orders(id)` |
+| `invoice_number` | `VARCHAR(20)` | `NO` | Nomor invoice unik (misal: `INV/YYYYMMDD/XXXX`) |
+| `pdf_path` | `VARCHAR(255)` | `NO` | Alamat path berkas invoice PDF |
+| `generated_at` | `DATETIME` | `NO` | Tanggal dokumen dibuat |
+
+* **Kunci Unik (Unique Key)**: `invoice_number`
+* **Relasi & Constraint**:
+  * `order_id` -> `orders(id)` ON DELETE CASCADE
+
+---
+
+### 10. `provider_schedules`
+Tabel pendukung untuk menyimpan ketersediaan jadwal hari kerja dan jam kerja mitra Penyedia Jasa.
+
+| Nama Kolom | Tipe Data | Nullable | Keterangan |
+|---|---|---|---|
+| `id` | `INT(11) AUTO_INCREMENT` | `NO` | **PRIMARY KEY** |
+| `provider_id` | `INT(11)` | `NO` | **FOREIGN KEY** merujuk ke `users(id)` |
+| `day_of_week` | `TINYINT(1)` | `NO` | Indeks Hari (`0` = Senin, `1` = Selasa, ..., `6` = Minggu) |
+| `start_time` | `TIME` | `NO` | Waktu jam mulai operasional |
+| `end_time` | `TIME` | `NO` | Waktu jam berakhir operasional |
+| `is_available` | `TINYINT(1)` | `YES` | Ketersediaan slot (`1` = Buka, `0` = Tutup/Libur) |
+
+* **Relasi & Constraint**:
+  * `provider_id` -> `users(id)` ON DELETE CASCADE

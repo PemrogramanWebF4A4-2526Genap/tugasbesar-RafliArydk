@@ -1,142 +1,103 @@
-# Panduan Pengguna – BisaBantu
+# Panduan Pengguna (User Manual) - BisaBantu
 
-## 1. Untuk Pembeli
-
-### 1.1 Registrasi dan Login
-- Klik **Register** di pojok kanan atas.
-- Isi nama, email, password, nomor telepon, dan alamat.
-- Klik **Daftar**, lalu login dengan email dan password.
-
-### 1.2 Mencari Jasa
-- Pada halaman **Beranda**, lihat daftar jasa.
-- Gunakan filter **Kategori** dan **Lokasi**.
-- Ketik kata kunci pada **Search** untuk mencari judul jasa.
-
-### 1.3 Melihat Detail Jasa
-- Klik tombol **Detail** pada salah satu jasa.
-- Anda akan melihat deskripsi lengkap, harga per unit, durasi estimasi, area layanan, dan review dari pembeli lain.
-- Klik **Tambah ke Keranjang** untuk memasukkan jasa ke keranjang belanja.
-
-### 1.4 Keranjang dan Checkout
-- Klik ikon keranjang di navbar.
-- Anda bisa mengubah **jumlah unit** atau menghapus jasa.
-- Klik **Lanjutkan ke Checkout**.
-- Isi **alamat pelaksanaan** (tempat jasa akan dikerjakan).
-- Pilih **tanggal pelaksanaan** yang diinginkan.
-- Pilih **metode pembayaran** (Transfer Bank atau COD).
-- Klik **Buat Pesanan**.
-
-### 1.5 Pembayaran
-- Setelah checkout, buka menu **Pesanan Saya**.
-- Klik **Upload Bukti** pada pesanan dengan status "Menunggu Pembayaran".
-- Upload foto bukti transfer (jpg/png, maks 2MB).
-- Klik **Kirim Bukti**. Admin akan memverifikasi.
-
-### 1.6 Tracking Pesanan
-- Status pesanan berubah:
-  - `Menunggu Pembayaran` → `Dibayar` (setelah admin verifikasi) → `Diterima Penyedia` → `Sedang Dikerjakan` → `Selesai`
-- Anda akan mendapat notifikasi email dan in-app setiap perubahan status.
-
-### 1.7 Review & Rating
-- Setelah pesanan selesai, buka detail pesanan.
-- Klik **Beri Review**.
-- Beri rating bintang (1-5), tulis komentar, dan upload foto hasil pekerjaan (opsional).
+Selamat datang di Panduan Pengguna **BisaBantu**. Dokumen ini dirancang untuk memandu seluruh peran pengguna (Pembeli, Penyedia Jasa, dan Admin) dalam mengoperasikan fitur-fitur yang ada di platform kami.
 
 ---
 
-## 2. Untuk Penyedia Jasa
+## 🛍️ 1. Panduan Pembeli (Buyer)
 
-### 2.1 Registrasi dan Verifikasi
-- Klik **Daftar sebagai Penyedia**.
-- Isi data diri lengkap (nama, email, password, telepon, alamat).
-- Setelah submit, akun Anda akan berstatus "pending verifikasi". Tunggu admin mengaktifkan.
-- Anda akan mendapat email notifikasi jika sudah diverifikasi.
+### 1.1 Registrasi & Pendaftaran Akun
+1. Buka peramban (browser) dan akses halaman utama BisaBantu.
+2. Klik tombol **Register** pada sudut kanan atas bilah menu (navbar).
+3. Isi formulir pendaftaran secara lengkap:
+   * Nama Lengkap
+   * Email Aktif
+   * Password
+   * Nomor Telepon
+   * Alamat Domisili
+4. Klik **Daftar** untuk membuat akun baru.
+5. Gunakan email dan password tersebut pada menu **Login** untuk masuk ke sistem.
 
-### 2.2 Login dan Dashboard
-- Login dengan email dan password.
-- Dashboard menampilkan: total pesanan, pendapatan, rating rata-rata, grafik penjualan (Chart.js).
+### 1.2 Pencarian Layanan & Detail Jasa
+1. Di halaman **Beranda**, semua katalog layanan aktif akan ditampilkan.
+2. Anda dapat menyaring layanan berdasarkan **Kategori** (menu filter) dan **Lokasi** (area cakupan).
+3. Ketik kata kunci pada kotak pencarian untuk menemukan layanan spesifik.
+4. Klik tombol **Detail** pada kartu layanan untuk melihat deskripsi jasa, harga per unit, satuan harga, perkiraan durasi kerja, lokasi, serta riwayat rating dari pembeli sebelumnya.
 
-### 2.3 Mengelola Jasa (CRUD)
-- Buka menu **Jasa Saya**.
-- **Tambah Jasa**: Klik tombol "Tambah", isi judul, deskripsi, kategori, harga per unit, satuan (per jam/per kg), durasi estimasi, lokasi layanan, dan upload gambar.
-- **Edit / Hapus**: Klik ikon pensil atau tempat sampah pada daftar jasa.
+### 1.3 Melakukan Pemesanan (Checkout & Pembayaran)
+1. Pada detail jasa, tentukan jumlah kuantitas pesanan, lalu klik **Tambah ke Keranjang**.
+2. Buka halaman keranjang belanja (ikon keranjang di navbar) untuk meninjau pesanan Anda.
+3. Klik **Lanjutkan ke Checkout**.
+4. Isi data pelaksanaan dengan teliti:
+   * **Alamat Pelaksanaan**: Tempat jasa akan dikerjakan.
+   * **Tanggal Pelaksanaan**: Kapan jasa ingin mulai dikerjakan.
+   * **Catatan Tambahan**: Instruksi atau pesan tambahan untuk penyedia.
+5. Pilih metode pembayaran (*Bank Transfer* atau *Cash on Delivery*).
+6. Klik **Buat Pesanan**. Status pesanan akan menjadi `waiting_payment` (jika menggunakan Bank Transfer).
 
-### 2.4 Mengelola Pesanan
-- Buka menu **Pesanan Masuk**.
-- Untuk pesanan dengan status `Dibayar`:
-  - Klik **Terima** jika Anda bersedia mengerjakan → status menjadi `Diterima Penyedia`.
-  - Jika tidak bisa, klik **Tolak** (pesanan batal, dana dikembalikan ke pembeli via admin).
-- Saat mulai mengerjakan: ubah status menjadi `Sedang Dikerjakan`.
-- Setelah selesai: ubah status menjadi `Selesai`. Pembeli akan diminta review.
+### 1.4 Melakukan Konfirmasi Pembayaran
+1. Buka menu **Pesanan Saya** (dashboard pembeli).
+2. Temukan pesanan Anda yang bertuliskan status `Menunggu Pembayaran`.
+3. Klik tombol **Upload Bukti Pembayaran**.
+4. Pilih gambar bukti transfer bank Anda (maksimal ukuran file 2MB), lalu klik **Kirim Bukti**.
+5. Tunggu Administrator memvalidasi pembayaran Anda.
 
-### 2.5 Pendapatan
-- Menu **Riwayat Pendapatan** menampilkan daftar pesanan yang sudah selesai beserta total pendapatan yang diterima (setelah dipotong biaya admin jika ada).
-
----
-
-## 3. Untuk Admin
-
-### 3.1 Login
-- Gunakan akun admin yang sudah disediakan (atau buat langsung di database).
-
-### 3.2 Dashboard Admin
-- Menampilkan statistik global: jumlah pengguna (pembeli/penyedia), jumlah pesanan, total pendapatan, grafik bulanan.
-
-### 3.3 Verifikasi Penyedia Jasa
-- Buka menu **Kelola Pengguna** → tab **Penyedia Jasa**.
-- Penyedia yang belum diverifikasi akan ditandai.
-- Klik **Verifikasi** untuk mengaktifkan akun penyedia.
-- Klik **Nonaktifkan** jika penyedia melanggar aturan.
-
-### 3.4 Kelola Kategori
-- Menu **Kategori Jasa**.
-- Tambah, edit, atau hapus kategori (misal: Bersih-bersih, Perbaikan, Les Privat).
-- Kategori yang memiliki jasa tidak dapat dihapus (akan muncul peringatan).
-
-### 3.5 Kelola Semua Pesanan
-- Menu **Semua Pesanan** (lintas penyedia).
-- Bisa melihat detail, mengubah status secara manual (jika diperlukan), atau membatalkan pesanan.
-
-### 3.6 Laporan & Ekspor
-- Menu **Laporan**:
-  - Pilih rentang tanggal.
-  - Tampilkan total pendapatan, jumlah pesanan, jasa terpopuler, penyedia terbaik.
-  - Klik **Ekspor CSV** untuk mengunduh data.
-
-### 3.7 Pengaturan Sistem
-- Menu **Pengaturan**:
-  - Biaya admin (persen dari harga jasa, misal 5%).
-  - Batas waktu pembayaran (jam/hari).
-  - Alamat email sistem untuk notifikasi.
+### 1.5 Melacak Pesanan & Ulasan Pekerjaan
+* **Alur Status Transaksi**:
+  `Pending` ➔ `Waiting Payment` ➔ `Paid` (setelah pembayaran divalidasi) ➔ `Accepted` (diterima oleh penyedia) ➔ `In Progress` (sedang dikerjakan) ➔ `Completed` (pekerjaan selesai).
+* Setelah pesanan bertatus `Selesai` (Completed), Anda dapat memberikan penilaian dengan membuka halaman detail pesanan lalu memilih tombol **Beri Ulasan (Review)**. Masukkan rating bintang 1-5, isi ulasan teks, dan upload foto dokumentasi hasil kerja (opsional).
 
 ---
 
-## 4. Notifikasi Sistem (Email & In-app)
+## 🛠️ 2. Panduan Penyedia Jasa (Provider)
 
-| Event | Notifikasi Email | In-app |
-|-------|------------------|--------|
-| Registrasi berhasil | ✅ Link verifikasi (jika diaktifkan) | ❌ |
-| Akun penyedia diverifikasi | ✅ Selamat, Anda dapat mulai menawarkan jasa | ✅ |
-| Pembayaran diverifikasi admin | ✅ ke pembeli & penyedia | ✅ |
-| Pesanan diterima penyedia | ✅ ke pembeli | ✅ |
-| Pesanan selesai | ✅ minta review | ✅ |
-| Invoice tersedia | ✅ link download PDF | ✅ |
+### 2.1 Pendaftaran & Verifikasi Kemitraan
+1. Pada halaman registrasi, pilih opsi peran sebagai **Penyedia Jasa (Provider)**.
+2. Isi formulir informasi data diri dan data usaha layanan Anda.
+3. Setelah mendaftar, akun Anda berstatus **Pending Verifikasi**.
+4. Akun Anda harus disetujui terlebih dahulu oleh Admin sebelum dapat mengakses dasbor penuh dan membuat iklan layanan jasa.
+
+### 2.2 Dasbor Utama Penyedia
+* Setelah login dengan akun terverifikasi, Anda akan diarahkan ke Dasbor Penyedia.
+* Dasbor menampilkan grafik pendapatan, jumlah transaksi, rating rata-rata kualitas layanan, serta ringkasan aktivitas pesanan terbaru.
+
+### 2.3 Manajemen Penawaran Jasa (CRUD)
+1. Buka menu **Jasa Saya**.
+2. **Tambah Jasa Baru**: Klik tombol **Tambah Jasa**, isi judul layanan, deskripsi pengerjaan, pilih kategori yang relevan, tentukan harga, satuan harga (misal: per jam/per kunjungan), estimasi waktu, area jangkauan, dan unggah foto profil layanan terbaik.
+3. **Ubah/Hapus Jasa**: Klik ikon pensil untuk memperbarui deskripsi atau matikan status `is_active` untuk menyembunyikan layanan sementara dari pembeli.
+
+### 2.4 Mengelola Pesanan Masuk
+1. Buka menu **Pesanan Masuk**.
+2. Setiap pesanan baru dengan status pembayaran valid (`Paid` / `Cash on Delivery`) akan masuk ke daftar ini.
+3. Klik **Terima Pesanan** jika Anda menyanggupi pengerjaan pada tanggal pelaksanaan tersebut.
+4. Klik **Tolak Pesanan** jika jadwal Anda sedang penuh.
+5. Perbarui status pesanan secara bertahap saat Anda mulai bekerja menjadi `Sedang Dikerjakan` (In Progress) dan tandai sebagai `Selesai` (Completed) jika pekerjaan telah selesai sepenuhnya.
 
 ---
 
-## 5. Pemecahan Masalah Umum
+## 👑 3. Panduan Administrator (Admin)
 
-| Masalah | Solusi |
-|---------|--------|
-| Tidak bisa login | Cek email dan password. Lupa password? Gunakan fitur "Lupa Password" (jika diimplementasikan) atau hubungi admin. |
-| Upload bukti gagal | Pastikan file gambar (jpg/png) dan ukuran <2MB. Cek folder `uploads/payments` dapat ditulis. |
-| Status pesanan tidak berubah | Refresh halaman. Jika masih, hubungi admin. |
-| Penyedia tidak muncul di pencarian | Pastikan akun penyedia sudah diverifikasi dan jasa di-set "aktif". |
+### 3.1 Login Admin
+* Gunakan email administrator `admin@bisabantu.com` dengan password default `password`.
 
----
+### 3.2 Verifikasi Mitra Baru (Provider)
+1. Masuk ke menu **Kelola Pengguna** ➔ Tab **Penyedia Jasa**.
+2. Daftar penyedia baru dengan status belum diverifikasi akan diberi penanda khusus.
+3. Klik tombol **Verifikasi** setelah memastikan profil dan data penyedia valid untuk mengaktifkan akun mereka.
 
-## 6. Tips Optimal
+### 3.3 Verifikasi Bukti Pembayaran Transaksi
+1. Buka menu **Semua Pesanan**.
+2. Klik tombol detail pada transaksi yang memiliki status pembayaran `Pending/Waiting Verification`.
+3. Periksa gambar bukti transfer yang diunggah oleh pembeli.
+4. Klik **Konfirmasi Pembayaran** jika bukti valid (status pesanan otomatis berubah ke `Paid`), atau klik **Tolak Pembayaran** dan isi alasan penolakan jika tidak valid.
 
-- **Pembeli**: Beri review sejujur mungkin untuk membantu pengguna lain.  
-- **Penyedia**: Lengkapi deskripsi jasa dengan foto menarik dan informasi jelas.  
-- **Admin**: Rutin cek laporan untuk memantau aktivitas mencurigakan.
+### 3.4 Kelola Kategori Jasa
+1. Masuk ke menu **Kategori Jasa**.
+2. Anda dapat menambahkan kategori baru, mengubah nama kategori lama, atau menghapus kategori yang tidak lagi digunakan.
+3. *Catatan*: Kategori yang masih terikat dengan penawaran jasa aktif milik penyedia tidak dapat dihapus untuk menjaga integritas data.
+
+### 3.5 Laporan Pendapatan & Grafik Analitik
+1. Buka menu **Laporan**.
+2. Tentukan filter rentang tanggal laporan.
+3. Dasbor akan menampilkan metrik total transaksi, total perputaran uang, layanan paling laris, dan penyedia terbaik.
+4. Klik tombol **Ekspor CSV** untuk mengunduh laporan detail dalam format spreadsheet.

@@ -1,4 +1,4 @@
-<?php require_once __DIR__ . '/../layout/header.php'; ?>
+
 <div class="container mt-4">
     <h2 class="fw-bold">Dashboard Pembeli</h2>
     <p>Selamat datang, <strong>Nama Pembeli</strong></p>
@@ -39,5 +39,4 @@
             <a href="#" class="list-group-item list-group-item-action rounded-3 mb-2 border">#ORD002 - Les Matematika - Status: Selesai</a>
         </div>
     </div>
-</div>
-<?php require_once __DIR__ . '/../layout/footer.php'; ?>
+</div>

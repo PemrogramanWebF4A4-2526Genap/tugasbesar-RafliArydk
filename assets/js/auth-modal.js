@@ -131,22 +131,24 @@ function initAuthForms() {
     const regForm = document.getElementById('authRegisterForm');
     if (regForm) {
         regForm.addEventListener('submit', function (e) {
-            e.preventDefault();
+            const firstName = document.querySelector('[name="first_name"]')?.value.trim();
+            const email = document.getElementById('reg-email')?.value.trim();
             const pass = document.getElementById('reg-pass')?.value || '';
+            const confirm = regForm.querySelector('[name="password_confirm"]')?.value || '';
+            if (!firstName || !email) {
+                e.preventDefault();
+                if (typeof showToast === 'function') showToast('Lengkapi nama dan email Anda', 'warning');
+                return;
+            }
             if (pass.length < 8) {
+                e.preventDefault();
                 if (typeof showToast === 'function') showToast('Password minimal 8 karakter', 'warning');
                 return;
             }
-            showAuthSuccess('reg-success');
-            if (typeof showToast === 'function') showToast('Akun berhasil dibuat! Silakan cek email Anda.', 'success');
-            setTimeout(closeAuthModal, 2000);
-        });
-    }
-
-    const googleBtn = document.getElementById('authGoogleBtn');
-    if (googleBtn) {
-        googleBtn.addEventListener('click', function () {
-            if (typeof showToast === 'function') showToast('Login Google akan segera tersedia', 'info');
+            if (pass !== confirm) {
+                e.preventDefault();
+                if (typeof showToast === 'function') showToast('Konfirmasi password belum sama', 'warning');
+            }
         });
     }
 

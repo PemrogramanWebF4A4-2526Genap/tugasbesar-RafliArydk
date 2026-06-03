@@ -69,28 +69,6 @@ $cartCount = count($cartItems);
 $cartAction = $isLoggedIn
     ? 'href="' . e($cartUrl) . '"'
     : 'href="#" onclick="openAuthModal(\'login\'); return false;"';
-$roleNav = [
-    'buyer' => [
-        ['label' => 'Beranda', 'icon' => 'bi-house-door', 'href' => $homeUrl . '#beranda'],
-        ['label' => 'Kategori', 'icon' => 'bi-grid', 'href' => $homeUrl . '#kategori'],
-        ['label' => 'Jasa', 'icon' => 'bi-briefcase', 'href' => $homeUrl . '#layanan-jasa'],
-        ['label' => 'Cara Kerja', 'icon' => 'bi-signpost', 'href' => $homeUrl . '#cara-kerja'],
-        ['label' => 'Tentang Kami', 'icon' => 'bi-info-circle', 'href' => $homeUrl . '#testimoni'],
-    ],
-    'provider' => [
-        ['label' => 'Dashboard', 'icon' => 'bi-grid', 'href' => base_url('index.php?page=dashboard')],
-        ['label' => 'Produk', 'icon' => 'bi-box-seam', 'href' => base_url('index.php?page=provider_services')],
-        ['label' => 'Pesanan', 'icon' => 'bi-receipt', 'href' => base_url('index.php?page=provider_orders'), 'badge' => '7'],
-        ['label' => 'Pengiriman', 'icon' => 'bi-send', 'href' => base_url('index.php?page=provider_orders')],
-        ['label' => 'Statistik', 'icon' => 'bi-bar-chart', 'href' => base_url('index.php?page=provider_earnings')],
-    ],
-    'admin' => [
-        ['label' => 'Dashboard', 'icon' => 'bi-grid', 'href' => base_url('index.php?page=dashboard')],
-        ['label' => 'Pengguna', 'icon' => 'bi-people', 'href' => base_url('index.php?page=admin_users')],
-        ['label' => 'Kategori', 'icon' => 'bi-columns-gap', 'href' => base_url('index.php?page=admin_categories')],
-        ['label' => 'Semua Pesanan', 'icon' => 'bi-receipt', 'href' => base_url('index.php?page=admin_orders'), 'badge' => '12'],
-    ],
-];
 $sideNav = [
     'buyer' => [
         ['label' => 'Dashboard', 'icon' => 'bi-grid', 'href' => base_url('index.php?page=dashboard')],
@@ -100,11 +78,12 @@ $sideNav = [
         ['label' => 'Pembayaran', 'icon' => 'bi-credit-card', 'href' => base_url('index.php?page=upload_payment')],
     ],
     'provider' => [
-        ['label' => 'Overview', 'icon' => 'bi-grid', 'href' => base_url('index.php?page=dashboard')],
-        ['label' => 'Tambah Jasa', 'icon' => 'bi-plus-lg', 'href' => base_url('index.php?page=provider_services')],
-        ['label' => 'Kelola Produk', 'icon' => 'bi-pencil-square', 'href' => base_url('index.php?page=provider_services')],
-        ['label' => 'Invoice', 'icon' => 'bi-file-earmark-text', 'href' => base_url('index.php?page=provider_earnings'), 'badge' => '3'],
-        ['label' => 'Ulasan', 'icon' => 'bi-star', 'href' => base_url('index.php?page=provider_orders')],
+        ['label' => 'Dashboard', 'icon' => 'bi-grid', 'href' => base_url('index.php?page=dashboard')],
+        ['label' => 'Produk', 'icon' => 'bi-box-seam', 'href' => base_url('index.php?page=provider_services')],
+        ['label' => 'Pesanan', 'icon' => 'bi-receipt', 'href' => base_url('index.php?page=provider_orders'), 'badge' => '7'],
+        ['label' => 'Pengiriman', 'icon' => 'bi-send', 'href' => base_url('index.php?page=provider_shipping')],
+        ['label' => 'Statistik', 'icon' => 'bi-bar-chart', 'href' => base_url('index.php?page=provider_earnings')],
+        ['label' => 'Ulasan', 'icon' => 'bi-star', 'href' => base_url('index.php?page=provider_reviews')],
     ],
     'admin' => [
         ['label' => 'Manage Pembeli', 'icon' => 'bi-people-fill', 'href' => base_url('index.php?page=admin_users')],
@@ -114,7 +93,6 @@ $sideNav = [
         ['label' => 'Admin Mode', 'icon' => 'bi-sliders', 'href' => base_url('index.php?page=admin_settings')],
     ],
 ];
-$activeNav = $isLoggedIn && isset($roleNav[$userRole]) ? $roleNav[$userRole] : [];
 $activeSideNav = $isLoggedIn && isset($sideNav[$userRole]) ? $sideNav[$userRole] : [];
 ?>
 <nav class="navbar navbar-expand-lg navbar-custom navbar-dark sticky-top role-header role-header-<?= e($userRole ?? 'guest') ?>">
@@ -128,18 +106,7 @@ $activeSideNav = $isLoggedIn && isset($sideNav[$userRole]) ? $sideNav[$userRole]
         </button>
         <div class="collapse navbar-collapse" id="navbarMain">
             <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
-                <?php if ($isLoggedIn): ?>
-                    <?php foreach ($activeNav as $index => $item): ?>
-                        <?php $isActiveTopNav = strpos($item['href'], 'page=' . $currentPage) !== false || ($currentPage === 'home' && $index === 0); ?>
-                        <li class="nav-item">
-                            <a class="nav-link <?= $isActiveTopNav ? 'active' : '' ?>" href="<?= e($item['href']) ?>">
-                                <i class="bi <?= e($item['icon']) ?>"></i>
-                                <span><?= e($item['label']) ?></span>
-                                <?php if (isset($item['badge'])): ?><span class="nav-mini-badge"><?= e($item['badge']) ?></span><?php endif; ?>
-                            </a>
-                        </li>
-                    <?php endforeach; ?>
-                <?php else: ?>
+                <?php if (!$isLoggedIn): ?>
                     <li class="nav-item"><a class="nav-link active" href="<?= $homeUrl ?>#beranda" data-scroll="#beranda">Beranda</a></li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="<?= $homeUrl ?>#kategori" id="categoryDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Kategori</a>
@@ -157,6 +124,11 @@ $activeSideNav = $isLoggedIn && isset($sideNav[$userRole]) ? $sideNav[$userRole]
                 <?php endif; ?>
             </ul>
             <div class="d-flex gap-2 align-items-center role-actions">
+                <?php if ($isLoggedIn && $userRole === 'provider'): ?>
+                    <a href="<?= base_url('index.php?page=dashboard') ?>" class="btn btn-outline-custom btn-dashboard">
+                        <i class="bi bi-grid me-1"></i>Dashboard
+                    </a>
+                <?php endif; ?>
                 <?php if (!$isLoggedIn || $userRole === 'buyer'): ?>
                     <div class="cart-nav">
                         <a class="cart-nav-btn" <?= $cartAction ?> aria-label="Buka keranjang">

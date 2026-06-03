@@ -1,4 +1,4 @@
-<?php require_once __DIR__ . '/../layout/header.php'; ?>
+
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-6">
@@ -44,4 +44,4 @@
         });
     });
 </script>
-<?php require_once __DIR__ . '/../layout/footer.php'; ?>
+

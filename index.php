@@ -45,7 +45,7 @@ if ($page == 'home') {
     include 'views/layout/header.php';
     include 'views/pembeli/' . $buyerPages[$page];
     include 'views/layout/footer.php';
-} elseif (in_array($page, ['provider_services', 'provider_orders', 'provider_earnings'], true)) {
+} elseif (in_array($page, ['provider_services', 'provider_orders', 'provider_shipping', 'provider_earnings', 'provider_reviews'], true)) {
     if (!isset($_SESSION['user'])) {
         header('Location: index.php?page=home&auth=login');
         exit;
@@ -59,7 +59,9 @@ if ($page == 'home') {
     $providerPages = [
         'provider_services' => 'services.php',
         'provider_orders' => 'orders.php',
+        'provider_shipping' => 'shipping.php',
         'provider_earnings' => 'earnings.php',
+        'provider_reviews' => 'reviews.php',
     ];
 
     include 'views/layout/header.php';
