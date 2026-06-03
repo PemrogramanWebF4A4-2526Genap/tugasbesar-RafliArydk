@@ -28,7 +28,7 @@
                 <?php if (isset($_GET['auth_error'])): ?>
                     <div class="auth-alert-error show" id="login-error">
                         <i class="bi bi-exclamation-circle" style="font-size:16px" aria-hidden="true"></i>
-                        <?= $_GET['auth_error'] === 'empty' ? 'Email dan password wajib diisi.' : 'Email atau password salah. Akun demo memakai password: password.' ?>
+                        <?= $_GET['auth_error'] === 'empty' ? 'Email dan password wajib diisi.' : 'Email atau password salah.' ?>
                     </div>
                 <?php endif; ?>
                 <form id="authLoginForm" method="post" action="<?= base_url('index.php?page=auth&action=login') ?>" novalidate>
@@ -56,6 +56,7 @@
                         <i class="bi bi-box-arrow-in-right" style="margin-right:6px" aria-hidden="true"></i>Masuk
                     </button>
                 </form>
+                <div class="auth-form-error" id="login-form-error" role="alert" aria-live="assertive"></div>
                 <div class="auth-form-footer">Belum punya akun? <a onclick="switchAuthTab('register')">Daftar sekarang</a></div>
             </div>
 
@@ -65,6 +66,7 @@
                     <div style="font-size:17px;font-weight:500;margin-bottom:3px">Buat akun baru</div>
                     <div style="font-size:13px;color:var(--color-text-secondary)">Bergabung dengan ribuan pengguna BisaBantu</div>
                 </div>
+                <?php $regRole = $_GET['role'] ?? 'buyer'; ?>
                 <?php if (isset($_GET['register_error'])): ?>
                     <div class="auth-alert-error show" id="register-error">
                         <i class="bi bi-exclamation-circle" style="font-size:16px" aria-hidden="true"></i>
@@ -82,14 +84,14 @@
                     </div>
                     <div style="font-size:12px;color:var(--color-text-secondary);margin-bottom:1rem;font-weight:500">Pilih tipe akun</div>
                     <div class="auth-role-select">
-                        <div class="auth-role-card selected" id="role-buyer" onclick="selectAuthRole('buyer')">
+                        <div class="auth-role-card<?= $regRole === 'buyer' ? ' selected' : '' ?>" id="role-buyer" onclick="selectAuthRole('buyer')">
                             <div class="auth-role-icon" id="ri-buyer"><i class="bi bi-cart3" aria-hidden="true"></i></div>
                             <div>
                                 <div class="auth-role-label">Pembeli</div>
                                 <div class="auth-role-sub">Cari & pesan jasa</div>
                             </div>
                         </div>
-                        <div class="auth-role-card" id="role-provider" onclick="selectAuthRole('provider')">
+                        <div class="auth-role-card<?= $regRole === 'provider' ? ' selected' : '' ?>" id="role-provider" onclick="selectAuthRole('provider')">
                             <div class="auth-role-icon" id="ri-provider"><i class="bi bi-briefcase" aria-hidden="true"></i></div>
                             <div>
                                 <div class="auth-role-label">Penyedia</div>
@@ -97,7 +99,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="auth-provider-note" id="provider-note">
+                    <div class="auth-provider-note" id="provider-note"<?= $regRole === 'provider' ? ' class="show"' : '' ?>>
                         <i class="bi bi-info-circle" style="margin-right:4px" aria-hidden="true"></i>
                         Akun penyedia perlu verifikasi admin sebelum bisa menawarkan jasa.
                     </div>
@@ -118,26 +120,40 @@
                     <div class="auth-form-row">
                         <div class="auth-form-group">
                             <label class="auth-form-label">Nama depan</label>
-                            <input class="auth-form-input" type="text" name="first_name" form="authRegisterForm" placeholder="Budi" required>
+                            <input class="auth-form-input" type="text" name="first_name" form="authRegisterForm" placeholder="Budi" value="<?= htmlspecialchars($_GET['first_name'] ?? '', ENT_QUOTES) ?>" required>
                         </div>
                         <div class="auth-form-group">
                             <label class="auth-form-label">Nama belakang</label>
-                            <input class="auth-form-input" type="text" name="last_name" form="authRegisterForm" placeholder="Santoso">
+                            <input class="auth-form-input" type="text" name="last_name" form="authRegisterForm" placeholder="Santoso" value="<?= htmlspecialchars($_GET['last_name'] ?? '', ENT_QUOTES) ?>">
                         </div>
                     </div>
                     <div class="auth-form-group">
                         <label class="auth-form-label">Email</label>
                         <div class="auth-input-wrap">
-                            <input class="auth-form-input" type="email" id="reg-email" name="email" form="authRegisterForm" placeholder="budi@email.com" required>
+                            <input class="auth-form-input" type="email" id="reg-email" name="email" form="authRegisterForm" placeholder="budi@email.com" value="<?= htmlspecialchars($_GET['email'] ?? '', ENT_QUOTES) ?>" required>
                             <i class="bi bi-envelope auth-input-icon" aria-hidden="true"></i>
                         </div>
                     </div>
                     <div class="auth-form-group">
                         <label class="auth-form-label">Nomor telepon</label>
                         <div class="auth-input-wrap">
-                            <input class="auth-form-input" type="tel" name="phone" form="authRegisterForm" placeholder="+62 812 3456 7890">
+                            <input class="auth-form-input" type="tel" name="phone" form="authRegisterForm" placeholder="+62 812 3456 7890" value="<?= htmlspecialchars($_GET['phone'] ?? '', ENT_QUOTES) ?>">
                             <i class="bi bi-telephone auth-input-icon" aria-hidden="true"></i>
                         </div>
+                    </div>
+                    <div class="auth-form-group">
+                        <label class="auth-form-label">Password</label>
+                        <div class="auth-input-wrap">
+                            <input class="auth-form-input" type="password" id="reg-pass" name="password" form="authRegisterForm" placeholder="Min. 8 karakter" oninput="checkAuthStrength(this.value)" required>
+                            <i class="bi bi-eye auth-input-icon" id="toggle-reg-pass" onclick="toggleAuthPass('reg-pass','toggle-reg-pass')" role="button" tabindex="0" aria-label="Tampilkan password"></i>
+                        </div>
+                        <div class="auth-password-strength">
+                            <div class="auth-strength-bar" id="sb1"></div>
+                            <div class="auth-strength-bar" id="sb2"></div>
+                            <div class="auth-strength-bar" id="sb3"></div>
+                            <div class="auth-strength-bar" id="sb4"></div>
+                        </div>
+                        <div class="auth-str-label" id="str-label">Masukkan password</div>
                     </div>
                     <div style="display:flex;gap:8px;margin-top:0.25rem">
                         <button type="button" class="auth-btn-outline" style="flex:1;padding:11px" onclick="goAuthStep(1)">
@@ -157,33 +173,19 @@
                         <div class="auth-step-line done"></div>
                         <div class="auth-step-dot active">3</div>
                     </div>
-                    <div style="font-size:12px;color:var(--color-text-secondary);margin-bottom:1rem;font-weight:500">Buat password</div>
+                    <div style="font-size:12px;color:var(--color-text-secondary);margin-bottom:1rem;font-weight:500">Selesai</div>
                     <form method="post" action="<?= base_url('index.php?page=auth&action=register') ?>" id="authRegisterForm" novalidate>
-                        <input type="hidden" name="role" id="reg-role-input" value="buyer">
-                        <div class="auth-form-group">
-                            <label class="auth-form-label">Password</label>
-                            <div class="auth-input-wrap">
-                                <input class="auth-form-input" type="password" id="reg-pass" name="password" placeholder="Min. 8 karakter" oninput="checkAuthStrength(this.value)" required>
-                                <i class="bi bi-eye auth-input-icon" id="toggle-reg-pass" onclick="toggleAuthPass('reg-pass','toggle-reg-pass')" role="button" tabindex="0" aria-label="Tampilkan password"></i>
-                            </div>
-                            <div class="auth-password-strength">
-                                <div class="auth-strength-bar" id="sb1"></div>
-                                <div class="auth-strength-bar" id="sb2"></div>
-                                <div class="auth-strength-bar" id="sb3"></div>
-                                <div class="auth-strength-bar" id="sb4"></div>
-                            </div>
-                            <div class="auth-str-label" id="str-label">Masukkan password</div>
-                        </div>
+                        <input type="hidden" name="role" id="reg-role-input" value="<?= htmlspecialchars($regRole, ENT_QUOTES) ?>">
                         <div class="auth-form-group">
                             <label class="auth-form-label">Konfirmasi password</label>
                             <div class="auth-input-wrap">
-                                <input class="auth-form-input" type="password" name="password_confirm" placeholder="Ulangi password" required>
+                                <input class="auth-form-input" type="password" name="password_confirm" form="authRegisterForm" placeholder="Ulangi password" required>
                                 <i class="bi bi-eye auth-input-icon" aria-hidden="true"></i>
                             </div>
                         </div>
                         <div class="auth-form-group">
                             <label class="auth-form-label">Alamat</label>
-                            <textarea class="auth-form-input" name="address" rows="2" placeholder="Jl. Contoh No.1, Jakarta Selatan" style="resize:none;line-height:1.5"></textarea>
+                            <textarea class="auth-form-input" name="address" rows="2" form="authRegisterForm" placeholder="Jl. Contoh No.1, Jakarta Selatan" style="resize:none;line-height:1.5"><?= htmlspecialchars($_GET['address'] ?? '', ENT_QUOTES) ?></textarea>
                         </div>
                         <label class="auth-checkbox-wrap" style="margin-bottom:1rem;align-items:flex-start;gap:8px">
                             <input type="checkbox" required style="margin-top:2px">

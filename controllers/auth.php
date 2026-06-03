@@ -60,13 +60,23 @@ if ($action === 'register') {
     $phone = trim($_POST['phone'] ?? '');
     $address = trim($_POST['address'] ?? '');
 
+    $preserveValues = http_build_query([
+        'role' => $role,
+        'first_name' => $firstName,
+        'last_name' => $lastName,
+        'email' => $email,
+        'phone' => $phone,
+        'address' => $address,
+        'register_step' => 3,
+    ]);
+
     if (!in_array($role, ['buyer', 'provider'], true)) {
-        header('Location: index.php?page=home&auth=register&register_error=role');
+        header('Location: index.php?page=home&auth=register&register_error=role&' . $preserveValues);
         exit;
     }
 
     if ($name === '' || $email === '' || $password === '' || strlen($password) < 8 || $password !== $passwordConfirm) {
-        header('Location: index.php?page=home&auth=register&register_error=invalid');
+        header('Location: index.php?page=home&auth=register&register_error=invalid&' . $preserveValues);
         exit;
     }
 
@@ -80,7 +90,7 @@ if ($action === 'register') {
         header('Location: index.php?page=home&auth=login&register=' . $registerParam);
         exit;
     } catch (PDOException $e) {
-        header('Location: index.php?page=home&auth=register&register_error=exists');
+        header('Location: index.php?page=home&auth=register&register_error=exists&' . $preserveValues);
         exit;
     }
 }

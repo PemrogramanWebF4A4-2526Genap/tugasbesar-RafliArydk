@@ -376,6 +376,16 @@
 .auth-alert-error.show {
     display: flex;
 }
+.auth-form-error {
+    display: none;
+    margin-top: 0.5rem;
+    color: #991b1b;
+    font-size: 13px;
+    line-height: 1.4;
+}
+.auth-form-error.show {
+    display: block;
+}
 .auth-step-indicator {
     display: flex;
     align-items: center;

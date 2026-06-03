@@ -64,13 +64,6 @@ function selectAuthRole(role) {
 }
 
 function goAuthStep(n) {
-    if (n === 3) {
-        const pass = document.getElementById('reg-pass');
-        if (pass && pass.value.length < 8) {
-            if (typeof showToast === 'function') showToast('Password minimal 8 karakter', 'warning');
-            return;
-        }
-    }
     [1, 2, 3].forEach(function (i) {
         const step = document.getElementById('reg-step-' + i);
         if (step) step.style.display = i === n ? 'block' : 'none';
@@ -114,16 +107,54 @@ function showAuthSuccess(id) {
     }
 }
 
+function showLoginInlineError(message) {
+    const el = document.getElementById('login-form-error');
+    if (!el) return;
+    el.textContent = message;
+    el.classList.add('show');
+}
+
+function clearLoginInlineError() {
+    const el = document.getElementById('login-form-error');
+    if (!el) return;
+    el.textContent = '';
+    el.classList.remove('show');
+}
+
 function initAuthForms() {
     const loginForm = document.getElementById('authLoginForm');
     if (loginForm) {
         loginForm.addEventListener('submit', function (e) {
-            const email = document.getElementById('login-email')?.value.trim();
-            const password = document.getElementById('login-pass')?.value || '';
-            if (!email || !password) {
+            const emailInput = document.getElementById('login-email');
+            const passwordInput = document.getElementById('login-pass');
+            const email = emailInput?.value.trim() || '';
+            const password = passwordInput?.value || '';
+            clearLoginInlineError();
+            if (!email) {
                 e.preventDefault();
-                if (typeof showToast === 'function') showToast('Masukkan email Anda', 'warning');
+                showLoginInlineError('Masukkan email Anda.');
+                emailInput?.focus();
                 return;
+            }
+            const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+            if (!emailValid) {
+                e.preventDefault();
+                showLoginInlineError('Email tidak valid.');
+                emailInput?.focus();
+                return;
+            }
+            if (!password) {
+                e.preventDefault();
+                showLoginInlineError('Masukkan password Anda.');
+                passwordInput?.focus();
+                return;
+            }
+        });
+
+        const loginInputs = [document.getElementById('login-email'), document.getElementById('login-pass')];
+        loginInputs.forEach(function (input) {
+            if (input) {
+                input.addEventListener('input', clearLoginInlineError);
             }
         });
     }
@@ -131,15 +162,8 @@ function initAuthForms() {
     const regForm = document.getElementById('authRegisterForm');
     if (regForm) {
         regForm.addEventListener('submit', function (e) {
-            const firstName = document.querySelector('[name="first_name"]')?.value.trim();
-            const email = document.getElementById('reg-email')?.value.trim();
-            const pass = document.getElementById('reg-pass')?.value || '';
             const confirm = regForm.querySelector('[name="password_confirm"]')?.value || '';
-            if (!firstName || !email) {
-                e.preventDefault();
-                if (typeof showToast === 'function') showToast('Lengkapi nama dan email Anda', 'warning');
-                return;
-            }
+            const pass = document.getElementById('reg-pass')?.value || '';
             if (pass.length < 8) {
                 e.preventDefault();
                 if (typeof showToast === 'function') showToast('Password minimal 8 karakter', 'warning');
@@ -176,7 +200,17 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const params = new URLSearchParams(window.location.search);
     const auth = params.get('auth');
+    const role = params.get('role');
+    const registerStep = params.get('register_step');
     if (auth === 'login' || auth === 'register') {
         openAuthModal(auth);
+    }
+    if (auth === 'register') {
+        if (role === 'provider' || role === 'buyer') {
+            selectAuthRole(role);
+        }
+        if (registerStep) {
+            goAuthStep(Number(registerStep));
+        }
     }
 });

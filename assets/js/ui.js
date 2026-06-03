@@ -95,9 +95,69 @@
         });
     }
 
+    function initProfileDropdown() {
+        const profileToggle = document.getElementById('profileToggle');
+        const profileDropdown = document.getElementById('profileDropdown');
+        if (!profileToggle || !profileDropdown) return;
+
+        profileToggle.addEventListener('click', function (e) {
+            e.preventDefault();
+            profileDropdown.classList.toggle('show');
+        });
+
+        document.addEventListener('click', function (e) {
+            if (!profileToggle.contains(e.target) && !profileDropdown.contains(e.target)) {
+                profileDropdown.classList.remove('show');
+            }
+        });
+
+        profileDropdown.querySelectorAll('a').forEach(function (link) {
+            if (!link.hasAttribute('data-bs-toggle')) {
+                link.addEventListener('click', function () {
+                    profileDropdown.classList.remove('show');
+                });
+            }
+        });
+    }
+
     document.addEventListener('DOMContentLoaded', function () {
         initScrollLinks();
         initPlaceholderLinks();
+        initProfileDropdown();
+
+        const fileInput = document.getElementById('profilePhotoInput');
+        const preview = document.getElementById('profilePhotoPreview');
+        if (fileInput && preview) {
+            fileInput.addEventListener('change', function () {
+                const file = fileInput.files[0];
+                if (!file) {
+                    preview.style.backgroundImage = '';
+                    preview.textContent = preview.dataset.initial || '';
+                    return;
+                }
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    preview.style.backgroundImage = 'url(' + e.target.result + ')';
+                    preview.textContent = '';
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+
+        const params = new URLSearchParams(window.location.search);
+        if (params.get('profile_status') === 'success') {
+            showToast('Profil berhasil disimpan.', 'success');
+            params.delete('profile_status');
+            params.delete('profile_error');
+            const query = params.toString();
+            history.replaceState(null, '', window.location.pathname + (query ? '?' + query : ''));
+        }
+        if (params.get('profile_error')) {
+            showToast(decodeURIComponent(params.get('profile_error')), 'error');
+            params.delete('profile_error');
+            const query = params.toString();
+            history.replaceState(null, '', window.location.pathname + (query ? '?' + query : ''));
+        }
 
         if (window.location.hash) {
             setTimeout(function () {

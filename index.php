@@ -5,6 +5,83 @@ require_once 'helpers/functions.php';
 
 $page = $_GET['page'] ?? 'home';
 
+if (isset($_GET['profile_update']) && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (!isset($_SESSION['user'])) {
+        header('Location: index.php?page=home');
+        exit;
+    }
+
+    $userId = $_SESSION['user']['id'];
+    $firstName = trim($_POST['first_name'] ?? '');
+    $lastName = trim($_POST['last_name'] ?? '');
+    $name = trim($firstName . ' ' . $lastName);
+    $email = trim($_POST['email'] ?? '');
+    $phone = trim($_POST['phone'] ?? '');
+    $address = trim($_POST['address'] ?? '');
+    $currentPassword = $_POST['current_password'] ?? '';
+    $newPassword = $_POST['new_password'] ?? '';
+    $confirmPassword = $_POST['confirm_password'] ?? '';
+
+    $errors = [];
+    if ($name === '') {
+        $errors[] = 'Nama depan wajib diisi.';
+    }
+    if ($email === '' || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $errors[] = 'Email tidak valid.';
+    }
+
+    $stmt = $pdo->prepare('SELECT id FROM users WHERE email = ? AND id != ?');
+    $stmt->execute([$email, $userId]);
+    if ($stmt->fetch()) {
+        $errors[] = 'Email sudah digunakan oleh akun lain.';
+    }
+
+    $updatePassword = false;
+    if ($currentPassword !== '' || $newPassword !== '' || $confirmPassword !== '') {
+        if ($currentPassword === '') {
+            $errors[] = 'Masukkan password lama untuk mengganti password.';
+        } else {
+            $stmt = $pdo->prepare('SELECT password FROM users WHERE id = ?');
+            $stmt->execute([$userId]);
+            $user = $stmt->fetch();
+            if (!$user || !password_verify($currentPassword, $user['password'])) {
+                $errors[] = 'Password lama tidak cocok.';
+            } elseif ($newPassword === '') {
+                $errors[] = 'Masukkan password baru.';
+            } elseif ($newPassword !== $confirmPassword) {
+                $errors[] = 'Password baru dan konfirmasi tidak sama.';
+            } elseif (strlen($newPassword) < 8) {
+                $errors[] = 'Password baru minimal 8 karakter.';
+            } else {
+                $updatePassword = true;
+            }
+        }
+    }
+
+    if (!empty($errors)) {
+        $message = urlencode(implode(' ', $errors));
+        header('Location: index.php?page=' . urlencode($page) . '&profile_error=' . $message . '&open_profile=1');
+        exit;
+    }
+
+    if ($updatePassword) {
+        $hashedPassword = password_hash($newPassword, PASSWORD_BCRYPT);
+        $stmt = $pdo->prepare('UPDATE users SET name = ?, email = ?, phone = ?, address = ?, password = ?, updated_at = NOW() WHERE id = ?');
+        $stmt->execute([$name, $email, $phone, $address, $hashedPassword, $userId]);
+    } else {
+        $stmt = $pdo->prepare('UPDATE users SET name = ?, email = ?, phone = ?, address = ?, updated_at = NOW() WHERE id = ?');
+        $stmt->execute([$name, $email, $phone, $address, $userId]);
+    }
+
+    $_SESSION['user']['name'] = $name;
+    $_SESSION['user']['email'] = $email;
+    $_SESSION['user']['phone'] = $phone;
+    $_SESSION['user']['address'] = $address;
+
+    header('Location: index.php?page=' . urlencode($page) . '&profile_status=success&open_profile=1');
+    exit;
+}
+
 if ($page == 'home') {
     include 'views/layout/header.php';
     include 'views/home.php';
