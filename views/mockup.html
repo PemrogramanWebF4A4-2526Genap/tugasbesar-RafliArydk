@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BisaBantu - Jasa Terpercaya di Sekitarmu</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <!-- Font Awesome (opsional, untuk ikon tambahan) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* Custom CSS dengan palet ORANGE */
+        :root {
+            --orange-primary: #C2410C;    /* Oranye segar */
+            --orange-dark: #9A3412;       /* Oranye lebih gelap */
+            --orange-light: #FED7AA;      /* Latar oranye sangat terang */
+            --orange-hover: #B45309;      /* Efek hover */
+            --orange-soft: #FEF3C7;       /* Latar lembut */
+            --text-dark: #2D3748;
+            --text-muted: #6B7280;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+            color: var(--text-dark);
+            background-color: #fff;
+        }
+
+        /* Navbar custom */
+        .navbar {
+            background-color: white;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            padding: 1rem 0;
+        }
+        .navbar-brand {
+            font-weight: 800;
+            font-size: 1.8rem;
+            color: var(--orange-primary) !important;
+        }
+        .navbar-brand span {
+            background: var(--orange-primary);
+            color: white;
+            padding: 0.1rem 0.5rem;
+            border-radius: 12px;
+            font-size: 1.2rem;
+        }
+        .nav-link {
+            font-weight: 500;
+            color: var(--text-dark) !important;
+            transition: color 0.2s;
+        }
+        .nav-link:hover {
+            color: var(--orange-primary) !important;
+        }
+        .btn-outline-custom {
+            border: 1px solid var(--orange-primary);
+            color: var(--orange-primary);
+            border-radius: 40px;
+            padding: 0.4rem 1.2rem;
+            transition: 0.2s;
+        }
+        .btn-outline-custom:hover {
+            background-color: var(--orange-primary);
+            color: white;
+        }
+        .btn-primary-custom {
+            background-color: var(--orange-primary);
+            border: none;
+            border-radius: 40px;
+            padding: 0.6rem 1.8rem;
+            font-weight: 600;
+            color: white;
+            transition: 0.2s;
+        }
+        .btn-primary-custom:hover {
+            background-color: var(--orange-dark);
+            transform: translateY(-2px);
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, #FEF3C7 0%, #FED7AA 100%);
+            padding: 4rem 0;
+            border-radius: 0 0 40px 40px;
+        }
+        .hero-title {
+            font-size: 3rem;
+            font-weight: 800;
+            line-height: 1.2;
+            color: var(--text-dark);
+        }
+        .hero-title span {
+            color: var(--orange-primary);
+            border-bottom: 4px solid var(--orange-primary);
+        }
+        .search-box {
+            background: white;
+            border-radius: 60px;
+            padding: 0.5rem;
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05);
+        }
+        .search-box input, .search-box select {
+            border: none;
+            padding: 0.8rem 1rem;
+            font-size: 1rem;
+            border-radius: 50px;
+            background: transparent;
+        }
+        .search-box input:focus, .search-box select:focus {
+            outline: none;
+            box-shadow: none;
+        }
+        .search-box button {
+            border-radius: 50px;
+            padding: 0.7rem 2rem;
+            background-color: var(--orange-primary);
+            border: none;
+            color: white;
+            font-weight: 600;
+        }
+
+        /* Statistik Cards */
+        .stat-card {
+            text-align: center;
+            padding: 1rem;
+            background: white;
+            border-radius: 28px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.03);
+            transition: 0.2s;
+        }
+        .stat-number {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--orange-primary);
+        }
+        .feature-badge {
+            background: var(--orange-light);
+            color: var(--orange-dark);
+            padding: 0.5rem 1.2rem;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        /* Kategori Grid */
+        .category-card {
+            background: white;
+            border-radius: 28px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.2s;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+            border: 1px solid #f0f0f0;
+        }
+        .category-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 30px -12px rgba(194,65,12,0.2);
+            border-color: var(--orange-primary);
+        }
+        .category-icon {
+            font-size: 2.5rem;
+            color: var(--orange-primary);
+            margin-bottom: 0.8rem;
+        }
+        .service-card {
+            border-radius: 24px;
+            overflow: hidden;
+            transition: 0.2s;
+            border: 1px solid #f0f0f0;
+            background: white;
+        }
+        .service-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 20px 30px -12px rgba(0,0,0,0.1);
+        }
+        .service-img {
+            background-color: var(--orange-light);
+            height: 180px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: var(--orange-primary);
+        }
+        .rating {
+            color: #fbbf24;
+        }
+        .step-card {
+            text-align: center;
+            padding: 1.8rem;
+            background: white;
+            border-radius: 32px;
+            height: 100%;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.03);
+        }
+        .step-number {
+            width: 50px;
+            height: 50px;
+            background: var(--orange-primary);
+            color: white;
+            font-weight: bold;
+            font-size: 1.5rem;
+            border-radius: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem auto;
+        }
+        .testimonial-card {
+            background: white;
+            border-radius: 24px;
+            padding: 1.8rem;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+            border: 1px solid #FDBA74;
+        }
+        footer {
+            background-color: #1f2937;
+            color: #e5e7eb;
+        }
+        footer a {
+            text-decoration: none;
+            color: #d1d5db;
+        }
+        footer a:hover {
+            color: var(--orange-primary);
+        }
+        .btn-outline-light-custom {
+            border: 1px solid #C2410C;
+            color: #C2410C;
+            background: transparent;
+        }
+        .btn-outline-light-custom:hover {
+            background: #C2410C;
+            color: white;
+        }
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2rem;
+            }
+            .search-box {
+                border-radius: 30px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg sticky-top bg-white">
+    <div class="container">
+        <a class="navbar-brand" href="#">BisaBantu<span>.</span></a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain" aria-controls="navbarMain" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarMain">
+            <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
+                <li class="nav-item"><a class="nav-link active" href="#">Beranda</a></li>
+                <li class="nav-item"><a class="nav-link" href="#">Jasa</a></li>
+                <li class="nav-item"><a class="nav-link" href="#">Cara Kerja</a></li>
+                <li class="nav-item"><a class="nav-link" href="#">Tentang Kami</a></li>
+            </ul>
+            <div class="d-flex gap-2">
+                <a href="#" class="btn btn-outline-custom">Masuk</a>
+                <a href="#" class="btn btn-primary-custom">Daftar</a>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<!-- HERO SECTION -->
+<section class="hero">
+    <div class="container">
+        <div class="row align-items-center g-5">
+            <div class="col-lg-6">
+                <h1 class="hero-title">Temukan jasa <span>terbaik</span> di sekitar Anda</h1>
+                <p class="lead text-muted mt-3">Dari bersih-bersih, perbaikan rumah, hingga les privat — semua tersedia dengan penyedia terverifikasi.</p>
+                <div class="search-box mt-4 bg-white">
+                    <div class="row g-2 align-items-center">
+                        <div class="col-md-5">
+                            <i class="bi bi-search ms-2 text-muted"></i>
+                            <input type="text" class="form-control-plaintext d-inline w-75" placeholder="Cari jasa ..." style="padding-left: 8px;">
+                        </div>
+                        <div class="col-md-4">
+                            <i class="bi bi-geo-alt ms-2 text-muted"></i>
+                            <select class="form-select-plaintext d-inline w-75">
+                                <option>Semua Kota</option>
+                                <option>Jakarta</option>
+                                <option>Bandung</option>
+                                <option>Surabaya</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <button class="btn w-100">Cari Jasa</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-5 g-3">
+                    <div class="col-6 col-md-3">
+                        <div class="stat-card"><div class="stat-number">2.400+</div><div class="text-muted">Jasa tersedia</div></div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="stat-card"><div class="stat-number">850+</div><div class="text-muted">Penyedia terverifikasi</div></div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="stat-card"><div class="stat-number">12.000+</div><div class="text-muted">Pesanan selesai</div></div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="stat-card"><div class="stat-number">48%</div><div class="text-muted">Rating rata-rata</div></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 d-none d-lg-block">
+                <img src="https://placehold.co/500x400/FED7AA/C2410C?text=BisaBantu+Service" alt="ilustrasi" class="img-fluid rounded-4 shadow">
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- FITUR KEUNTUNGAN -->
+<section class="container my-5 py-3">
+    <div class="row text-center g-4 justify-content-center">
+        <div class="col-md-3"><div class="feature-badge"><i class="bi bi-shield-check me-2"></i>Penyedia Terverifikasi</div><p class="small text-muted mt-2">Semua diverifikasi admin</p></div>
+        <div class="col-md-3"><div class="feature-badge"><i class="bi bi-lock me-2"></i>Pembayaran Aman</div><p class="small text-muted mt-2">Dana terlindungi escrow</p></div>
+        <div class="col-md-3"><div class="feature-badge"><i class="bi bi-headset me-2"></i>Dukungan 24/7</div><p class="small text-muted mt-2">Siap membantu kapanpun</p></div>
+        <div class="col-md-3"><div class="feature-badge"><i class="bi bi-arrow-return-left me-2"></i>Garansi Kepuasan</div><p class="small text-muted mt-2">Uang kembali jika tidak puas</p></div>
+    </div>
+</section>
+
+<!-- KATEGORI -->
+<section class="container my-5">
+    <div class="d-flex justify-content-between align-items-end">
+        <div><h2 class="fw-bold">Jelajahi berdasarkan kategori</h2><p class="text-muted">Pilih kategori untuk menemukan jasa yang tepat</p></div>
+    </div>
+    <div class="row g-4 mt-2">
+        <div class="col-6 col-md-3"><div class="category-card"><div class="category-icon"><i class="fas fa-broom"></i></div><h5 class="mb-0">Bersih-bersih</h5><small class="text-muted">143 jasa</small></div></div>
+        <div class="col-6 col-md-3"><div class="category-card"><div class="category-icon"><i class="fas fa-tools"></i></div><h5 class="mb-0">Perbaikan</h5><small class="text-muted">98 jasa</small></div></div>
+        <div class="col-6 col-md-3"><div class="category-card"><div class="category-icon"><i class="fas fa-chalkboard-user"></i></div><h5 class="mb-0">Les Privat</h5><small class="text-muted">215 jasa</small></div></div>
+        <div class="col-6 col-md-3"><div class="category-card"><div class="category-icon"><i class="fas fa-tshirt"></i></div><h5 class="mb-0">Laundry</h5><small class="text-muted">72 jasa</small></div></div>
+        <div class="col-6 col-md-3"><div class="category-card"><div class="category-icon"><i class="fas fa-tree"></i></div><h5 class="mb-0">Taman</h5><small class="text-muted">55 jasa</small></div></div>
+        <div class="col-6 col-md-3"><div class="category-card"><div class="category-icon"><i class="fas fa-paw"></i></div><h5 class="mb-0">Penitipan</h5><small class="text-muted">41 jasa</small></div></div>
+        <div class="col-6 col-md-3"><div class="category-card"><div class="category-icon"><i class="fas fa-utensils"></i></div><h5 class="mb-0">Memasak</h5><small class="text-muted">88 jasa</small></div></div>
+        <div class="col-6 col-md-3"><div class="category-card"><div class="category-icon"><i class="fas fa-ellipsis-h"></i></div><h5 class="mb-0">Lainnya</h5><small class="text-muted">320 jasa</small></div></div>
+    </div>
+</section>
+
+<!-- JASA POPULER / UNGGULAN -->
+<section class="container my-5">
+    <div class="d-flex justify-content-between align-items-end">
+        <div><h2 class="fw-bold">Jasa populer minggu ini</h2></div>
+        <a href="#" class="text-decoration-none" style="color: var(--orange-primary);">Lihat semua →</a>
+    </div>
+    <div class="mt-3 mb-4">
+        <div class="btn-group" role="group">
+            <button class="btn btn-sm rounded-pill me-2 px-3 py-1 active" style="background: var(--orange-primary); color: white;">Semua</button>
+            <button class="btn btn-sm rounded-pill me-2 px-3 py-1 border" style="background: transparent;">Bersih-bersih</button>
+            <button class="btn btn-sm rounded-pill me-2 px-3 py-1 border">Perbaikan</button>
+            <button class="btn btn-sm rounded-pill me-2 px-3 py-1 border">Les Privat</button>
+            <button class="btn btn-sm rounded-pill px-3 py-1 border">Laundry</button>
+        </div>
+    </div>
+    <div class="row g-4">
+        <div class="col-md-6 col-lg-3">
+            <div class="service-card">
+                <div class="service-img"><i class="fas fa-home fa-3x"></i></div>
+                <div class="p-3"><h5>Jasa Bersih Rumah Profesional</h5><div class="rating"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><span class="text-muted ms-1">4.9 (128 ulasan)</span></div><p class="fw-bold mt-2 text-orange">Rp 150.000 /kunjungan</p><small class="text-muted"><i class="bi bi-person-circle"></i> Budi W. - Bandung</small></div>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-3">
+            <div class="service-card">
+                <div class="service-img"><i class="fas fa-calculator fa-3x"></i></div>
+                <div class="p-3"><h5>Les Matematika SD-SMP</h5><div class="rating"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><span class="text-muted ms-1">4.8 (94 ulasan)</span></div><p class="fw-bold mt-2">Rp 75.000 /jam</p><small><i class="bi bi-person-circle"></i> Sari R. - Jakarta Selatan</small></div>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-3">
+            <div class="service-card">
+                <div class="service-img"><i class="fas fa-wrench fa-3x"></i></div>
+                <div class="p-3"><h5>Servis AC & Kulkas Rumahan</h5><div class="rating"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><span class="text-muted ms-1">4.7 (61 ulasan)</span></div><p class="fw-bold mt-2">Rp 200.000 /unit</p><small><i class="bi bi-person-circle"></i> Arif H. - Surabaya</small></div>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-3">
+            <div class="service-card">
+                <div class="service-img"><i class="fas fa-tshirt fa-3x"></i></div>
+                <div class="p-3"><h5>Laundry Kiloan Antar Jemput</h5><div class="rating"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><span class="text-muted ms-1">4.9 (207 ulasan)</span></div><p class="fw-bold mt-2">Rp 8.000 /kg</p><small><i class="bi bi-person-circle"></i> Dewi L. - Yogyakarta</small></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CARA KERJA -->
+<section class="bg-light py-5" style="background: var(--orange-soft);">
+    <div class="container my-4">
+        <div class="text-center mb-5"><h2 class="fw-bold">Mudah dan cepat dalam 4 langkah</h2><p class="text-muted">Dari pencarian hingga jasa selesai, semuanya di satu platform</p></div>
+        <div class="row g-4">
+            <div class="col-md-3"><div class="step-card"><div class="step-number">1</div><h5>Cari jasa</h5><p class="small text-muted">Gunakan filter kategori, lokasi, dan harga untuk menemukan jasa yang paling sesuai.</p></div></div>
+            <div class="col-md-3"><div class="step-card"><div class="step-number">2</div><h5>Pesan & checkout</h5><p class="small text-muted">Tambahkan ke keranjang, pilih tanggal pelaksanaan dan metode pembayaran, lalu buat pesanan.</p></div></div>
+            <div class="col-md-3"><div class="step-card"><div class="step-number">3</div><h5>Bayar dengan aman</h5><p class="small text-muted">Upload bukti transfer atau bayar tunai. Dana hanya diteruskan setelah pekerjaan selesai.</p></div></div>
+            <div class="col-md-3"><div class="step-card"><div class="step-number">4</div><h5>Beri ulasan</h5><p class="small text-muted">Setelah selesai, beri rating dan komentar untuk membantu pengguna lain.</p></div></div>
+        </div>
+    </div>
+</section>
+
+<!-- TESTIMONI -->
+<section class="container my-5 py-4">
+    <div class="text-center mb-5"><h2 class="fw-bold">Apa kata pengguna kami</h2></div>
+    <div class="row g-4">
+        <div class="col-md-4"><div class="testimonial-card"><div class="d-flex gap-3 mb-2"><i class="bi bi-person-circle fs-1 text-muted"></i><div><h5 class="mb-0">Nita Permata</h5><small class="text-muted">Pembeli - Jakarta</small></div></div><div class="rating mb-2">★★★★★</div><p>Sangat mudah digunakan! Saya menemukan cleaning service yang bagus dalam hitungan menit. Penyedianya ramah dan profesional.</p></div></div>
+        <div class="col-md-4"><div class="testimonial-card"><div class="d-flex gap-3 mb-2"><i class="bi bi-person-circle fs-1 text-muted"></i><div><h5 class="mb-0">Rizki Kurniawan</h5><small class="text-muted">Penyedia Jasa - Bandung</small></div></div><div class="rating mb-2">★★★★★</div><p>Sebagai penyedia, platform ini sangat membantu. Pesanan datang terus dan sistem pembayarannya transparan dan aman.</p></div></div>
+        <div class="col-md-4"><div class="testimonial-card"><div class="d-flex gap-3 mb-2"><i class="bi bi-person-circle fs-1 text-muted"></i><div><h5 class="mb-0">Maya Andriani</h5><small class="text-muted">Pembeli - Surabaya</small></div></div><div class="rating mb-2">★★★★★</div><p>Les matematika anak saya meningkat pesat. Mudah booking dan gurunya bisa datang ke rumah sesuai jadwal yang kita tentukan.</p></div></div>
+    </div>
+</section>
+
+<!-- FOOTER (mirip desain asli) -->
+<footer class="pt-5 pb-4 mt-5">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-md-4"><a class="navbar-brand text-white" href="#">BisaBantu<span>.</span></a><p class="small mt-2">Platform yang menghubungkan pembeli dengan penyedia jasa terverifikasi di seluruh Indonesia.</p></div>
+            <div class="col-md-2"><h6 class="fw-bold text-white">PLATFORM</h6><ul class="list-unstyled"><li><a href="#" class="small">Beranda</a></li><li><a href="#" class="small">Semua Jasa</a></li><li><a href="#" class="small">Cara Kerja</a></li><li><a href="#" class="small">Tentang Kami</a></li></ul></div>
+            <div class="col-md-2"><h6 class="fw-bold text-white">AKUN</h6><ul class="list-unstyled"><li><a href="#" class="small">Masuk</a></li><li><a href="#" class="small">Daftar Pembeli</a></li><li><a href="#" class="small">Daftar Penyedia</a></li><li><a href="#" class="small">Lupa Password</a></li></ul></div>
+            <div class="col-md-2"><h6 class="fw-bold text-white">BANTUAN</h6><ul class="list-unstyled"><li><a href="#" class="small">Kontak Kami</a></li><li><a href="#" class="small">Kebijakan Privasi</a></li><li><a href="#" class="small">Syarat & Ketentuan</a></li><li><a href="#" class="small">FAQ</a></li></ul></div>
+            <div class="col-md-2"><h6 class="fw-bold text-white">Sosial Media</h6><div class="d-flex gap-3"><a href="#" class="text-white-50"><i class="bi bi-instagram fs-5"></i></a><a href="#" class="text-white-50"><i class="bi bi-facebook fs-5"></i></a><a href="#" class="text-white-50"><i class="bi bi-twitter fs-5"></i></a></div></div>
+        </div>
+        <hr class="mt-4 bg-secondary">
+        <div class="text-center small text-white-50">© 2025 BisaBantu Service Marketplace. MIT License. Dibuat untuk Tugas Besar Pemrograman Web</div>
+    </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

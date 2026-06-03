@@ -1,0 +1,243 @@
+/* Custom CSS dengan palet ORANGE - BisaBantu */
+:root {
+    --orange-primary: #F97316;    /* Oranye segar */
+    --orange-dark: #EA580C;       /* Oranye lebih gelap */
+    --orange-light: #FFEDD5;      /* Latar oranye sangat terang */
+    --orange-hover: #F59E0B;      /* Efek hover */
+    --orange-soft: #FFF7ED;       /* Latar lembut */
+    --text-dark: #2D3748;
+    --text-muted: #6B7280;
+}
+
+body {
+    font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    color: var(--text-dark);
+    background-color: #fff;
+}
+
+/* Navbar custom */
+.navbar {
+    background-color: white;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    padding: 1rem 0;
+}
+.navbar-brand {
+    font-weight: 800;
+    font-size: 1.8rem;
+    color: var(--orange-primary) !important;
+}
+.navbar-brand span {
+    background: var(--orange-primary);
+    color: white;
+    padding: 0.1rem 0.5rem;
+    border-radius: 12px;
+    font-size: 1.2rem;
+}
+.nav-link {
+    font-weight: 500;
+    color: var(--text-dark) !important;
+    transition: color 0.2s;
+}
+.nav-link:hover {
+    color: var(--orange-primary) !important;
+}
+.btn-outline-custom {
+    border: 1px solid var(--orange-primary);
+    color: var(--orange-primary);
+    border-radius: 40px;
+    padding: 0.4rem 1.2rem;
+    transition: 0.2s;
+}
+.btn-outline-custom:hover {
+    background-color: var(--orange-primary);
+    color: white;
+}
+.btn-primary-custom {
+    background-color: var(--orange-primary);
+    border: none;
+    border-radius: 40px;
+    padding: 0.6rem 1.8rem;
+    font-weight: 600;
+    color: white;
+    transition: 0.2s;
+}
+.btn-primary-custom:hover {
+    background-color: var(--orange-dark);
+    transform: translateY(-2px);
+    color: white;
+}
+
+/* Hero Section */
+.hero {
+    background: linear-gradient(135deg, #FFF7ED 0%, #FFEDD5 100%);
+    padding: 4rem 0;
+    border-radius: 0 0 40px 40px;
+}
+.hero-title {
+    font-size: 3rem;
+    font-weight: 800;
+    line-height: 1.2;
+    color: var(--text-dark);
+}
+.hero-title span {
+    color: var(--orange-primary);
+    border-bottom: 4px solid var(--orange-primary);
+}
+.search-box {
+    background: white;
+    border-radius: 60px;
+    padding: 0.5rem;
+    box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05);
+}
+.search-box input, .search-box select {
+    border: none;
+    padding: 0.8rem 1rem;
+    font-size: 1rem;
+    border-radius: 50px;
+    background: transparent;
+}
+.search-box input:focus, .search-box select:focus {
+    outline: none;
+    box-shadow: none;
+}
+.search-box button {
+    border-radius: 50px;
+    padding: 0.7rem 2rem;
+    background-color: var(--orange-primary);
+    border: none;
+    color: white;
+    font-weight: 600;
+}
+
+/* Statistik Cards */
+.stat-card {
+    text-align: center;
+    padding: 1rem;
+    background: white;
+    border-radius: 28px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.03);
+    transition: 0.2s;
+}
+.stat-number {
+    font-size: 2.2rem;
+    font-weight: 800;
+    color: var(--orange-primary);
+}
+.feature-badge {
+    background: var(--orange-light);
+    color: var(--orange-dark);
+    padding: 0.5rem 1.2rem;
+    border-radius: 40px;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+/* Kategori Grid */
+.category-card {
+    background: white;
+    border-radius: 28px;
+    padding: 1.5rem;
+    text-align: center;
+    transition: all 0.2s;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+    border: 1px solid #f0f0f0;
+}
+.category-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 30px -12px rgba(249,115,22,0.2);
+    border-color: var(--orange-primary);
+}
+.category-icon {
+    font-size: 2.5rem;
+    color: var(--orange-primary);
+    margin-bottom: 0.8rem;
+}
+
+/* Service Card */
+.service-card {
+    border-radius: 24px;
+    overflow: hidden;
+    transition: 0.2s;
+    border: 1px solid #f0f0f0;
+    background: white;
+}
+.service-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 20px 30px -12px rgba(0,0,0,0.1);
+}
+.service-img {
+    background-color: var(--orange-light);
+    height: 180px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+    color: var(--orange-primary);
+}
+.rating {
+    color: #fbbf24;
+}
+
+/* Step Card */
+.step-card {
+    text-align: center;
+    padding: 1.8rem;
+    background: white;
+    border-radius: 32px;
+    height: 100%;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.03);
+}
+.step-number {
+    width: 50px;
+    height: 50px;
+    background: var(--orange-primary);
+    color: white;
+    font-weight: bold;
+    font-size: 1.5rem;
+    border-radius: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem auto;
+}
+
+/* Testimonial Card */
+.testimonial-card {
+    background: white;
+    border-radius: 24px;
+    padding: 1.8rem;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+    border: 1px solid #ffe0cc;
+}
+
+/* Footer */
+footer.site-footer {
+    background-color: #1f2937;
+    color: #e5e7eb;
+}
+footer.site-footer a {
+    text-decoration: none;
+    color: #d1d5db;
+}
+footer.site-footer a:hover {
+    color: var(--orange-primary);
+}
+.btn-outline-light-custom {
+    border: 1px solid #f97316;
+    color: #f97316;
+    background: transparent;
+}
+.btn-outline-light-custom:hover {
+    background: #f97316;
+    color: white;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .hero-title {
+        font-size: 2rem;
+    }
+    .search-box {
+        border-radius: 30px;
+    }
+}

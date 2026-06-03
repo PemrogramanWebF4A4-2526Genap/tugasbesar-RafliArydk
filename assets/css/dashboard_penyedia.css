@@ -1,0 +1,43 @@
+/* ========================================
+   BisaBantu - Penyedia Dashboard Styles
+   ======================================== */
+
+.earning-card {
+    background: white;
+    border-radius: 24px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    text-align: center;
+}
+
+.earning-card .amount {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: var(--orange-primary);
+}
+
+.rating-summary {
+    background: var(--orange-soft);
+    border-radius: 24px;
+    padding: 1rem;
+}
+
+.service-table th {
+    background-color: var(--orange-soft);
+}
+
+.btn-edit {
+    background: #fef3c7;
+    color: #b45309;
+    border: none;
+    border-radius: 40px;
+    padding: 0.2rem 0.8rem;
+}
+
+.btn-delete {
+    background: #fee2e2;
+    color: #991b1b;
+    border: none;
+    border-radius: 40px;
+    padding: 0.2rem 0.8rem;
+}

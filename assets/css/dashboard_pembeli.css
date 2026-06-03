@@ -1,0 +1,65 @@
+/* ========================================
+   BisaBantu - Pembeli Dashboard Styles
+   ======================================== */
+
+.dashboard-card {
+    background: white;
+    border-radius: 24px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    transition: 0.2s;
+    text-align: center;
+}
+
+.dashboard-card .icon {
+    font-size: 2rem;
+    color: var(--orange-primary);
+    margin-bottom: 0.5rem;
+}
+
+.dashboard-card .count {
+    font-size: 1.8rem;
+    font-weight: 800;
+}
+
+.order-timeline {
+    list-style: none;
+    padding: 0;
+    position: relative;
+}
+
+.order-timeline:before {
+    content: '';
+    position: absolute;
+    left: 20px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: #e5e7eb;
+}
+
+.order-timeline li {
+    position: relative;
+    padding-left: 3rem;
+    margin-bottom: 1.5rem;
+}
+
+.order-timeline li .timeline-icon {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 40px;
+    height: 40px;
+    background: white;
+    border: 2px solid var(--orange-primary);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--orange-primary);
+}
+
+.order-timeline li.completed .timeline-icon {
+    background: var(--orange-primary);
+    color: white;
+}

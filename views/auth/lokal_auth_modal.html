@@ -1,0 +1,339 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-sans);color:var(--color-text-primary)}
+.page-bg{min-height:800px;background:var(--color-background-tertiary);display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:2rem 1rem;gap:2rem}
+.trigger-row{display:flex;gap:12px}
+.btn-primary{background:#1D9E75;color:#fff;border:none;padding:10px 22px;border-radius:var(--border-radius-md);font-size:13px;font-weight:500;cursor:pointer}
+.btn-outline{background:transparent;color:var(--color-text-primary);border:0.5px solid var(--color-border-secondary);padding:10px 22px;border-radius:var(--border-radius-md);font-size:13px;font-weight:500;cursor:pointer}
+.btn-primary:hover{background:#0F6E56}
+.btn-outline:hover{background:var(--color-background-secondary)}
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);align-items:center;justify-content:center;z-index:200;padding:1rem}
+.overlay.show{display:flex}
+.modal{background:var(--color-background-primary);border-radius:var(--border-radius-xl);border:0.5px solid var(--color-border-tertiary);width:100%;max-width:440px;overflow:hidden}
+.modal-close{position:absolute;top:16px;right:16px;background:var(--color-background-secondary);border:0.5px solid var(--color-border-tertiary);border-radius:50%;width:30px;height:30px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:14px;color:var(--color-text-secondary)}
+.modal-close:hover{background:var(--color-background-tertiary)}
+.modal-header{padding:1.5rem 1.5rem 0;position:relative}
+.modal-brand{display:flex;align-items:center;gap:8px;margin-bottom:1.25rem}
+.brand-dot{width:26px;height:26px;border-radius:8px;background:#1D9E75;display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px}
+.brand-name{font-size:14px;font-weight:500}
+.tab-row{display:flex;border-bottom:0.5px solid var(--color-border-tertiary);margin:0 -1.5rem;padding:0 1.5rem}
+.tab{flex:1;text-align:center;padding:10px;font-size:13px;cursor:pointer;color:var(--color-text-secondary);border-bottom:2px solid transparent;margin-bottom:-0.5px;font-weight:500;transition:color .15s,border-color .15s}
+.tab.active{color:#1D9E75;border-bottom-color:#1D9E75}
+.tab:hover:not(.active){color:var(--color-text-primary)}
+.modal-body{padding:1.5rem}
+.panel{display:none}
+.panel.active{display:block}
+.form-group{margin-bottom:1rem}
+.form-label{font-size:12px;font-weight:500;color:var(--color-text-secondary);margin-bottom:5px;display:block}
+.form-input{width:100%;padding:9px 12px;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);font-size:13px;background:var(--color-background-primary);color:var(--color-text-primary);outline:none;transition:border-color .15s}
+.form-input:focus{border-color:#1D9E75;box-shadow:0 0 0 3px rgba(29,158,117,0.12)}
+.form-input::placeholder{color:var(--color-text-tertiary)}
+.input-wrap{position:relative}
+.input-wrap .form-input{padding-right:36px}
+.input-icon{position:absolute;right:10px;top:50%;transform:translateY(-50%);font-size:15px;color:var(--color-text-secondary);cursor:pointer}
+.input-icon:hover{color:var(--color-text-primary)}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.btn-submit{width:100%;background:#1D9E75;color:#fff;border:none;padding:11px;border-radius:var(--border-radius-md);font-size:14px;font-weight:500;cursor:pointer;margin-top:0.25rem}
+.btn-submit:hover{background:#0F6E56}
+.divider{display:flex;align-items:center;gap:10px;margin:1rem 0;color:var(--color-text-tertiary);font-size:12px}
+.divider::before,.divider::after{content:'';flex:1;height:0.5px;background:var(--color-border-tertiary)}
+.btn-google{width:100%;background:var(--color-background-primary);border:0.5px solid var(--color-border-secondary);padding:10px;border-radius:var(--border-radius-md);font-size:13px;font-weight:500;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;color:var(--color-text-primary)}
+.btn-google:hover{background:var(--color-background-secondary)}
+.google-icon{width:16px;height:16px;border-radius:50%}
+.form-footer{text-align:center;font-size:12px;color:var(--color-text-secondary);margin-top:1rem}
+.form-footer a{color:#1D9E75;cursor:pointer;font-weight:500}
+.remember-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem}
+.checkbox-wrap{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--color-text-secondary);cursor:pointer}
+.checkbox-wrap input{accent-color:#1D9E75;width:13px;height:13px}
+.forgot-link{font-size:12px;color:#1D9E75;cursor:pointer;font-weight:500}
+.role-select{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:1rem}
+.role-card{border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:10px 12px;cursor:pointer;transition:border-color .15s,background .15s;display:flex;align-items:center;gap:8px}
+.role-card:hover{border-color:var(--color-border-secondary)}
+.role-card.selected{border-color:#1D9E75;background:#E1F5EE}
+.role-card.selected .role-icon{background:#1D9E75;color:#fff}
+.role-icon{width:30px;height:30px;border-radius:8px;background:var(--color-background-secondary);display:flex;align-items:center;justify-content:center;font-size:15px;transition:background .15s,color .15s}
+.role-label{font-size:12px;font-weight:500}
+.role-sub{font-size:11px;color:var(--color-text-secondary)}
+.alert-success{background:#E1F5EE;border:0.5px solid #5DCAA5;border-radius:var(--border-radius-md);padding:10px 14px;font-size:13px;color:#0F6E56;display:none;align-items:center;gap:8px;margin-bottom:1rem}
+.alert-success.show{display:flex}
+.step-indicator{display:flex;align-items:center;gap:6px;margin-bottom:1.25rem}
+.step-dot{width:22px;height:22px;border-radius:50%;border:0.5px solid var(--color-border-tertiary);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:500;color:var(--color-text-secondary);background:var(--color-background-secondary)}
+.step-dot.active{background:#1D9E75;color:#fff;border-color:#1D9E75}
+.step-dot.done{background:#E1F5EE;color:#0F6E56;border-color:#5DCAA5}
+.step-line{flex:1;height:0.5px;background:var(--color-border-tertiary)}
+.step-line.done{background:#5DCAA5}
+.password-strength{margin-top:5px;display:flex;gap:3px}
+.strength-bar{flex:1;height:3px;border-radius:2px;background:var(--color-border-tertiary);transition:background .2s}
+.str-label{font-size:10px;color:var(--color-text-tertiary);margin-top:3px}
+</style>
+
+<h2 class="sr-only">Modal Masuk dan Daftar — Lokal Service Marketplace</h2>
+
+<div class="page-bg" id="app">
+  <div style="text-align:center;padding-top:1rem">
+    <div style="font-size:13px;color:var(--color-text-secondary);margin-bottom:1rem">Klik tombol di bawah untuk membuka popup</div>
+    <div class="trigger-row">
+      <button class="btn-outline" onclick="openModal('login')"><i class="ti ti-login" style="margin-right:6px" aria-hidden="true"></i>Masuk</button>
+      <button class="btn-primary" onclick="openModal('register')"><i class="ti ti-user-plus" style="margin-right:6px" aria-hidden="true"></i>Daftar</button>
+    </div>
+  </div>
+
+  <div class="overlay" id="overlay" onclick="handleOverlayClick(event)">
+    <div class="modal" id="modal">
+
+      <div class="modal-header">
+        <div class="modal-brand">
+          <div class="brand-dot"><i class="ti ti-tools" aria-hidden="true"></i></div>
+          <span class="brand-name">Lokal</span>
+        </div>
+        <button class="modal-close" onclick="closeModal()" aria-label="Tutup"><i class="ti ti-x" aria-hidden="true"></i></button>
+        <div class="tab-row">
+          <div class="tab active" id="tab-login" onclick="switchTab('login')">Masuk</div>
+          <div class="tab" id="tab-register" onclick="switchTab('register')">Daftar</div>
+        </div>
+      </div>
+
+      <div class="modal-body">
+
+        <!-- LOGIN PANEL -->
+        <div class="panel active" id="panel-login">
+          <div style="margin-bottom:1.25rem">
+            <div style="font-size:17px;font-weight:500;margin-bottom:3px">Selamat datang kembali</div>
+            <div style="font-size:13px;color:var(--color-text-secondary)">Masuk ke akun Lokal Anda</div>
+          </div>
+          <div class="alert-success" id="login-success">
+            <i class="ti ti-circle-check" style="font-size:16px" aria-hidden="true"></i>
+            Login berhasil! Mengarahkan ke dashboard...
+          </div>
+          <div class="form-group">
+            <label class="form-label">Email</label>
+            <div class="input-wrap">
+              <input class="form-input" type="email" id="login-email" placeholder="nama@email.com">
+              <i class="ti ti-mail input-icon" aria-hidden="true"></i>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Password</label>
+            <div class="input-wrap">
+              <input class="form-input" type="password" id="login-pass" placeholder="Masukkan password">
+              <i class="ti ti-eye input-icon" id="toggle-login-pass" onclick="togglePass('login-pass','toggle-login-pass')" aria-label="Tampilkan password"></i>
+            </div>
+          </div>
+          <div class="remember-row">
+            <label class="checkbox-wrap">
+              <input type="checkbox"> Ingat saya
+            </label>
+            <span class="forgot-link">Lupa password?</span>
+          </div>
+          <button class="btn-submit" onclick="handleLogin()">
+            <i class="ti ti-login" style="margin-right:6px" aria-hidden="true"></i>Masuk
+          </button>
+          <div class="divider">atau</div>
+          <button class="btn-google">
+            <svg width="16" height="16" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+            Masuk dengan Google
+          </button>
+          <div class="form-footer">Belum punya akun? <a onclick="switchTab('register')">Daftar sekarang</a></div>
+        </div>
+
+        <!-- REGISTER PANEL -->
+        <div class="panel" id="panel-register">
+          <div style="margin-bottom:1rem">
+            <div style="font-size:17px;font-weight:500;margin-bottom:3px">Buat akun baru</div>
+            <div style="font-size:13px;color:var(--color-text-secondary)">Bergabung dengan ribuan pengguna Lokal</div>
+          </div>
+
+          <div id="reg-step-1">
+            <div class="step-indicator">
+              <div class="step-dot active" id="sdot1">1</div>
+              <div class="step-line" id="sline1"></div>
+              <div class="step-dot" id="sdot2">2</div>
+              <div class="step-line" id="sline2"></div>
+              <div class="step-dot" id="sdot3">3</div>
+            </div>
+            <div style="font-size:12px;color:var(--color-text-secondary);margin-bottom:1rem;font-weight:500">Pilih tipe akun</div>
+            <div class="role-select">
+              <div class="role-card selected" id="role-buyer" onclick="selectRole('buyer')">
+                <div class="role-icon" id="ri-buyer"><i class="ti ti-shopping-cart" aria-hidden="true"></i></div>
+                <div><div class="role-label">Pembeli</div><div class="role-sub">Cari & pesan jasa</div></div>
+              </div>
+              <div class="role-card" id="role-provider" onclick="selectRole('provider')">
+                <div class="role-icon" id="ri-provider"><i class="ti ti-briefcase" aria-hidden="true"></i></div>
+                <div><div class="role-label">Penyedia</div><div class="role-sub">Tawarkan jasa</div></div>
+              </div>
+            </div>
+            <div id="provider-note" style="display:none;background:#FAEEDA;border:0.5px solid #FAC775;border-radius:var(--border-radius-md);padding:9px 12px;font-size:12px;color:#633806;margin-bottom:1rem">
+              <i class="ti ti-info-circle" style="margin-right:4px" aria-hidden="true"></i>
+              Akun penyedia perlu verifikasi admin sebelum bisa menawarkan jasa.
+            </div>
+            <button class="btn-submit" onclick="goStep(2)">
+              Lanjutkan <i class="ti ti-arrow-right" style="margin-left:6px" aria-hidden="true"></i>
+            </button>
+          </div>
+
+          <div id="reg-step-2" style="display:none">
+            <div class="step-indicator">
+              <div class="step-dot done" id="sdot1b"><i class="ti ti-check" style="font-size:10px" aria-hidden="true"></i></div>
+              <div class="step-line done"></div>
+              <div class="step-dot active" id="sdot2b">2</div>
+              <div class="step-line" id="sline2b"></div>
+              <div class="step-dot" id="sdot3b">3</div>
+            </div>
+            <div style="font-size:12px;color:var(--color-text-secondary);margin-bottom:1rem;font-weight:500">Data diri</div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Nama depan</label>
+                <input class="form-input" type="text" placeholder="Budi">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Nama belakang</label>
+                <input class="form-input" type="text" placeholder="Santoso">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Email</label>
+              <div class="input-wrap">
+                <input class="form-input" type="email" id="reg-email" placeholder="budi@email.com">
+                <i class="ti ti-mail input-icon" aria-hidden="true"></i>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Nomor telepon</label>
+              <div class="input-wrap">
+                <input class="form-input" type="tel" placeholder="+62 812 3456 7890">
+                <i class="ti ti-phone input-icon" aria-hidden="true"></i>
+              </div>
+            </div>
+            <div style="display:flex;gap:8px;margin-top:0.25rem">
+              <button class="btn-outline" style="flex:1;padding:11px" onclick="goStep(1)">
+                <i class="ti ti-arrow-left" style="margin-right:4px" aria-hidden="true"></i>Kembali
+              </button>
+              <button class="btn-submit" style="flex:2;margin-top:0" onclick="goStep(3)">
+                Lanjutkan <i class="ti ti-arrow-right" style="margin-left:6px" aria-hidden="true"></i>
+              </button>
+            </div>
+          </div>
+
+          <div id="reg-step-3" style="display:none">
+            <div class="step-indicator">
+              <div class="step-dot done"><i class="ti ti-check" style="font-size:10px" aria-hidden="true"></i></div>
+              <div class="step-line done"></div>
+              <div class="step-dot done"><i class="ti ti-check" style="font-size:10px" aria-hidden="true"></i></div>
+              <div class="step-line done"></div>
+              <div class="step-dot active">3</div>
+            </div>
+            <div style="font-size:12px;color:var(--color-text-secondary);margin-bottom:1rem;font-weight:500">Buat password</div>
+            <div class="form-group">
+              <label class="form-label">Password</label>
+              <div class="input-wrap">
+                <input class="form-input" type="password" id="reg-pass" placeholder="Min. 8 karakter" oninput="checkStrength(this.value)">
+                <i class="ti ti-eye input-icon" id="toggle-reg-pass" onclick="togglePass('reg-pass','toggle-reg-pass')" aria-label="Tampilkan password"></i>
+              </div>
+              <div class="password-strength">
+                <div class="strength-bar" id="sb1"></div>
+                <div class="strength-bar" id="sb2"></div>
+                <div class="strength-bar" id="sb3"></div>
+                <div class="strength-bar" id="sb4"></div>
+              </div>
+              <div class="str-label" id="str-label">Masukkan password</div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Konfirmasi password</label>
+              <div class="input-wrap">
+                <input class="form-input" type="password" placeholder="Ulangi password">
+                <i class="ti ti-eye input-icon" aria-hidden="true"></i>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Alamat</label>
+              <textarea class="form-input" rows="2" placeholder="Jl. Contoh No.1, Jakarta Selatan" style="resize:none;line-height:1.5"></textarea>
+            </div>
+            <label class="checkbox-wrap" style="margin-bottom:1rem;align-items:flex-start;gap:8px">
+              <input type="checkbox" style="margin-top:2px"> <span>Saya menyetujui <a style="color:#1D9E75;cursor:pointer">syarat & ketentuan</a> dan <a style="color:#1D9E75;cursor:pointer">kebijakan privasi</a> Lokal.</span>
+            </label>
+            <div class="alert-success" id="reg-success">
+              <i class="ti ti-circle-check" style="font-size:16px" aria-hidden="true"></i>
+              Akun berhasil dibuat! Silakan cek email Anda.
+            </div>
+            <div style="display:flex;gap:8px">
+              <button class="btn-outline" style="flex:1;padding:11px" onclick="goStep(2)">
+                <i class="ti ti-arrow-left" style="margin-right:4px" aria-hidden="true"></i>Kembali
+              </button>
+              <button class="btn-submit" style="flex:2;margin-top:0" onclick="handleRegister()">
+                <i class="ti ti-user-check" style="margin-right:6px" aria-hidden="true"></i>Buat Akun
+              </button>
+            </div>
+          </div>
+
+          <div class="form-footer" style="margin-top:1rem">Sudah punya akun? <a onclick="switchTab('login')">Masuk di sini</a></div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function openModal(tab){
+  document.getElementById('overlay').classList.add('show');
+  switchTab(tab);
+}
+function closeModal(){
+  document.getElementById('overlay').classList.remove('show');
+}
+function handleOverlayClick(e){
+  if(e.target===document.getElementById('overlay')) closeModal();
+}
+function switchTab(tab){
+  ['login','register'].forEach(t=>{
+    document.getElementById('tab-'+t).classList.toggle('active',t===tab);
+    document.getElementById('panel-'+t).classList.toggle('active',t===tab);
+  });
+  if(tab==='register') goStep(1);
+}
+function togglePass(inputId, iconId){
+  const inp=document.getElementById(inputId);
+  const ico=document.getElementById(iconId);
+  if(inp.type==='password'){inp.type='text';ico.className='ti ti-eye-off input-icon';}
+  else{inp.type='password';ico.className='ti ti-eye input-icon';}
+}
+let selectedRole='buyer';
+function selectRole(role){
+  selectedRole=role;
+  ['buyer','provider'].forEach(r=>{
+    document.getElementById('role-'+r).classList.toggle('selected',r===role);
+    const ri=document.getElementById('ri-'+r);
+    ri.style.background=r===role?'#1D9E75':'';
+    ri.style.color=r===role?'#fff':'';
+  });
+  document.getElementById('provider-note').style.display=role==='provider'?'block':'none';
+}
+function goStep(n){
+  [1,2,3].forEach(i=>document.getElementById('reg-step-'+i).style.display=i===n?'block':'none');
+}
+function checkStrength(val){
+  const bars=[document.getElementById('sb1'),document.getElementById('sb2'),document.getElementById('sb3'),document.getElementById('sb4')];
+  const lbl=document.getElementById('str-label');
+  let score=0;
+  if(val.length>=8)score++;
+  if(/[A-Z]/.test(val))score++;
+  if(/[0-9]/.test(val))score++;
+  if(/[^A-Za-z0-9]/.test(val))score++;
+  const colors=['#E24B4A','#EF9F27','#EF9F27','#1D9E75'];
+  const labels=['Terlalu lemah','Cukup','Sedang','Kuat'];
+  bars.forEach((b,i)=>{b.style.background=i<score?colors[score-1]:'var(--color-border-tertiary)';});
+  lbl.textContent=val.length===0?'Masukkan password':labels[score-1]||'Terlalu lemah';
+  lbl.style.color=score<=1?'#A32D2D':score<=2?'#854F0B':'#0F6E56';
+}
+function handleLogin(){
+  const s=document.getElementById('login-success');
+  s.classList.add('show');
+  setTimeout(()=>s.classList.remove('show'),3000);
+}
+function handleRegister(){
+  const s=document.getElementById('reg-success');
+  s.classList.add('show');
+  setTimeout(()=>{s.classList.remove('show');closeModal();},3000);
+}
+</script>

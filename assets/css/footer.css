@@ -1,0 +1,107 @@
+.site-footer,
+footer.site-footer {
+    background: var(--ink, #1C1A16);
+    padding: 60px 0 32px;
+    color: rgba(245, 240, 232, 0.6);
+}
+
+.site-footer .footer-brand,
+.site-footer .navbar-brand {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--cream, #F5F0E8) !important;
+    text-decoration: none;
+}
+
+.site-footer .footer-brand span,
+.site-footer .navbar-brand span {
+    color: var(--gold, #C8922A);
+    background: none;
+    padding: 0;
+    border-radius: 0;
+    font-size: inherit;
+}
+
+.site-footer .footer-tagline,
+.site-footer p.small {
+    color: rgba(245, 240, 232, 0.4);
+    font-size: 0.85rem;
+    margin-top: 8px;
+}
+
+.site-footer h6 {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: rgba(245, 240, 232, 0.35);
+    margin-bottom: 16px;
+}
+
+.site-footer a.small,
+.site-footer a {
+    display: block;
+    color: rgba(245, 240, 232, 0.6);
+    font-size: 0.875rem;
+    margin-bottom: 10px;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.site-footer a:hover {
+    color: var(--cream, #F5F0E8);
+}
+
+.site-footer ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.site-footer li {
+    margin-bottom: 0;
+}
+
+.site-footer hr {
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    margin: 40px 0 24px;
+    opacity: 1;
+    background: transparent;
+}
+
+.site-footer .text-white-50,
+.site-footer .footer-bottom {
+    font-size: 0.8rem;
+    color: rgba(245, 240, 232, 0.25) !important;
+}
+
+.site-footer .social-btn,
+.site-footer .d-flex.gap-3 a {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(255, 255, 255, 0.5);
+    margin-bottom: 0;
+    padding: 0;
+}
+
+.site-footer .social-btn:hover,
+.site-footer .d-flex.gap-3 a:hover {
+    border-color: rgba(255, 255, 255, 0.3);
+    color: #fff;
+    transform: translateY(-3px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+}
+
+.site-footer a {
+    transition: color 0.2s ease, transform 0.2s ease;
+}
+.site-footer .footer-brand:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+}
