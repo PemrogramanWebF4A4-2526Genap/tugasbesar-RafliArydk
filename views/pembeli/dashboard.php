@@ -1,7 +1,7 @@
 
 <div class="container mt-4">
-    <h2 class="fw-bold">Dashboard Pembeli</h2>
-    <p>Selamat datang, <strong>Nama Pembeli</strong></p>
+    <h2 class="fw-bold">Dashboard</h2>
+    <p>Selamat datang, <strong><?php echo htmlspecialchars($_SESSION['user']['name']); ?></strong></p>
     <div class="row mt-4">
         <div class="col-md-4">
             <div class="card border-0 shadow-sm rounded-4">
@@ -39,4 +39,5 @@
             <a href="#" class="list-group-item list-group-item-action rounded-3 mb-2 border">#ORD002 - Les Matematika - Status: Selesai</a>
         </div>
     </div>
-</div>
+</div>
+<?php include __DIR__ . '/../layout/_profile_settings_modal.php'; ?>

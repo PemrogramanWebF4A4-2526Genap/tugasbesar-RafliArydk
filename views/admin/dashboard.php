@@ -153,3 +153,4 @@ $recentOrders = [
         </section>
     </div>
 </main>
+<?php include __DIR__ . '/../layout/_profile_settings_modal.php'; ?>

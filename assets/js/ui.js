@@ -159,10 +159,29 @@
             history.replaceState(null, '', window.location.pathname + (query ? '?' + query : ''));
         }
 
+        function maybeOpenProfileSettingsModal(hash) {
+            if (hash === '#profile-settings') {
+                const profileModal = document.querySelector('#profileSettingsModal');
+                if (profileModal) {
+                    const modal = new bootstrap.Modal(profileModal);
+                    modal.show();
+                    return true;
+                }
+            }
+            return false;
+        }
+
         if (window.location.hash) {
+            const hash = window.location.hash;
             setTimeout(function () {
-                smoothScrollTo(window.location.hash);
+                if (!maybeOpenProfileSettingsModal(hash)) {
+                    smoothScrollTo(hash);
+                }
             }, 200);
         }
+
+        window.addEventListener('hashchange', function () {
+            maybeOpenProfileSettingsModal(window.location.hash);
+        });
     });
 })();

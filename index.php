@@ -102,6 +102,19 @@ if ($page == 'home') {
     include 'views/layout/header.php';
     include 'views/pembeli/cart.php';
     include 'views/layout/footer.php';
+} elseif ($page == 'checkout') {
+    if (!isset($_SESSION['user'])) {
+        header('Location: index.php?page=home&auth=login');
+        exit;
+    }
+    if (($_SESSION['user']['role'] ?? '') !== 'buyer') {
+        header('Location: index.php?page=dashboard');
+        exit;
+    }
+
+    include 'views/layout/header.php';
+    include 'views/pembeli/checkout.php';
+    include 'views/layout/footer.php';
 } elseif (in_array($page, ['orders', 'upload_payment', 'review_form'], true)) {
     if (!isset($_SESSION['user'])) {
         header('Location: index.php?page=home&auth=login');

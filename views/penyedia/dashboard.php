@@ -62,3 +62,4 @@ $recentOrders = array_slice($orders, 0, 5);
         <?php endif; ?>
     </div>
 </div>
+<?php include __DIR__ . '/../layout/_profile_settings_modal.php'; ?>

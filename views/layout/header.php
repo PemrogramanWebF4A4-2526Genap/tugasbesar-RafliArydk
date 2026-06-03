@@ -78,7 +78,7 @@ $sideNav = [
         ['label' => 'Pesanan Saya', 'icon' => 'bi-bag', 'href' => base_url('index.php?page=orders')],
         ['label' => 'Keranjang', 'icon' => 'bi-cart3', 'href' => base_url('index.php?page=cart')],
         ['label' => 'Review', 'icon' => 'bi-star', 'href' => base_url('index.php?page=review_form')],
-        ['label' => 'Pembayaran', 'icon' => 'bi-credit-card', 'href' => base_url('index.php?page=upload_payment')],
+        ['label' => 'Akun', 'icon' => 'bi-person-circle', 'href' => base_url('index.php?page=dashboard#profile-settings')],
     ],
     'provider' => [
         ['label' => 'Dashboard', 'icon' => 'bi-grid', 'href' => base_url('index.php?page=dashboard')],
@@ -87,6 +87,7 @@ $sideNav = [
         ['label' => 'Pengiriman', 'icon' => 'bi-send', 'href' => base_url('index.php?page=provider_shipping')],
         ['label' => 'Statistik', 'icon' => 'bi-bar-chart', 'href' => base_url('index.php?page=provider_earnings')],
         ['label' => 'Ulasan', 'icon' => 'bi-star', 'href' => base_url('index.php?page=provider_reviews')],
+        ['label' => 'Akun', 'icon' => 'bi-person-circle', 'href' => base_url('index.php?page=dashboard#profile-settings')],
     ],
     'admin' => [
         ['label' => 'Manage Pembeli', 'icon' => 'bi-people-fill', 'href' => base_url('index.php?page=admin_users')],
@@ -94,6 +95,7 @@ $sideNav = [
         ['label' => 'Laporan Masalah', 'icon' => 'bi-exclamation-triangle', 'href' => base_url('index.php?page=admin_reports')],
         ['label' => 'Analytics', 'icon' => 'bi-file-earmark-bar-graph', 'href' => base_url('index.php?page=admin_reports')],
         ['label' => 'Admin Mode', 'icon' => 'bi-sliders', 'href' => base_url('index.php?page=admin_settings')],
+        ['label' => 'Akun', 'icon' => 'bi-person-circle', 'href' => base_url('index.php?page=dashboard#profile-settings')],
     ],
 ];
 $activeSideNav = $isLoggedIn && isset($sideNav[$userRole]) ? $sideNav[$userRole] : [];
@@ -101,7 +103,7 @@ $activeSideNav = $isLoggedIn && isset($sideNav[$userRole]) ? $sideNav[$userRole]
 <nav class="navbar navbar-expand-lg navbar-custom navbar-dark sticky-top role-header role-header-<?= e($userRole ?? 'guest') ?>">
     <div class="container role-header-container">
         <a class="navbar-brand" href="<?= base_url('index.php?page=home') ?>">BisaBantu<span>.</span></a>
-        <?php if ($isLoggedIn): ?>
+        <?php if ($isLoggedIn && $userRole !== 'buyer'): ?>
             <span class="header-role-text"><?= e($roleShortLabel) ?></span>
         <?php endif; ?>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain" aria-controls="navbarMain" aria-expanded="false" aria-label="Toggle navigation">
@@ -109,22 +111,20 @@ $activeSideNav = $isLoggedIn && isset($sideNav[$userRole]) ? $sideNav[$userRole]
         </button>
         <div class="collapse navbar-collapse" id="navbarMain">
             <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
-                <?php if (!$isLoggedIn): ?>
-                    <li class="nav-item"><a class="nav-link active" href="<?= $homeUrl ?>#beranda" data-scroll="#beranda">Beranda</a></li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="<?= $homeUrl ?>#kategori" id="categoryDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Kategori</a>
-                        <ul class="dropdown-menu bb-nav-dropdown" aria-labelledby="categoryDropdown">
-                            <li><a class="dropdown-item" href="<?= $homeUrl ?>#kategori" data-scroll="#kategori">Semua Kategori</a></li>
-                            <li><a class="dropdown-item" href="<?= $homeUrl ?>#layanan-jasa" data-scroll="#layanan-jasa" data-nav-category="bersih-bersih">Bersih-bersih</a></li>
-                            <li><a class="dropdown-item" href="<?= $homeUrl ?>#layanan-jasa" data-scroll="#layanan-jasa" data-nav-category="perbaikan">Perbaikan</a></li>
-                            <li><a class="dropdown-item" href="<?= $homeUrl ?>#layanan-jasa" data-scroll="#layanan-jasa" data-nav-category="les-privat">Les Privat</a></li>
-                            <li><a class="dropdown-item" href="<?= $homeUrl ?>#layanan-jasa" data-scroll="#layanan-jasa" data-nav-category="laundry">Laundry</a></li>
-                        </ul>
-                    </li>
-                    <li class="nav-item"><a class="nav-link" href="<?= $homeUrl ?>#layanan-jasa" data-scroll="#layanan-jasa">Jasa</a></li>
-                    <li class="nav-item"><a class="nav-link" href="<?= $homeUrl ?>#cara-kerja" data-scroll="#cara-kerja">Cara Kerja</a></li>
-                    <li class="nav-item"><a class="nav-link" href="<?= $homeUrl ?>#testimoni" data-scroll="#testimoni">Tentang Kami</a></li>
-                <?php endif; ?>
+                <li class="nav-item"><a class="nav-link active" href="<?= $homeUrl ?>#beranda" data-scroll="#beranda">Beranda</a></li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="<?= $homeUrl ?>#kategori" id="categoryDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Kategori</a>
+                    <ul class="dropdown-menu bb-nav-dropdown" aria-labelledby="categoryDropdown">
+                        <li><a class="dropdown-item" href="<?= $homeUrl ?>#kategori" data-scroll="#kategori">Semua Kategori</a></li>
+                        <li><a class="dropdown-item" href="<?= $homeUrl ?>#layanan-jasa" data-scroll="#layanan-jasa" data-nav-category="bersih-bersih">Bersih-bersih</a></li>
+                        <li><a class="dropdown-item" href="<?= $homeUrl ?>#layanan-jasa" data-scroll="#layanan-jasa" data-nav-category="perbaikan">Perbaikan</a></li>
+                        <li><a class="dropdown-item" href="<?= $homeUrl ?>#layanan-jasa" data-scroll="#layanan-jasa" data-nav-category="les-privat">Les Privat</a></li>
+                        <li><a class="dropdown-item" href="<?= $homeUrl ?>#layanan-jasa" data-scroll="#layanan-jasa" data-nav-category="laundry">Laundry</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item"><a class="nav-link" href="<?= $homeUrl ?>#layanan-jasa" data-scroll="#layanan-jasa">Jasa</a></li>
+                <li class="nav-item"><a class="nav-link" href="<?= $homeUrl ?>#cara-kerja" data-scroll="#cara-kerja">Cara Kerja</a></li>
+                <li class="nav-item"><a class="nav-link" href="<?= $homeUrl ?>#testimoni" data-scroll="#testimoni">Tentang Kami</a></li>
             </ul>
             <div class="d-flex gap-2 align-items-center role-actions">
                 <?php if ($isLoggedIn && $userRole === 'provider'): ?>
@@ -176,7 +176,6 @@ $activeSideNav = $isLoggedIn && isset($sideNav[$userRole]) ? $sideNav[$userRole]
                                 <div class="profile-dropdown-avatar"><?= e($userInitial) ?></div>
                                 <div>
                                     <strong><?= e($userName) ?></strong>
-                                    <p class="text-muted small mb-0">Member Silver</p>
                                     <small><?= e($_SESSION['user']['email'] ?? '') ?></small>
                                 </div>
                             </div>
@@ -186,7 +185,6 @@ $activeSideNav = $isLoggedIn && isset($sideNav[$userRole]) ? $sideNav[$userRole]
                                 <a href="<?= base_url('index.php?page=orders') ?>" class="profile-dropdown-item">Pesanan Saya</a>
                                 <a href="<?= base_url('index.php?page=cart') ?>" class="profile-dropdown-item">Keranjang</a>
                                 <a href="<?= base_url('index.php?page=review_form') ?>" class="profile-dropdown-item">Review</a>
-                                <a href="<?= base_url('index.php?page=upload_payment') ?>" class="profile-dropdown-item">Pembayaran</a>
                             <?php elseif ($userRole === 'provider'): ?>
                                 <a href="<?= base_url('index.php?page=provider_services') ?>" class="profile-dropdown-item">Produk</a>
                                 <a href="<?= base_url('index.php?page=provider_orders') ?>" class="profile-dropdown-item">Pesanan</a>
@@ -194,7 +192,7 @@ $activeSideNav = $isLoggedIn && isset($sideNav[$userRole]) ? $sideNav[$userRole]
                                 <a href="<?= base_url('index.php?page=provider_reviews') ?>" class="profile-dropdown-item">Ulasan</a>
                             <?php endif; ?>
                             <hr class="my-2">
-                            <a href="#" class="profile-dropdown-item" data-bs-toggle="modal" data-bs-target="#profileSettingsModal">Pengaturan Profil</a>
+                            <a href="<?= base_url('index.php?page=dashboard#profile-settings') ?>" class="profile-dropdown-item">Pengaturan Profil</a>
                             <a href="<?= base_url('index.php?page=auth&action=logout') ?>" class="profile-dropdown-item text-danger">Logout</a>
                         </div>
                     </div>
@@ -206,71 +204,6 @@ $activeSideNav = $isLoggedIn && isset($sideNav[$userRole]) ? $sideNav[$userRole]
         </div>
     </div>
 </nav>
-<div class="modal fade" id="profileSettingsModal" tabindex="-1" aria-labelledby="profileSettingsLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
-        <div class="modal-content" style="background: #0d1117; border: 1px solid rgba(255,255,255,0.1);">
-            <div class="modal-header border-bottom border-secondary">
-                <h5 class="modal-title" id="profileSettingsLabel">Pengaturan Profil</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form id="profileSettingsForm" method="post" action="<?= base_url('index.php?page=' . $currentPage . '&profile_update=1') ?>" enctype="multipart/form-data">
-                    <div class="row mb-3">
-                        <div class="col-md-3 text-center">
-                            <div class="profile-photo-preview" id="profilePhotoPreview" data-initial="<?= e($userInitial) ?>" style="margin: 0 auto;"><?= e($userInitial) ?></div>
-                            <input class="form-control form-control-sm mt-2" type="file" id="profilePhotoInput" name="profile_photo" accept="image/*">
-                            <small class="text-muted d-block mt-2">Hanya preview di browser</small>
-                        </div>
-                        <div class="col-md-9">
-                            <div class="row g-2">
-                                <div class="col-6">
-                                    <label class="form-label">Nama depan</label>
-                                    <input class="form-control" type="text" name="first_name" value="<?= htmlspecialchars($firstNameValue, ENT_QUOTES) ?>" required>
-                                </div>
-                                <div class="col-6">
-                                    <label class="form-label">Nama belakang</label>
-                                    <input class="form-control" type="text" name="last_name" value="<?= htmlspecialchars($lastNameValue, ENT_QUOTES) ?>">
-                                </div>
-                            </div>
-                            <div class="mt-2">
-                                <label class="form-label">Email</label>
-                                <input class="form-control" type="email" name="email" value="<?= htmlspecialchars($_SESSION['user']['email'] ?? '', ENT_QUOTES) ?>" required>
-                            </div>
-                            <div class="mt-2">
-                                <label class="form-label">Telepon</label>
-                                <input class="form-control" type="tel" name="phone" value="<?= htmlspecialchars($_SESSION['user']['phone'] ?? '', ENT_QUOTES) ?>">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Alamat</label>
-                        <textarea class="form-control" name="address" rows="2"><?= htmlspecialchars($_SESSION['user']['address'] ?? '', ENT_QUOTES) ?></textarea>
-                    </div>
-                    <hr>
-                    <h6 class="mb-3">Ubah Password</h6>
-                    <div class="row g-2 mb-3">
-                        <div class="col-md-6">
-                            <label class="form-label">Password lama</label>
-                            <input class="form-control" type="password" name="current_password" placeholder="Masukkan password lama">
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label">Password baru</label>
-                            <input class="form-control" type="password" name="new_password" placeholder="Min. 8 karakter">
-                        </div>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Ulangi password baru</label>
-                        <input class="form-control" type="password" name="confirm_password" placeholder="Ulangi password baru">
-                    </div>
-                    <div class="d-flex gap-2 justify-content-end">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                        <button type="submit" class="btn btn-primary-custom">Simpan Perubahan</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
 <?php if ($isLoggedIn && $page !== 'home'): ?>
     <aside class="role-sidebar" aria-label="Navigasi fitur <?= e($roleLabel) ?>">
         <div class="role-sidebar-brand">
