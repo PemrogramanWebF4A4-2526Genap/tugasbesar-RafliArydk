@@ -8,14 +8,28 @@ class ServiceModel {
 
     public function getAllActive() {
         $stmt = $this->pdo->query('
-            SELECT s.*, u.name as provider_name, c.name as category_name 
+            SELECT s.*, u.name as provider_name, c.name as category_name,
+                   COALESCE(AVG(r.rating), 0) as avg_rating,
+                   COUNT(r.id) as review_count
             FROM services s 
             JOIN users u ON s.provider_id = u.id 
             JOIN categories c ON s.category_id = c.id 
+            LEFT JOIN reviews r ON r.service_id = s.id
             WHERE s.is_active = 1 AND u.is_verified = 1
+            GROUP BY s.id
             ORDER BY s.created_at DESC
         ');
         return $stmt->fetchAll();
+    }
+
+    public function countActive() {
+        $stmt = $this->pdo->query('
+            SELECT COUNT(s.id)
+            FROM services s
+            JOIN users u ON s.provider_id = u.id
+            WHERE s.is_active = 1 AND u.is_verified = 1
+        ');
+        return (int) $stmt->fetchColumn();
     }
 
     public function getByProvider($provider_id) {
@@ -32,11 +46,15 @@ class ServiceModel {
 
     public function getById($id) {
         $stmt = $this->pdo->prepare('
-            SELECT s.*, u.name as provider_name, c.name as category_name 
+            SELECT s.*, u.name as provider_name, c.name as category_name,
+                   COALESCE(AVG(r.rating), 0) as avg_rating,
+                   COUNT(r.id) as review_count
             FROM services s 
             JOIN users u ON s.provider_id = u.id 
             JOIN categories c ON s.category_id = c.id 
+            LEFT JOIN reviews r ON r.service_id = s.id
             WHERE s.id = ?
+            GROUP BY s.id
         ');
         $stmt->execute([$id]);
         return $stmt->fetch();

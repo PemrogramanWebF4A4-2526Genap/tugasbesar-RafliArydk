@@ -4,6 +4,27 @@ if (basename($_SERVER['SCRIPT_NAME'] ?? '') === 'home.php') {
     header('Location: ' . rtrim($appPath, '/\\') . '/index.php?page=home');
     exit;
 }
+
+require_once __DIR__ . '/../models/ServiceModel.php';
+require_once __DIR__ . '/../models/CategoryModel.php';
+require_once __DIR__ . '/../models/UserModel.php';
+require_once __DIR__ . '/../models/OrderModel.php';
+
+$serviceModel = new ServiceModel($pdo);
+$categoryModel = new CategoryModel($pdo);
+$userModel = new UserModel($pdo);
+$orderModel = new OrderModel($pdo);
+
+$homeServices = $serviceModel->getAllActive();
+$homeCategories = $categoryModel->getAllWithServiceCount();
+$activeServiceCount = $serviceModel->countActive();
+$verifiedProviderCount = $userModel->countVerifiedProviders();
+$completedOrderCount = count(array_filter($orderModel->getAll(), fn($order) => $order['status'] === 'completed'));
+$avgRating = 0;
+$ratingRows = array_filter($homeServices, fn($service) => (int) $service['review_count'] > 0);
+if (!empty($ratingRows)) {
+    $avgRating = array_sum(array_map(fn($service) => (float) $service['avg_rating'], $ratingRows)) / count($ratingRows);
+}
 ?>
 
 <!-- HERO -->
@@ -35,10 +56,10 @@ if (basename($_SERVER['SCRIPT_NAME'] ?? '') === 'home.php') {
                     </div>
                 </form>
                 <div class="hero-stats-row">
-                    <div class="stat-card"><div class="stat-number">2.400+</div><div class="stat-label">Jasa tersedia</div></div>
-                    <div class="stat-card"><div class="stat-number">850+</div><div class="stat-label">Penyedia terverifikasi</div></div>
-                    <div class="stat-card"><div class="stat-number">12.000+</div><div class="stat-label">Pesanan selesai</div></div>
-                    <div class="stat-card"><div class="stat-number">4.8</div><div class="stat-label">Rating rata-rata</div></div>
+                    <div class="stat-card"><div class="stat-number"><?= (int) $activeServiceCount ?></div><div class="stat-label">Jasa tersedia</div></div>
+                    <div class="stat-card"><div class="stat-number"><?= (int) $verifiedProviderCount ?></div><div class="stat-label">Penyedia terverifikasi</div></div>
+                    <div class="stat-card"><div class="stat-number"><?= (int) $completedOrderCount ?></div><div class="stat-label">Pesanan selesai</div></div>
+                    <div class="stat-card"><div class="stat-number"><?= $avgRating > 0 ? e(number_format($avgRating, 1)) : '0.0' ?></div><div class="stat-label">Rating rata-rata</div></div>
                 </div>
             </div>
             <div class="col-lg-6 d-none d-lg-block hero-visual">
@@ -78,14 +99,16 @@ if (basename($_SERVER['SCRIPT_NAME'] ?? '') === 'home.php') {
     <h2 class="section-title">Jelajahi berdasarkan <em>kategori</em></h2>
     <p class="section-sub">Pilih kategori untuk menemukan jasa yang tepat</p>
     <div class="row g-4 mt-3">
-        <div class="col-6 col-md-3"><div class="category-card" data-category="bersih-bersih"><div class="category-icon"><i class="fas fa-broom"></i></div><h5 class="mb-0">Bersih-bersih</h5><small class="section-sub">143 jasa</small></div></div>
-        <div class="col-6 col-md-3"><div class="category-card" data-category="perbaikan"><div class="category-icon"><i class="fas fa-tools"></i></div><h5 class="mb-0">Perbaikan</h5><small class="section-sub">98 jasa</small></div></div>
-        <div class="col-6 col-md-3"><div class="category-card" data-category="les-privat"><div class="category-icon"><i class="fas fa-chalkboard-user"></i></div><h5 class="mb-0">Les Privat</h5><small class="section-sub">215 jasa</small></div></div>
-        <div class="col-6 col-md-3"><div class="category-card" data-category="laundry"><div class="category-icon"><i class="fas fa-tshirt"></i></div><h5 class="mb-0">Laundry</h5><small class="section-sub">72 jasa</small></div></div>
-        <div class="col-6 col-md-3"><div class="category-card" data-category="taman"><div class="category-icon"><i class="fas fa-tree"></i></div><h5 class="mb-0">Taman</h5><small class="section-sub">55 jasa</small></div></div>
-        <div class="col-6 col-md-3"><div class="category-card" data-category="penitipan"><div class="category-icon"><i class="fas fa-paw"></i></div><h5 class="mb-0">Penitipan</h5><small class="section-sub">41 jasa</small></div></div>
-        <div class="col-6 col-md-3"><div class="category-card" data-category="memasak"><div class="category-icon"><i class="fas fa-utensils"></i></div><h5 class="mb-0">Memasak</h5><small class="section-sub">88 jasa</small></div></div>
-        <div class="col-6 col-md-3"><div class="category-card" data-category="lainnya"><div class="category-icon"><i class="fas fa-ellipsis-h"></i></div><h5 class="mb-0">Lainnya</h5><small class="section-sub">320 jasa</small></div></div>
+        <?php foreach ($homeCategories as $category): ?>
+            <?php $categorySlug = slugify($category['name']); ?>
+            <div class="col-6 col-md-3">
+                <div class="category-card" data-category="<?= e($categorySlug) ?>">
+                    <div class="category-icon"><i class="bi <?= e(category_icon($category['name'])) ?>"></i></div>
+                    <h5 class="mb-0"><?= e($category['name']) ?></h5>
+                    <small class="section-sub"><?= (int) $category['service_count'] ?> jasa</small>
+                </div>
+            </div>
+        <?php endforeach; ?>
     </div>
 </section>
 
@@ -100,60 +123,59 @@ if (basename($_SERVER['SCRIPT_NAME'] ?? '') === 'home.php') {
     </div>
     <div class="mt-3 mb-4 filter-pills d-flex flex-wrap gap-2" role="group" aria-label="Filter kategori jasa">
         <button type="button" class="filter-pill active" data-filter="semua" aria-pressed="true">Semua</button>
-        <button type="button" class="filter-pill" data-filter="bersih-bersih" aria-pressed="false">Bersih-bersih</button>
-        <button type="button" class="filter-pill" data-filter="perbaikan" aria-pressed="false">Perbaikan</button>
-        <button type="button" class="filter-pill" data-filter="les-privat" aria-pressed="false">Les Privat</button>
-        <button type="button" class="filter-pill" data-filter="laundry" aria-pressed="false">Laundry</button>
+        <?php foreach (array_slice($homeCategories, 0, 6) as $category): ?>
+            <button type="button" class="filter-pill" data-filter="<?= e(slugify($category['name'])) ?>" aria-pressed="false"><?= e($category['name']) ?></button>
+        <?php endforeach; ?>
     </div>
     <div id="servicesEmpty" class="d-none">
         <i class="bi bi-search fs-2 d-block mb-2 section-sub"></i>
         Tidak ada jasa yang cocok. Coba kata kunci atau filter lain.
     </div>
     <div class="row g-4" id="servicesGrid">
-        <div class="col-md-6 col-lg-3" data-service-card data-category="bersih-bersih" data-title="Jasa Bersih Rumah Profesional">
-            <div class="service-card">
-                <div class="service-img"><i class="fas fa-home fa-3x"></i></div>
-                <div class="p-3">
-                    <h5>Jasa Bersih Rumah Profesional</h5>
-                    <div class="rating"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><span class="ms-1">4.9 (128 ulasan)</span></div>
-                    <p class="service-price mt-2 mb-1">Rp 150.000 <span class="fw-normal section-sub">/kunjungan</span></p>
-                    <small class="section-sub"><i class="bi bi-person-circle"></i> Budi W. - Bandung</small>
-                </div>
+        <?php if (empty($homeServices)): ?>
+            <div class="col-12">
+                <div class="alert alert-info">Belum ada layanan aktif dari penyedia terverifikasi.</div>
             </div>
-        </div>
-        <div class="col-md-6 col-lg-3" data-service-card data-category="les-privat" data-title="Les Matematika SD-SMP">
-            <div class="service-card">
-                <div class="service-img"><i class="fas fa-calculator fa-3x"></i></div>
-                <div class="p-3">
-                    <h5>Les Matematika SD-SMP</h5>
-                    <div class="rating"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><span class="ms-1">4.8 (94 ulasan)</span></div>
-                    <p class="service-price mt-2 mb-1">Rp 75.000 <span class="fw-normal section-sub">/jam</span></p>
-                    <small class="section-sub"><i class="bi bi-person-circle"></i> Sari R. - Jakarta Selatan</small>
+        <?php else: ?>
+            <?php foreach ($homeServices as $service): ?>
+                <?php
+                $serviceCategorySlug = slugify($service['category_name']);
+                $rating = (float) $service['avg_rating'];
+                $imagePath = $service['image'] ? 'assets/uploads/services/' . $service['image'] : '';
+                $hasImage = $imagePath && is_file(__DIR__ . '/../' . $imagePath);
+                ?>
+                <div class="col-md-6 col-lg-3" data-service-card data-category="<?= e($serviceCategorySlug) ?>" data-title="<?= e($service['title']) ?>">
+                    <div class="service-card">
+                        <div class="service-img">
+                            <?php if ($hasImage): ?>
+                                <img src="<?= e(base_url($imagePath)) ?>" alt="<?= e($service['title']) ?>" class="img-fluid w-100 h-100" style="object-fit: cover;">
+                            <?php else: ?>
+                                <i class="bi <?= e(service_icon($service['category_name'])) ?> fa-3x"></i>
+                            <?php endif; ?>
+                        </div>
+                        <div class="p-3">
+                            <h5><?= e($service['title']) ?></h5>
+                            <div class="rating">
+                                <i class="fas fa-star"></i>
+                                <span class="ms-1"><?= e(number_format($rating, 1)) ?> (<?= (int) $service['review_count'] ?> ulasan)</span>
+                            </div>
+                            <p class="service-price mt-2 mb-1"><?= e(format_rupiah($service['price'])) ?> <span class="fw-normal section-sub">/<?= e($service['price_unit']) ?></span></p>
+                            <small class="section-sub"><i class="bi bi-person-circle"></i> <?= e($service['provider_name']) ?> - <?= e($service['location']) ?></small>
+                            <div class="d-grid gap-2 mt-3">
+                                <a href="<?= base_url('index.php?page=service_detail&id=' . (int) $service['id']) ?>" class="btn btn-sm btn-outline-custom w-100">Detail</a>
+                                <?php if (isset($_SESSION['user']) && ($_SESSION['user']['role'] ?? '') === 'buyer'): ?>
+                                    <form method="post" action="<?= base_url('index.php?page=cart&action=add') ?>" class="m-0" onclick="event.stopPropagation();">
+                                        <input type="hidden" name="service_id" value="<?= (int) $service['id'] ?>">
+                                        <input type="hidden" name="quantity" value="1">
+                                        <button type="submit" class="btn btn-sm btn-primary-custom w-100">Tambah ke Keranjang</button>
+                                    </form>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </div>
-        </div>
-        <div class="col-md-6 col-lg-3" data-service-card data-category="perbaikan" data-title="Servis AC & Kulkas Rumahan">
-            <div class="service-card">
-                <div class="service-img"><i class="fas fa-wrench fa-3x"></i></div>
-                <div class="p-3">
-                    <h5>Servis AC & Kulkas Rumahan</h5>
-                    <div class="rating"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><span class="ms-1">4.7 (61 ulasan)</span></div>
-                    <p class="service-price mt-2 mb-1">Rp 200.000 <span class="fw-normal section-sub">/unit</span></p>
-                    <small class="section-sub"><i class="bi bi-person-circle"></i> Arif H. - Surabaya</small>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-6 col-lg-3" data-service-card data-category="laundry" data-title="Laundry Kiloan Antar Jemput">
-            <div class="service-card">
-                <div class="service-img"><i class="fas fa-tshirt fa-3x"></i></div>
-                <div class="p-3">
-                    <h5>Laundry Kiloan Antar Jemput</h5>
-                    <div class="rating"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><span class="ms-1">4.9 (207 ulasan)</span></div>
-                    <p class="service-price mt-2 mb-1">Rp 8.000 <span class="fw-normal section-sub">/kg</span></p>
-                    <small class="section-sub"><i class="bi bi-person-circle"></i> Dewi L. - Yogyakarta</small>
-                </div>
-            </div>
-        </div>
+            <?php endforeach; ?>
+        <?php endif; ?>
     </div>
 </section>
 

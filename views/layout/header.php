@@ -1,3 +1,10 @@
+<?php
+function asset_url($path) {
+    $absolutePath = __DIR__ . '/../../' . ltrim($path, '/');
+    $version = is_file($absolutePath) ? filemtime($absolutePath) : time();
+    return base_url($path . '?v=' . $version);
+}
+?>
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -8,15 +15,15 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link rel="stylesheet" href="<?= base_url('assets/css/main.css') ?>">
+    <link rel="stylesheet" href="<?= asset_url('assets/css/main.css') ?>">
     <link rel="stylesheet" href="<?= base_url('assets/css/auth-modal.css') ?>">
     <link rel="stylesheet" href="<?= base_url('assets/css/footer.css') ?>">
     <?php if (isset($dashboard_css) && $dashboard_css === 'admin'): ?>
-        <link rel="stylesheet" href="<?= base_url('assets/css/dashboard_admin.css') ?>">
+        <link rel="stylesheet" href="<?= asset_url('assets/css/dashboard_admin.css') ?>">
     <?php elseif (isset($dashboard_css) && $dashboard_css === 'pembeli'): ?>
-        <link rel="stylesheet" href="<?= base_url('assets/css/dashboard_pembeli.css') ?>">
+        <link rel="stylesheet" href="<?= asset_url('assets/css/dashboard_pembeli.css') ?>">
     <?php elseif (isset($dashboard_css) && $dashboard_css === 'penyedia'): ?>
-        <link rel="stylesheet" href="<?= base_url('assets/css/dashboard_penyedia.css') ?>">
+        <link rel="stylesheet" href="<?= asset_url('assets/css/dashboard_penyedia.css') ?>">
     <?php endif; ?>
 </head>
 <?php
@@ -48,54 +55,73 @@ $firstNameValue = $nameParts[0] ?? '';
 $lastNameValue = $nameParts[1] ?? '';
 $profileHref = base_url('index.php?page=dashboard');
 $cartUrl = base_url('index.php?page=cart');
-$cartItems = [
-    [
-        'title' => 'Jasa Bersih Rumah Profesional',
-        'meta' => 'Budi W. - Bandung',
-        'price' => 'Rp 150.000',
-        'icon' => 'bi-brush',
-    ],
-    [
-        'title' => 'Les Matematika SD-SMP',
-        'meta' => 'Sari R. - Jakarta Selatan',
-        'price' => 'Rp 75.000',
-        'icon' => 'bi-calculator',
-    ],
-    [
-        'title' => 'Servis AC & Kulkas Rumahan',
-        'meta' => 'Arif H. - Surabaya',
-        'price' => 'Rp 200.000',
-        'icon' => 'bi-tools',
-    ],
-];
-$cartCount = count($cartItems);
+$cartItems = [];
+$cartCount = 0;
+if ($isLoggedIn && $userRole === 'buyer' && !empty($_SESSION['cart'])) {
+    require_once __DIR__ . '/../../models/ServiceModel.php';
+    $headerServiceModel = new ServiceModel($pdo);
+    foreach ($_SESSION['cart'] as $serviceId => $quantity) {
+        $service = $headerServiceModel->getById((int) $serviceId);
+        if (!$service) {
+            continue;
+        }
+        $quantity = (int) $quantity;
+        $cartCount += $quantity;
+        $cartItems[] = [
+            'title' => $service['title'],
+            'meta' => $service['provider_name'] . ' - ' . $service['location'],
+            'price' => format_rupiah($service['price']),
+            'quantity' => $quantity,
+            'icon' => service_icon($service['category_name']),
+        ];
+    }
+}
 $cartAction = $isLoggedIn
     ? 'href="' . e($cartUrl) . '"'
     : 'href="#" onclick="openAuthModal(\'login\'); return false;"';
+$adminPendingVerify = 0;
+$adminPendingPayments = 0;
+$unreadNotifications = [];
+if ($isLoggedIn && $userRole === 'admin') {
+    require_once __DIR__ . '/../../models/UserModel.php';
+    require_once __DIR__ . '/../../models/PaymentModel.php';
+    $adminUserModel = new UserModel($pdo);
+    $adminPaymentModel = new PaymentModel($pdo);
+    $adminPendingVerify = $adminUserModel->countUnverifiedProviders();
+    $adminPendingPayments = count($adminPaymentModel->getPending());
+}
+if ($isLoggedIn) {
+    require_once __DIR__ . '/../../models/NotificationModel.php';
+    $headerNotificationModel = new NotificationModel($pdo);
+    $unreadNotifications = $headerNotificationModel->getUnreadByUser($_SESSION['user']['id']);
+}
+
 $sideNav = [
     'buyer' => [
+        ['label' => 'Akun', 'icon' => 'bi-person-circle', 'href' => base_url('index.php?page=account_settings')],
         ['label' => 'Dashboard', 'icon' => 'bi-grid', 'href' => base_url('index.php?page=dashboard')],
         ['label' => 'Pesanan Saya', 'icon' => 'bi-bag', 'href' => base_url('index.php?page=orders')],
         ['label' => 'Keranjang', 'icon' => 'bi-cart3', 'href' => base_url('index.php?page=cart')],
         ['label' => 'Review', 'icon' => 'bi-star', 'href' => base_url('index.php?page=review_form')],
-        ['label' => 'Akun', 'icon' => 'bi-person-circle', 'href' => base_url('index.php?page=dashboard#profile-settings')],
     ],
     'provider' => [
+        ['label' => 'Akun', 'icon' => 'bi-person-circle', 'href' => base_url('index.php?page=account_settings')],
         ['label' => 'Dashboard', 'icon' => 'bi-grid', 'href' => base_url('index.php?page=dashboard')],
         ['label' => 'Produk', 'icon' => 'bi-box-seam', 'href' => base_url('index.php?page=provider_services')],
         ['label' => 'Pesanan', 'icon' => 'bi-receipt', 'href' => base_url('index.php?page=provider_orders'), 'badge' => '7'],
         ['label' => 'Pengiriman', 'icon' => 'bi-send', 'href' => base_url('index.php?page=provider_shipping')],
         ['label' => 'Statistik', 'icon' => 'bi-bar-chart', 'href' => base_url('index.php?page=provider_earnings')],
         ['label' => 'Ulasan', 'icon' => 'bi-star', 'href' => base_url('index.php?page=provider_reviews')],
-        ['label' => 'Akun', 'icon' => 'bi-person-circle', 'href' => base_url('index.php?page=dashboard#profile-settings')],
     ],
     'admin' => [
-        ['label' => 'Manage Pembeli', 'icon' => 'bi-people-fill', 'href' => base_url('index.php?page=admin_users')],
-        ['label' => 'Verifikasi Penyedia', 'icon' => 'bi-shield-check', 'href' => base_url('index.php?page=admin_users'), 'badge' => '5'],
-        ['label' => 'Laporan Masalah', 'icon' => 'bi-exclamation-triangle', 'href' => base_url('index.php?page=admin_reports')],
-        ['label' => 'Analytics', 'icon' => 'bi-file-earmark-bar-graph', 'href' => base_url('index.php?page=admin_reports')],
-        ['label' => 'Admin Mode', 'icon' => 'bi-sliders', 'href' => base_url('index.php?page=admin_settings')],
-        ['label' => 'Akun', 'icon' => 'bi-person-circle', 'href' => base_url('index.php?page=dashboard#profile-settings')],
+        ['label' => 'Akun', 'icon' => 'bi-person-circle', 'href' => base_url('index.php?page=account_settings')],
+        ['label' => 'Dashboard', 'icon' => 'bi-grid', 'href' => base_url('index.php?page=dashboard')],
+        ['label' => 'Manage User', 'icon' => 'bi-people-fill', 'href' => base_url('index.php?page=admin_users')],
+        ['label' => 'Verifikasi Penjual', 'icon' => 'bi-arrow-repeat', 'href' => base_url('index.php?page=admin_verify'), 'badge' => $adminPendingVerify > 0 ? (string) $adminPendingVerify : null],
+        ['label' => 'Manage Kategori', 'icon' => 'bi-grid-3x3', 'href' => base_url('index.php?page=admin_categories')],
+        ['label' => 'Semua Pesanan', 'icon' => 'bi-clipboard-check', 'href' => base_url('index.php?page=admin_orders'), 'badge' => $adminPendingPayments > 0 ? (string) $adminPendingPayments : null],
+        ['label' => 'Report & Analytics', 'icon' => 'bi-pie-chart', 'href' => base_url('index.php?page=admin_reports')],
+        ['label' => 'System Settings', 'icon' => 'bi-gear', 'href' => base_url('index.php?page=admin_settings')],
     ],
 ];
 $activeSideNav = $isLoggedIn && isset($sideNav[$userRole]) ? $sideNav[$userRole] : [];
@@ -145,6 +171,11 @@ $activeSideNav = $isLoggedIn && isset($sideNav[$userRole]) ? $sideNav[$userRole]
                                     <a href="<?= $cartUrl ?>">Lihat</a>
                                 </div>
                                 <div class="cart-preview-list">
+                                    <?php if (empty($cartItems)): ?>
+                                        <div class="cart-preview-item">
+                                            <span class="cart-preview-copy"><span>Keranjang masih kosong</span><small>Pilih jasa dari beranda</small></span>
+                                        </div>
+                                    <?php else: ?>
                                     <?php foreach ($cartItems as $item): ?>
                                         <a class="cart-preview-item" href="<?= $cartUrl ?>">
                                             <span class="cart-preview-thumb"><i class="bi <?= e($item['icon']) ?>"></i></span>
@@ -152,16 +183,17 @@ $activeSideNav = $isLoggedIn && isset($sideNav[$userRole]) ? $sideNav[$userRole]
                                                 <span><?= e($item['title']) ?></span>
                                                 <small><?= e($item['meta']) ?></small>
                                             </span>
-                                            <strong>1x <?= e($item['price']) ?></strong>
+                                            <strong><?= (int) $item['quantity'] ?>x <?= e($item['price']) ?></strong>
                                         </a>
                                     <?php endforeach; ?>
+                                    <?php endif; ?>
                                 </div>
                             </div>
                         <?php endif; ?>
                     </div>
                 <?php endif; ?>
                 <?php if (isset($_SESSION['user'])): ?>
-                    <a href="#" class="header-icon-btn" aria-label="Notifikasi"><i class="bi bi-bell"></i><span>2</span></a>
+                    <a href="<?= base_url('index.php?page=notification') ?>" class="header-icon-btn" aria-label="Notifikasi"><i class="bi bi-bell"></i><?php if (count($unreadNotifications) > 0): ?><span><?= count($unreadNotifications) ?></span><?php endif; ?></a>
                     <a href="#" class="header-icon-btn" aria-label="Pesan"><i class="bi bi-envelope"></i></a>
                     <div class="profile-dropdown-wrapper">
                         <a href="#" class="role-profile" id="profileToggle">
@@ -192,7 +224,7 @@ $activeSideNav = $isLoggedIn && isset($sideNav[$userRole]) ? $sideNav[$userRole]
                                 <a href="<?= base_url('index.php?page=provider_reviews') ?>" class="profile-dropdown-item">Ulasan</a>
                             <?php endif; ?>
                             <hr class="my-2">
-                            <a href="<?= base_url('index.php?page=dashboard#profile-settings') ?>" class="profile-dropdown-item">Pengaturan Profil</a>
+                            <a href="<?= base_url('index.php?page=account_settings') ?>" class="profile-dropdown-item">Pengaturan Profile</a>
                             <a href="<?= base_url('index.php?page=auth&action=logout') ?>" class="profile-dropdown-item text-danger">Logout</a>
                         </div>
                     </div>
@@ -212,7 +244,12 @@ $activeSideNav = $isLoggedIn && isset($sideNav[$userRole]) ? $sideNav[$userRole]
         </div>
         <nav class="role-sidebar-nav">
             <?php foreach ($activeSideNav as $index => $item): ?>
-                <?php $isActiveSideNav = strpos($item['href'], 'page=' . $currentPage) !== false || ($currentPage === 'dashboard' && $index === 0); ?>
+                <?php
+                $itemQuery = parse_url($item['href'], PHP_URL_QUERY) ?? '';
+                parse_str($itemQuery, $itemParams);
+                $itemPage = $itemParams['page'] ?? null;
+                $isActiveSideNav = $itemPage === $currentPage;
+                ?>
                 <a class="<?= $isActiveSideNav ? 'active' : '' ?>" href="<?= e($item['href']) ?>">
                     <i class="bi <?= e($item['icon']) ?>"></i>
                     <span><?= e($item['label']) ?></span>

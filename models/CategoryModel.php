@@ -31,4 +31,22 @@ class CategoryModel {
         $stmt = $this->pdo->prepare('DELETE FROM categories WHERE id = ?');
         return $stmt->execute([$id]);
     }
+
+    public function getAllWithServiceCount() {
+        $stmt = $this->pdo->query('
+            SELECT c.*, COUNT(u.id) as service_count
+            FROM categories c
+            LEFT JOIN services s ON s.category_id = c.id AND s.is_active = 1
+            LEFT JOIN users u ON s.provider_id = u.id AND u.is_verified = 1
+            GROUP BY c.id
+            ORDER BY c.name ASC
+        ');
+        return $stmt->fetchAll();
+    }
+
+    public function countServices($categoryId) {
+        $stmt = $this->pdo->prepare('SELECT COUNT(id) FROM services WHERE category_id = ? AND is_active = 1');
+        $stmt->execute([$categoryId]);
+        return (int) $stmt->fetchColumn();
+    }
 }

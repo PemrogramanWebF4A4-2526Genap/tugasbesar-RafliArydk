@@ -37,7 +37,11 @@ if ($action === 'upload') {
         $ext = strtolower(pathinfo($name, PATHINFO_EXTENSION));
         if (in_array($ext, ['jpg', 'jpeg', 'png'])) {
             $proof_image = time() . '_' . uniqid() . '.' . $ext;
-            move_uploaded_file($tmp_name, 'assets/uploads/payments/' . $proof_image);
+            $uploadDir = 'assets/uploads/payments/';
+            if (!is_dir($uploadDir)) {
+                mkdir($uploadDir, 0775, true);
+            }
+            move_uploaded_file($tmp_name, $uploadDir . $proof_image);
         }
     }
 
@@ -63,7 +67,13 @@ if ($action === 'verify') {
     $notes = trim($_POST['notes'] ?? '');
 
     // Get payment and order details
-    $stmt = $pdo->prepare('SELECT p.*, o.id as order_id, o.order_number, o.buyer_id, o.provider_id FROM payments p JOIN orders o ON p.order_id = o.id WHERE p.id = ?');
+    $stmt = $pdo->prepare('
+        SELECT p.*, o.id as order_id, o.order_number, o.buyer_id, o.provider_id, ub.email as buyer_email
+        FROM payments p
+        JOIN orders o ON p.order_id = o.id
+        JOIN users ub ON o.buyer_id = ub.id
+        WHERE p.id = ?
+    ');
     $stmt->execute([$payment_id]);
     $payment = $stmt->fetch();
 
@@ -72,14 +82,7 @@ if ($action === 'verify') {
 
         if ($status === 'verified') {
             $orderModel->updateStatus($payment['order_id'], 'paid');
-            
-            // Auto generate invoice
-            generate_invoice($pdo, $payment['order_id']);
-
-            // Notify buyer
-            $notifModel->create($payment['buyer_id'], 'Pembayaran Berhasil', "Pembayaran untuk pesanan {$payment['order_number']} telah diverifikasi.");
-            // Notify provider
-            $notifModel->create($payment['provider_id'], 'Pesanan Dibayar', "Pesanan {$payment['order_number']} telah dibayar oleh pembeli. Silakan kerjakan.");
+            after_payment_verified($pdo, $payment);
         } elseif ($status === 'rejected') {
             $notifModel->create($payment['buyer_id'], 'Pembayaran Ditolak', "Pembayaran untuk pesanan {$payment['order_number']} ditolak. Alasan: $notes. Silakan unggah ulang.");
         }

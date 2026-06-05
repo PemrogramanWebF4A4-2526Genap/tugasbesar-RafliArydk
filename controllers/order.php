@@ -1,6 +1,7 @@
 <?php
 require_once 'models/OrderModel.php';
 require_once 'models/NotificationModel.php';
+require_once 'helpers/automation.php';
 
 if (!isset($_SESSION['user'])) {
     header('Location: index.php');
@@ -24,17 +25,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $valid = false;
     $redirect = 'index.php';
     
-    if ($_SESSION['user']['role'] === 'provider' && $order['provider_id'] === $_SESSION['user']['id']) {
-        if (in_array($status, ['accepted', 'in_progress', 'completed', 'cancelled'])) {
+    if ($_SESSION['user']['role'] === 'provider' && (int) $order['provider_id'] === (int) $_SESSION['user']['id']) {
+        $allowedTransitions = [
+            'paid' => ['accepted'],
+            'accepted' => ['in_progress', 'completed'],
+            'in_progress' => ['completed'],
+        ];
+        if (in_array($status, $allowedTransitions[$order['status']] ?? [], true)) {
             $valid = true;
             $redirect = 'index.php?page=provider_orders';
-            $notifModel->create($order['buyer_id'], 'Status Pesanan Diperbarui', "Pesanan Anda {$order['order_number']} sekarang berstatus: $status.");
+            $notifModel->create($order['buyer_id'], 'Status Pesanan Diperbarui', "Pesanan Anda {$order['order_number']} sekarang berstatus: " . order_status_info($status)[0] . '.');
+            if ($status === 'completed') {
+                generate_invoice($pdo, $order_id);
+            }
         }
-    } elseif ($_SESSION['user']['role'] === 'buyer' && $order['buyer_id'] === $_SESSION['user']['id']) {
+    } elseif ($_SESSION['user']['role'] === 'buyer' && (int) $order['buyer_id'] === (int) $_SESSION['user']['id']) {
         if (in_array($status, ['completed', 'cancelled'])) {
             $valid = true;
             $redirect = 'index.php?page=orders';
-            $notifModel->create($order['provider_id'], 'Status Pesanan Diperbarui', "Pembeli mengubah status pesanan {$order['order_number']} menjadi: $status.");
+            $notifModel->create($order['provider_id'], 'Status Pesanan Diperbarui', "Pembeli mengubah status pesanan {$order['order_number']} menjadi: " . order_status_info($status)[0] . '.');
         }
     }
 

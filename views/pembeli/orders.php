@@ -1,15 +1,56 @@
+<?php
+require_once __DIR__ . '/../../models/OrderModel.php';
+require_once __DIR__ . '/../../models/InvoiceModel.php';
+require_once __DIR__ . '/../../models/ReviewModel.php';
+
+$orderModel = new OrderModel($pdo);
+$invoiceModel = new InvoiceModel($pdo);
+$reviewModel = new ReviewModel($pdo);
+$orders = $orderModel->getByBuyer($_SESSION['user']['id']);
+?>
 
 <div class="container">
     <h2 class="fw-bold mb-4">Pesanan Saya</h2>
     <div class="table-responsive">
         <table class="table table-hover align-middle">
             <thead class="table-light">
-                <tr><th>No. Pesanan</th><th>Jasa</th><th>Total</th><th>Status</th><th>Aksi</th></tr>
+                <tr>
+                    <th>No. Pesanan</th>
+                    <th>Penyedia</th>
+                    <th>Tanggal</th>
+                    <th>Total</th>
+                    <th>Status</th>
+                    <th>Aksi</th>
+                </tr>
             </thead>
             <tbody>
-                <tr><td>ORD001</td><td>Jasa Bersih Rumah</td><td>Rp 150.000</td><td><span class="badge bg-warning text-dark">Menunggu Pembayaran</span></td><td><a href="order_detail.php" class="btn btn-sm btn-outline-custom">Detail</a></td></tr>
-                <tr><td>ORD002</td><td>Les Matematika</td><td>Rp 150.000</td><td><span class="badge bg-success">Selesai</span></td><td><a href="order_detail.php" class="btn btn-sm btn-outline-custom">Detail</a></td></tr>
+                <?php if (empty($orders)): ?>
+                    <tr><td colspan="6" class="text-center text-muted py-4">Belum ada pesanan.</td></tr>
+                <?php else: ?>
+                    <?php foreach ($orders as $order): ?>
+                        <?php [$statusLabel, $statusClass] = order_status_info($order['status']); ?>
+                        <?php $invoice = $invoiceModel->getByOrderId($order['id']); ?>
+                        <tr>
+                            <td><strong><?= e($order['order_number']) ?></strong></td>
+                            <td><?= e($order['provider_name']) ?></td>
+                            <td><?= e(date('d M Y', strtotime($order['service_date']))) ?></td>
+                            <td><?= e(format_rupiah($order['total_price'])) ?></td>
+                            <td><span class="status-badge <?= e($statusClass) ?>"><?= e($statusLabel) ?></span></td>
+                            <td class="d-flex gap-2 flex-wrap">
+                                <a href="<?= base_url('index.php?page=order_detail&id=' . (int) $order['id']) ?>" class="btn btn-sm btn-outline-custom">Detail</a>
+                                <?php if ($order['status'] === 'waiting_payment'): ?>
+                                    <a href="<?= base_url('index.php?page=upload_payment&id=' . (int) $order['id']) ?>" class="btn btn-sm btn-primary-custom">Upload Bayar</a>
+                                <?php elseif ($order['status'] === 'completed' && !$reviewModel->checkExists($order['id'])): ?>
+                                    <a href="<?= base_url('index.php?page=review_form&order_id=' . (int) $order['id']) ?>" class="btn btn-sm btn-outline-custom">Beri Review</a>
+                                <?php endif; ?>
+                                <?php if ($invoice): ?>
+                                    <a href="<?= base_url('index.php?page=invoice&id=' . (int) $order['id']) ?>" class="btn btn-sm btn-outline-custom">Invoice</a>
+                                <?php endif; ?>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                <?php endif; ?>
             </tbody>
         </table>
     </div>
-</div>
+</div>

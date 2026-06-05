@@ -6,6 +6,11 @@ if (!isset($_SESSION['user']) || $_SESSION['user']['role'] !== 'provider') {
     exit;
 }
 
+if ((int) ($_SESSION['user']['is_verified'] ?? 0) !== 1) {
+    header('Location: index.php?page=dashboard&error=provider_not_verified');
+    exit;
+}
+
 $serviceModel = new ServiceModel($pdo);
 $action = $_GET['action'] ?? '';
 
@@ -26,7 +31,11 @@ if ($action === 'create') {
             $ext = strtolower(pathinfo($name, PATHINFO_EXTENSION));
             if (in_array($ext, ['jpg', 'jpeg', 'png'])) {
                 $image = time() . '_' . uniqid() . '.' . $ext;
-                move_uploaded_file($tmp_name, 'assets/uploads/services/' . $image);
+                $uploadDir = 'assets/uploads/services/';
+                if (!is_dir($uploadDir)) {
+                    mkdir($uploadDir, 0775, true);
+                }
+                move_uploaded_file($tmp_name, $uploadDir . $image);
             }
         }
 
@@ -54,7 +63,11 @@ if ($action === 'update') {
             $ext = strtolower(pathinfo($name, PATHINFO_EXTENSION));
             if (in_array($ext, ['jpg', 'jpeg', 'png'])) {
                 $image = time() . '_' . uniqid() . '.' . $ext;
-                move_uploaded_file($tmp_name, 'assets/uploads/services/' . $image);
+                $uploadDir = 'assets/uploads/services/';
+                if (!is_dir($uploadDir)) {
+                    mkdir($uploadDir, 0775, true);
+                }
+                move_uploaded_file($tmp_name, $uploadDir . $image);
             }
         }
 

@@ -167,6 +167,7 @@ CREATE TABLE `invoices` (
   `generated_at` datetime NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `invoice_number` (`invoice_number`),
+  UNIQUE KEY `order_id_unique` (`order_id`),
   KEY `order_id` (`order_id`),
   CONSTRAINT `invoices_ibfk_1` FOREIGN KEY (`order_id`) REFERENCES `orders` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -192,16 +193,16 @@ CREATE TABLE `provider_schedules` (
 
 -- Admin
 INSERT INTO `users` (`name`, `email`, `password`, `role`, `is_verified`, `phone`, `address`) VALUES
-('Admin BisaBantu', 'admin@bisabantu.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'admin', 1, '081234567890', 'Jakarta');
+('Rafli Aryadika', 'Rafli@bisabantu.admin.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'admin', 1, '081234567890', 'Jakarta');
 
 -- Penyedia jasa
 INSERT INTO `users` (`name`, `email`, `password`, `role`, `is_verified`, `phone`, `address`) VALUES
 ('Budi Wijaya', 'budi@bisabantu.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'provider', 1, '0811111111', 'Bandung'),
-('Sari Rahmawati', 'sari@bisabantu.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'provider', 0, '0822222222', 'Jakarta Selatan');
+('Sienna', 'sienna@bisabantu.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'provider', 0, '0822222222', 'Jakarta Selatan');
 
 -- Pembeli
 INSERT INTO `users` (`name`, `email`, `password`, `role`, `is_verified`, `phone`, `address`) VALUES
-('Rafli Aryadika', 'rafli@bisabantu.co', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'buyer', 1, '0833333333', 'Bekasi'),
+('Arpi', 'arpi@bisabantu.co', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'buyer', 1, '0833333333', 'Bekasi'),
 ('Nasyla Putri', 'nasyla@bisabantu.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'buyer', 1, '0844444444', 'Jakarta Pusat');
 
 -- Kategori

@@ -51,7 +51,7 @@ $statusMap = [
                     <td><span class="badge bg-<?= $s[1] ?>"><?= $s[0] ?></span></td>
                     <td class="text-center">
                         <?php if (in_array($o['status'], ['paid', 'accepted'])): ?>
-                        <form method="POST" action="<?= base_url('index.php?page=auth&action=update_order') ?>" style="display:inline">
+                        <form method="POST" action="<?= base_url('index.php?page=order&action=update_status') ?>" style="display:inline">
                             <input type="hidden" name="order_id" value="<?= $o['id'] ?>">
                             <?php if ($o['status'] === 'paid'): ?>
                                 <button type="submit" name="status" value="accepted" class="btn btn-sm btn-outline-primary rounded-pill">Terima</button>
@@ -61,7 +61,7 @@ $statusMap = [
                             <?php endif; ?>
                         </form>
                         <?php elseif ($o['status'] === 'in_progress'): ?>
-                        <form method="POST" action="<?= base_url('index.php?page=auth&action=update_order') ?>" style="display:inline">
+                        <form method="POST" action="<?= base_url('index.php?page=order&action=update_status') ?>" style="display:inline">
                             <input type="hidden" name="order_id" value="<?= $o['id'] ?>">
                             <button type="submit" name="status" value="completed" class="btn btn-sm btn-outline-success rounded-pill">Selesai</button>
                         </form>

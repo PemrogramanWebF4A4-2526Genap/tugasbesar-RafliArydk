@@ -1,54 +1,87 @@
 <?php
+require_once __DIR__ . '/../../models/UserModel.php';
+require_once __DIR__ . '/../../models/OrderModel.php';
+require_once __DIR__ . '/../../models/PaymentModel.php';
+
+$userModel = new UserModel($pdo);
+$orderModel = new OrderModel($pdo);
+$paymentModel = new PaymentModel($pdo);
+
 $adminName = $_SESSION['user']['name'] ?? 'Admin';
+$totalUsers = $userModel->countAll();
+$buyerCount = $userModel->countByRole('buyer');
+$providerCount = $userModel->countByRole('provider');
+$ordersThisMonth = $orderModel->countThisMonth();
+$pendingVerify = $userModel->countUnverifiedProviders();
+$pendingPayments = count($paymentModel->getPending());
+
 $stats = [
-    ['label' => 'Total Pengguna', 'value' => '45', 'icon' => 'bi-people', 'tone' => 'users'],
-    ['label' => 'Pembeli Aktif', 'value' => '28', 'icon' => 'bi-bag-check', 'tone' => 'buyers'],
-    ['label' => 'Penyedia Jasa', 'value' => '12', 'icon' => 'bi-briefcase', 'tone' => 'providers'],
-    ['label' => 'Pesanan Bulan Ini', 'value' => '86', 'icon' => 'bi-receipt', 'tone' => 'orders'],
+    ['label' => 'Total Pengguna', 'value' => (string) $totalUsers, 'icon' => 'bi-people', 'tone' => 'users'],
+    ['label' => 'Pembeli Aktif', 'value' => (string) $buyerCount, 'icon' => 'bi-bag-check', 'tone' => 'buyers'],
+    ['label' => 'Penyedia Jasa', 'value' => (string) $providerCount, 'icon' => 'bi-briefcase', 'tone' => 'providers'],
+    ['label' => 'Pesanan Bulan Ini', 'value' => (string) $ordersThisMonth, 'icon' => 'bi-receipt', 'tone' => 'orders'],
 ];
 
 $quickMenus = [
     [
+        'title' => 'Dashboard Admin',
+        'desc' => 'Ringkasan platform: statistik pengguna, pesanan, pendapatan, dan log sistem.',
+        'icon' => 'bi-grid',
+        'href' => base_url('index.php?page=dashboard'),
+        'badge' => null,
+    ],
+    [
         'title' => 'Manage User',
-        'desc' => 'Kelola akun pembeli, penyedia, verifikasi, dan status pengguna.',
+        'desc' => 'Kelola pembeli dan penyedia, verifikasi akun, dan suspend pengguna.',
         'icon' => 'bi-person-gear',
         'href' => base_url('index.php?page=admin_users'),
+        'badge' => null,
     ],
     [
-        'title' => 'Manage Kategori Produk',
-        'desc' => 'Tambah, ubah, atau nonaktifkan kategori jasa yang tampil di marketplace.',
-        'icon' => 'bi-grid',
+        'title' => 'Verifikasi Penjual',
+        'desc' => 'Tinjau dokumen dan setujui atau tolak pendaftaran penyedia jasa.',
+        'icon' => 'bi-arrow-repeat',
+        'href' => base_url('index.php?page=admin_verify'),
+        'badge' => $pendingVerify > 0 ? (string) $pendingVerify : null,
+    ],
+    [
+        'title' => 'Manage Kategori',
+        'desc' => 'CRUD kategori jasa: bersih-bersih, tukang, les, dan lainnya.',
+        'icon' => 'bi-grid-3x3',
         'href' => base_url('index.php?page=admin_categories'),
+        'badge' => null,
     ],
     [
-        'title' => 'Manage Pesanan',
-        'desc' => 'Pantau semua pesanan, pembayaran, status pekerjaan, dan komplain.',
-        'icon' => 'bi-list-check',
+        'title' => 'Semua Pesanan',
+        'desc' => 'Pantau dan override seluruh transaksi di platform.',
+        'icon' => 'bi-clipboard-check',
         'href' => base_url('index.php?page=admin_orders'),
+        'badge' => $pendingPayments > 0 ? (string) $pendingPayments : null,
     ],
     [
         'title' => 'Report & Analytics',
-        'desc' => 'Lihat performa transaksi, pertumbuhan pengguna, dan pendapatan platform.',
-        'icon' => 'bi-bar-chart-line',
+        'desc' => 'Grafik pendapatan, jasa terlaris, dan pertumbuhan pengguna.',
+        'icon' => 'bi-pie-chart',
         'href' => base_url('index.php?page=admin_reports'),
+        'badge' => null,
     ],
     [
         'title' => 'System Settings',
-        'desc' => 'Atur konfigurasi platform, biaya admin, notifikasi, dan kebijakan sistem.',
-        'icon' => 'bi-sliders',
+        'desc' => 'Atur ongkir, metode pembayaran, dan template email.',
+        'icon' => 'bi-gear',
         'href' => base_url('index.php?page=admin_settings'),
+        'badge' => null,
     ],
 ];
 
-$recentOrders = [
-    ['code' => 'ORD-2401', 'buyer' => 'Andi Setiawan', 'service' => 'Jasa Bersih Rumah', 'status' => 'Diproses', 'amount' => 'Rp150.000'],
-    ['code' => 'ORD-2402', 'buyer' => 'Nita Permata', 'service' => 'Les Matematika', 'status' => 'Selesai', 'amount' => 'Rp75.000'],
-    ['code' => 'ORD-2403', 'buyer' => 'Maya Andriani', 'service' => 'Servis AC', 'status' => 'Menunggu', 'amount' => 'Rp200.000'],
-];
+$allOrders = $orderModel->getAllWithServices();
+$recentOrders = array_slice($allOrders, 0, 5);
 ?>
 
 <main class="admin-dashboard">
     <div class="container">
+        <?php include __DIR__ . '/_alert.php'; ?>
+
         <section class="admin-hero">
             <div>
                 <p class="admin-eyebrow">Dashboard Admin</p>
@@ -85,7 +118,7 @@ $recentOrders = [
                     <div class="admin-panel-head">
                         <div>
                             <h2>Menu Pengelolaan</h2>
-                            <p>Akses utama untuk operasional admin.</p>
+                            <p>7 fitur wajib untuk operasional admin.</p>
                         </div>
                     </div>
                     <div class="admin-menu-grid">
@@ -93,7 +126,14 @@ $recentOrders = [
                             <a class="admin-menu-card" href="<?= e($menu['href']) ?>">
                                 <span><i class="bi <?= e($menu['icon']) ?>"></i></span>
                                 <div>
-                                    <h3><?= e($menu['title']) ?></h3>
+                                    <h3>
+                                        <?= e($menu['title']) ?>
+                                        <?php if ($menu['badge']): ?>
+                                            <em class="admin-wajib-badge"><?= e($menu['badge']) ?></em>
+                                        <?php else: ?>
+                                            <em class="admin-wajib-badge admin-wajib-label">wajib</em>
+                                        <?php endif; ?>
+                                    </h3>
                                     <p><?= e($menu['desc']) ?></p>
                                 </div>
                                 <i class="bi bi-chevron-right admin-menu-arrow"></i>
@@ -109,8 +149,9 @@ $recentOrders = [
                     <ul>
                         <li><i class="bi bi-check-circle-fill"></i> Dashboard admin</li>
                         <li><i class="bi bi-check-circle-fill"></i> Manage user pembeli & penyedia</li>
-                        <li><i class="bi bi-check-circle-fill"></i> Manage kategori produk</li>
-                        <li><i class="bi bi-check-circle-fill"></i> Manage semua pesanan</li>
+                        <li><i class="bi bi-check-circle-fill"></i> Verifikasi penjual</li>
+                        <li><i class="bi bi-check-circle-fill"></i> Manage kategori jasa</li>
+                        <li><i class="bi bi-check-circle-fill"></i> Semua pesanan</li>
                         <li><i class="bi bi-check-circle-fill"></i> Report & analytics</li>
                         <li><i class="bi bi-check-circle-fill"></i> System settings</li>
                     </ul>
@@ -138,19 +179,23 @@ $recentOrders = [
                         </tr>
                     </thead>
                     <tbody>
-                        <?php foreach ($recentOrders as $order): ?>
-                            <tr>
-                                <td><strong><?= e($order['code']) ?></strong></td>
-                                <td><?= e($order['buyer']) ?></td>
-                                <td><?= e($order['service']) ?></td>
-                                <td><span class="status-badge active"><?= e($order['status']) ?></span></td>
-                                <td class="text-end"><?= e($order['amount']) ?></td>
-                            </tr>
-                        <?php endforeach; ?>
+                        <?php if (empty($recentOrders)): ?>
+                            <tr><td colspan="5" class="text-center text-muted py-4">Belum ada pesanan.</td></tr>
+                        <?php else: ?>
+                            <?php foreach ($recentOrders as $order): ?>
+                                <?php [$statusLabel, $statusClass] = order_status_info($order['status']); ?>
+                                <tr>
+                                    <td><strong><?= e($order['order_number']) ?></strong></td>
+                                    <td><?= e($order['buyer_name']) ?></td>
+                                    <td><?= e($order['service_title'] ?? '-') ?></td>
+                                    <td><span class="status-badge <?= e($statusClass) ?>"><?= e($statusLabel) ?></span></td>
+                                    <td class="text-end"><?= e(format_rupiah($order['total_price'])) ?></td>
+                                </tr>
+                            <?php endforeach; ?>
+                        <?php endif; ?>
                     </tbody>
                 </table>
             </div>
         </section>
     </div>
 </main>
-<?php include __DIR__ . '/../layout/_profile_settings_modal.php'; ?>

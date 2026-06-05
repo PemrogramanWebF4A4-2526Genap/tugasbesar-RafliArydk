@@ -1,0 +1,10 @@
+<?php
+require_once __DIR__ . '/../helpers/automation.php';
+
+if (!isset($_SESSION['user']) || ($_SESSION['user']['role'] ?? '') !== 'admin') {
+    header('Location: index.php?page=home');
+    exit;
+}
+
+header('Location: index.php?page=admin_reports&msg=automation_ready');
+exit;

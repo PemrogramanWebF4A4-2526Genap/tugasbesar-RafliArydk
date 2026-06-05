@@ -17,6 +17,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $service_date = trim($_POST['service_date'] ?? '');
     $service_address = trim($_POST['service_address'] ?? '');
     $notes = trim($_POST['notes'] ?? '');
+    $payment_method = trim($_POST['payment_method'] ?? 'bank_transfer');
     
     if (!$service_date || !$service_address) {
         header('Location: index.php?page=checkout&error=missing_fields');
@@ -60,7 +61,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
 
             // Create Order
-            $order_id = $orderModel->createOrder($buyer_id, $provider_id, $order_number, $total_price, $total_quantity, $service_date, $service_address, $notes);
+            $status = $payment_method === 'cod' ? 'paid' : 'waiting_payment';
+            $order_id = $orderModel->createOrder($buyer_id, $provider_id, $order_number, $total_price, $total_quantity, $service_date, $service_address, $notes, $status);
 
             // Create Order Items
             foreach ($items as $item) {

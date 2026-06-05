@@ -43,6 +43,11 @@ class ReviewModel {
         return $stmt->fetch();
     }
 
+    public function getPlatformAverage() {
+        $stmt = $this->pdo->query('SELECT COALESCE(AVG(rating), 0) as avg_rating, COUNT(id) as total FROM reviews');
+        return $stmt->fetch();
+    }
+
     public function getByProvider($provider_id) {
         $stmt = $this->pdo->prepare('
             SELECT r.*, u.name as reviewer_name, s.title as service_title, o.order_number
