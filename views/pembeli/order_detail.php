@@ -2,10 +2,12 @@
 require_once __DIR__ . '/../../models/OrderModel.php';
 require_once __DIR__ . '/../../models/InvoiceModel.php';
 require_once __DIR__ . '/../../models/ReviewModel.php';
+require_once __DIR__ . '/../../models/PaymentModel.php';
 
 $orderModel = new OrderModel($pdo);
 $invoiceModel = new InvoiceModel($pdo);
 $reviewModel = new ReviewModel($pdo);
+$paymentModel = new PaymentModel($pdo);
 $orderId = (int) ($_GET['id'] ?? 0);
 $order = $orderModel->getById($orderId);
 
@@ -17,6 +19,8 @@ if (!$order || (int) $order['buyer_id'] !== (int) $_SESSION['user']['id']) {
 $items = $orderModel->getOrderItems($orderId);
 $invoice = $invoiceModel->getByOrderId($orderId);
 $hasReview = $reviewModel->checkExists($orderId);
+$hasPendingPayment = $paymentModel->hasPendingForOrder($orderId);
+$invoiceAllowedStatuses = ['paid', 'accepted', 'in_progress', 'completed'];
 $steps = ['waiting_payment', 'paid', 'accepted', 'in_progress', 'completed'];
 $currentIndex = array_search($order['status'], $steps, true);
 $progress = $currentIndex === false ? 10 : (($currentIndex + 1) / count($steps)) * 100;
@@ -58,16 +62,20 @@ $progress = $currentIndex === false ? 10 : (($currentIndex + 1) / count($steps))
                     </table>
                 </div>
                 <p class="fs-5"><strong>Total:</strong> <?= e(format_rupiah($order['total_price'])) ?></p>
-                <?php if ($order['status'] === 'waiting_payment'): ?>
+                <div class="d-flex flex-wrap gap-2 mt-3">
+                <?php if ($order['status'] === 'waiting_payment' && !$hasPendingPayment): ?>
                     <a href="<?= base_url('index.php?page=upload_payment&id=' . (int) $order['id']) ?>" class="btn btn-primary-custom rounded-pill">Upload Bukti Pembayaran</a>
+                <?php elseif ($order['status'] === 'waiting_payment' && $hasPendingPayment): ?>
+                    <span class="btn btn-outline-secondary rounded-pill disabled">Menunggu Verifikasi Pembayaran</span>
                 <?php elseif ($order['status'] === 'completed' && !$hasReview): ?>
                     <a href="<?= base_url('index.php?page=review_form&order_id=' . (int) $order['id']) ?>" class="btn btn-outline-custom rounded-pill">Beri Review</a>
                 <?php elseif ($order['status'] === 'completed' && $hasReview): ?>
                     <span class="badge bg-success">Review sudah dikirim</span>
                 <?php endif; ?>
-                <?php if ($invoice): ?>
-                    <a href="<?= base_url('index.php?page=invoice&id=' . (int) $order['id']) ?>" class="btn btn-outline-custom rounded-pill ms-2">Lihat Invoice</a>
+                <?php if ($invoice || in_array($order['status'], $invoiceAllowedStatuses, true)): ?>
+                    <a href="<?= base_url('index.php?page=invoice&id=' . (int) $order['id']) ?>" class="btn btn-outline-custom rounded-pill">Lihat Invoice</a>
                 <?php endif; ?>
+                </div>
             </div>
         </div>
     </div>

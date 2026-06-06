@@ -21,6 +21,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         header('Location: index.php?page=orders&error=invalid_review');
         exit;
     }
+    $items = $orderModel->getOrderItems($order_id);
+    $validServiceIds = array_map(fn($item) => (int) $item['service_id'], $items);
+    if (!in_array((int) $service_id, $validServiceIds, true)) {
+        header('Location: index.php?page=orders&error=invalid_review');
+        exit;
+    }
 
     if ($reviewModel->checkExists($order_id)) {
         header('Location: index.php?page=orders&error=already_reviewed');
@@ -32,9 +38,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $tmp_name = $_FILES['image']['tmp_name'];
         $name = basename($_FILES['image']['name']);
         $ext = strtolower(pathinfo($name, PATHINFO_EXTENSION));
-        if (in_array($ext, ['jpg', 'jpeg', 'png'])) {
+        $mime = mime_content_type($tmp_name);
+        if (in_array($ext, ['jpg', 'jpeg', 'png'], true) && in_array($mime, ['image/jpeg', 'image/png'], true)) {
+            $uploadDir = __DIR__ . '/../assets/uploads/reviews/';
+            if (!is_dir($uploadDir)) {
+                mkdir($uploadDir, 0775, true);
+            }
             $image = time() . '_' . uniqid() . '.' . $ext;
-            move_uploaded_file($tmp_name, 'assets/uploads/reviews/' . $image);
+            if (!move_uploaded_file($tmp_name, $uploadDir . $image)) {
+                $image = null;
+            }
         }
     }
 

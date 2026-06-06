@@ -2,6 +2,7 @@
 require_once 'models/ServiceModel.php';
 require_once 'models/OrderModel.php';
 require_once 'models/NotificationModel.php';
+require_once 'helpers/automation.php';
 
 if (!isset($_SESSION['user']) || $_SESSION['user']['role'] !== 'buyer') {
     header('Location: index.php');
@@ -18,8 +19,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $service_address = trim($_POST['service_address'] ?? '');
     $notes = trim($_POST['notes'] ?? '');
     $payment_method = trim($_POST['payment_method'] ?? 'bank_transfer');
+    $allowedPaymentMethods = ['bank_transfer', 'cod'];
     
-    if (!$service_date || !$service_address) {
+    if (!$service_date || !$service_address || !in_array($payment_method, $allowedPaymentMethods, true)) {
         header('Location: index.php?page=checkout&error=missing_fields');
         exit;
     }
@@ -71,6 +73,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             // Notify Provider
             $notifModel->create($provider_id, 'Pesanan Baru', "Anda mendapat pesanan baru dengan No. Order $order_number");
+            if ($payment_method === 'cod') {
+                generate_invoice($pdo, $order_id);
+                $notifModel->create($buyer_id, 'Pesanan COD Dibuat', "Pesanan $order_number berhasil dibuat dengan metode COD.");
+            } else {
+                $notifModel->create($buyer_id, 'Pesanan Dibuat', "Pesanan $order_number berhasil dibuat. Silakan upload bukti pembayaran.");
+            }
         }
 
         $pdo->commit();

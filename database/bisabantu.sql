@@ -22,7 +22,9 @@ CREATE TABLE `users` (
   `phone` varchar(20) DEFAULT NULL,
   `address` text DEFAULT NULL,
   `remember_token` varchar(255) DEFAULT NULL,
+  `profile_photo` varchar(255) DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   PRIMARY KEY (`id`),
   UNIQUE KEY `email` (`email`)
@@ -192,18 +194,20 @@ CREATE TABLE `provider_schedules` (
 -- ======================================================
 
 -- Admin
-INSERT INTO `users` (`name`, `email`, `password`, `role`, `is_verified`, `phone`, `address`) VALUES
-('Rafli Aryadika', 'Rafli@bisabantu.admin.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'admin', 1, '081234567890', 'Jakarta');
+INSERT INTO `users` (`name`, `email`, `password`, `role`, `is_verified`, `phone`, `address`, `profile_photo`) VALUES
+('Rafli Aryadika', 'Rafli@bisabantu.admin.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'admin', 1, '081234567890', 'Jakarta', NULL);
 
 -- Penyedia jasa
-INSERT INTO `users` (`name`, `email`, `password`, `role`, `is_verified`, `phone`, `address`) VALUES
-('Budi Wijaya', 'budi@bisabantu.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'provider', 1, '0811111111', 'Bandung'),
-('Sienna', 'sienna@bisabantu.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'provider', 0, '0822222222', 'Jakarta Selatan');
+INSERT INTO `users` (`name`, `email`, `password`, `role`, `is_verified`, `phone`, `address`, `profile_photo`) VALUES
+('Budi Wijaya', 'budi@bisabantu.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'provider', 1, '0811111111', 'Bandung', NULL),
+('Sienna', 'sienna@bisabantu.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'provider', 0, '0822222222', 'Jakarta Selatan', NULL);
 
 -- Pembeli
-INSERT INTO `users` (`name`, `email`, `password`, `role`, `is_verified`, `phone`, `address`) VALUES
-('Arpi', 'arpi@bisabantu.co', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'buyer', 1, '0833333333', 'Bekasi'),
-('Nasyla Putri', 'nasyla@bisabantu.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'buyer', 1, '0844444444', 'Jakarta Pusat');
+INSERT INTO `users` (`name`, `email`, `password`, `role`, `is_verified`, `phone`, `address`, `profile_photo`) VALUES
+('Arpi', 'arpi@bisabantu.co', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'buyer', 1, '0833333333', 'Bekasi', NULL),
+('Nasyla Putri', 'nasyla@bisabantu.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'buyer', 1, '0844444444', 'Jakarta Pusat', NULL);
+
+
 
 -- Kategori
 INSERT INTO `categories` (`name`, `description`) VALUES

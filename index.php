@@ -5,13 +5,28 @@ require_once 'helpers/functions.php';
 
 $page = $_GET['page'] ?? 'home';
 
+function ensure_user_profile_photo_column(PDO $pdo) {
+    static $checked = false;
+    if ($checked) {
+        return;
+    }
+
+    $checked = true;
+    $stmt = $pdo->query("SHOW COLUMNS FROM users LIKE 'profile_photo'");
+    if (!$stmt->fetch()) {
+        $pdo->exec('ALTER TABLE users ADD COLUMN profile_photo varchar(255) DEFAULT NULL AFTER remember_token');
+    }
+}
+
 if (isset($_GET['profile_update']) && $_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!isset($_SESSION['user'])) {
         header('Location: index.php?page=home');
         exit;
     }
 
-    $userId = $_SESSION['user']['id'];
+    ensure_user_profile_photo_column($pdo);
+
+    $userId = (int) $_SESSION['user']['id'];
     $firstName = trim($_POST['first_name'] ?? '');
     $lastName = trim($_POST['last_name'] ?? '');
     $name = trim($firstName . ' ' . $lastName);
@@ -58,6 +73,30 @@ if (isset($_GET['profile_update']) && $_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
+    // Optional profile photo upload
+    $newProfilePhoto = null;
+    if (isset($_FILES['profile_photo']) && $_FILES['profile_photo']['error'] === UPLOAD_ERR_OK) {
+        $tmpName = $_FILES['profile_photo']['tmp_name'];
+        $originalName = basename($_FILES['profile_photo']['name']);
+        $ext = strtolower(pathinfo($originalName, PATHINFO_EXTENSION));
+        $mime = mime_content_type($tmpName);
+
+        if (in_array($ext, ['jpg', 'jpeg', 'png'], true) && in_array($mime, ['image/jpeg', 'image/png'], true)) {
+            $uploadDir = __DIR__ . '/assets/uploads/profile/';
+            if (!is_dir($uploadDir)) {
+                mkdir($uploadDir, 0775, true);
+            }
+            $fileName = time() . '_' . uniqid() . '.' . $ext;
+            if (move_uploaded_file($tmpName, $uploadDir . $fileName)) {
+                $newProfilePhoto = 'assets/uploads/profile/' . $fileName;
+            } else {
+                $errors[] = 'Gagal memindahkan file foto profil.';
+            }
+        } else {
+            $errors[] = 'Format foto profil harus JPG/PNG.';
+        }
+    }
+
     if (!empty($errors)) {
         $message = urlencode(implode(' ', $errors));
         header('Location: index.php?page=' . urlencode($page) . '&profile_error=' . $message);
@@ -66,25 +105,39 @@ if (isset($_GET['profile_update']) && $_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($updatePassword) {
         $hashedPassword = password_hash($newPassword, PASSWORD_BCRYPT);
-        $stmt = $pdo->prepare('UPDATE users SET name = ?, email = ?, phone = ?, address = ?, password = ?, updated_at = NOW() WHERE id = ?');
-        $stmt->execute([$name, $email, $phone, $address, $hashedPassword, $userId]);
+        if ($newProfilePhoto !== null) {
+            $stmt = $pdo->prepare('UPDATE users SET name = ?, email = ?, phone = ?, address = ?, profile_photo = ?, password = ?, updated_at = NOW() WHERE id = ?');
+            $stmt->execute([$name, $email, $phone, $address, $newProfilePhoto, $hashedPassword, $userId]);
+        } else {
+            $stmt = $pdo->prepare('UPDATE users SET name = ?, email = ?, phone = ?, address = ?, password = ?, updated_at = NOW() WHERE id = ?');
+            $stmt->execute([$name, $email, $phone, $address, $hashedPassword, $userId]);
+        }
     } else {
-        $stmt = $pdo->prepare('UPDATE users SET name = ?, email = ?, phone = ?, address = ?, updated_at = NOW() WHERE id = ?');
-        $stmt->execute([$name, $email, $phone, $address, $userId]);
+        if ($newProfilePhoto !== null) {
+            $stmt = $pdo->prepare('UPDATE users SET name = ?, email = ?, phone = ?, address = ?, profile_photo = ?, updated_at = NOW() WHERE id = ?');
+            $stmt->execute([$name, $email, $phone, $address, $newProfilePhoto, $userId]);
+        } else {
+            $stmt = $pdo->prepare('UPDATE users SET name = ?, email = ?, phone = ?, address = ?, updated_at = NOW() WHERE id = ?');
+            $stmt->execute([$name, $email, $phone, $address, $userId]);
+        }
     }
 
     $_SESSION['user']['name'] = $name;
     $_SESSION['user']['email'] = $email;
     $_SESSION['user']['phone'] = $phone;
     $_SESSION['user']['address'] = $address;
+    if ($newProfilePhoto !== null) {
+        $_SESSION['user']['profile_photo'] = $newProfilePhoto;
+    }
 
     header('Location: index.php?page=' . urlencode($page) . '&profile_status=success');
     exit;
 }
 
+
 if ($page == 'home') {
     include 'views/layout/header.php';
-    include 'views/home.php';
+    include 'views/public/home.php';
     include 'views/layout/footer.php';
 } elseif ($page == 'auth') {
     // handle auth
@@ -136,6 +189,11 @@ if ($page == 'home') {
     }
     if (($_SESSION['user']['role'] ?? '') !== 'buyer') {
         header('Location: index.php?page=dashboard');
+        exit;
+    }
+
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        include 'controllers/checkout.php';
         exit;
     }
 

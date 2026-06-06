@@ -9,9 +9,9 @@
                 <form id="profileSettingsForm" method="post" action="<?= base_url('index.php?page=' . $currentPage . '&profile_update=1') ?>" enctype="multipart/form-data">
                     <div class="row mb-3">
                         <div class="col-md-3 text-center">
-                            <div class="profile-photo-preview" id="profilePhotoPreview" data-initial="<?= e($userInitial) ?>" style="margin: 0 auto;"><?= e($userInitial) ?></div>
+                            <div class="profile-photo-preview" id="profilePhotoPreview" data-initial="<?= e($userInitial) ?>" style="margin: 0 auto; <?= $profilePhotoStyle ?? '' ?>"><?= !empty($profilePhotoExists) ? '' : e($userInitial) ?></div>
                             <input class="form-control form-control-sm mt-2" type="file" id="profilePhotoInput" name="profile_photo" accept="image/*">
-                            <small class="text-muted d-block mt-2">Hanya preview di browser</small>
+                            <small class="text-muted d-block mt-2">Format JPG/PNG</small>
                         </div>
                         <div class="col-md-9">
                             <div class="row g-2">

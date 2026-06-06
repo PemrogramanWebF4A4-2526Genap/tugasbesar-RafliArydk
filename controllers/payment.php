@@ -35,13 +35,16 @@ if ($action === 'upload') {
         $tmp_name = $_FILES['proof']['tmp_name'];
         $name = basename($_FILES['proof']['name']);
         $ext = strtolower(pathinfo($name, PATHINFO_EXTENSION));
-        if (in_array($ext, ['jpg', 'jpeg', 'png'])) {
+        $mime = mime_content_type($tmp_name);
+        if (in_array($ext, ['jpg', 'jpeg', 'png'], true) && in_array($mime, ['image/jpeg', 'image/png'], true)) {
             $proof_image = time() . '_' . uniqid() . '.' . $ext;
-            $uploadDir = 'assets/uploads/payments/';
+            $uploadDir = __DIR__ . '/../assets/uploads/payments/';
             if (!is_dir($uploadDir)) {
                 mkdir($uploadDir, 0775, true);
             }
-            move_uploaded_file($tmp_name, $uploadDir . $proof_image);
+            if (!move_uploaded_file($tmp_name, $uploadDir . $proof_image)) {
+                $proof_image = null;
+            }
         }
     }
 
@@ -84,6 +87,7 @@ if ($action === 'verify') {
             $orderModel->updateStatus($payment['order_id'], 'paid');
             after_payment_verified($pdo, $payment);
         } elseif ($status === 'rejected') {
+            $orderModel->updateStatus($payment['order_id'], 'waiting_payment');
             $notifModel->create($payment['buyer_id'], 'Pembayaran Ditolak', "Pembayaran untuk pesanan {$payment['order_number']} ditolak. Alasan: $notes. Silakan unggah ulang.");
         }
 

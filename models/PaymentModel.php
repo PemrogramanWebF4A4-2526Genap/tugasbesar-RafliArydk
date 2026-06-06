@@ -20,6 +20,12 @@ class PaymentModel {
         return $stmt->fetch();
     }
 
+    public function hasPendingForOrder($order_id) {
+        $stmt = $this->pdo->prepare('SELECT id FROM payments WHERE order_id = ? AND status = "pending" LIMIT 1');
+        $stmt->execute([(int) $order_id]);
+        return $stmt->fetch() ? true : false;
+    }
+
     public function getPending() {
         $stmt = $this->pdo->query('
             SELECT p.*, o.order_number, o.total_price 

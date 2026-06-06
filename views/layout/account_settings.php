@@ -11,6 +11,9 @@ $serviceFocusValue = $serviceFocusValue ?? ($userRole === 'provider' ? 'Layanan 
 $firstNameValue = $firstNameValue ?? (explode(' ', trim($_SESSION['user']['name'] ?? ''))[0] ?? '');
 $lastNameValue = $lastNameValue ?? (explode(' ', trim($_SESSION['user']['name'] ?? ''))[1] ?? '');
 $userInitial = $userInitial ?? strtoupper(substr(trim($_SESSION['user']['name'] ?? ''), 0, 1));
+$profilePhotoPath = $profilePhotoPath ?? ($_SESSION['user']['profile_photo'] ?? '');
+$profilePhotoExists = $profilePhotoExists ?? ($profilePhotoPath && is_file(__DIR__ . '/../../' . ltrim($profilePhotoPath, '/')));
+$profilePhotoStyle = $profilePhotoStyle ?? ($profilePhotoExists ? "background-image: url('" . e(base_url($profilePhotoPath)) . "');" : '');
 ?>
 
 <main class="account-settings-page">
@@ -73,7 +76,7 @@ $userInitial = $userInitial ?? strtoupper(substr(trim($_SESSION['user']['name'] 
                         <p>Gunakan foto yang jelas agar transaksi jasa terasa lebih personal dan terpercaya.</p>
                     </div>
                     <div class="account-avatar-wrap">
-                        <div class="profile-photo-preview account-avatar" id="profilePhotoPreview" data-initial="<?= e($userInitial) ?>"><?= e($userInitial) ?></div>
+                        <div class="profile-photo-preview account-avatar" id="profilePhotoPreview" data-initial="<?= e($userInitial) ?>" style="<?= $profilePhotoStyle ?>"><?= $profilePhotoExists ? '' : e($userInitial) ?></div>
                     </div>
                     <label class="account-upload-box" for="profilePhotoInput">
                         <i class="bi bi-image"></i>
@@ -81,7 +84,7 @@ $userInitial = $userInitial ?? strtoupper(substr(trim($_SESSION['user']['name'] 
                         <span>Klik untuk memilih file PNG/JPG</span>
                     </label>
                     <input class="visually-hidden" type="file" id="profilePhotoInput" name="profile_photo" accept="image/*">
-                    <small class="account-file-note">Preview foto tampil di browser. Penyimpanan foto dapat disambungkan ke backend upload saat dibutuhkan.</small>
+                    <small class="account-file-note">Foto tersimpan ke profil setelah menekan tombol Simpan.</small>
                 </aside>
 
                 <section class="account-panel" id="security">

@@ -28,6 +28,12 @@ if (!$canView) {
     exit;
 }
 
+$invoiceAllowedStatuses = ['paid', 'accepted', 'in_progress', 'completed'];
+if (!in_array($order['status'], $invoiceAllowedStatuses, true)) {
+    header('Location: index.php?page=order_detail&id=' . $orderId . '&error=invoice_unavailable');
+    exit;
+}
+
 generate_invoice($pdo, $orderId);
 $invoiceModel = new InvoiceModel($pdo);
 $invoice = $invoiceModel->getPrintableByOrderId($orderId);

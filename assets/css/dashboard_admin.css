@@ -141,6 +141,24 @@
     color: white;
 }
 
+.admin-dashboard .btn,
+.admin-dashboard button,
+.admin-dashboard a.btn {
+    position: relative;
+    z-index: 2;
+    cursor: pointer;
+}
+
+.admin-dashboard .btn-outline-custom {
+    border-color: var(--orange-primary);
+    color: var(--orange-primary);
+    background: #ffffff;
+}
+
+.admin-dashboard .btn-primary-custom {
+    border: 1px solid var(--orange-primary);
+}
+
 .admin-stat-card {
     display: flex;
     align-items: center;

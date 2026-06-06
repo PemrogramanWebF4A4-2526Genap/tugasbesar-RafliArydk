@@ -2,6 +2,7 @@
     "commission_rate": 10,
     "shipping_cost": 15000,
     "payment_methods": [
+        "bank_transfer",
         "cash"
     ],
     "email_template_welcome": "Selamat Datang di BisaBantu!",

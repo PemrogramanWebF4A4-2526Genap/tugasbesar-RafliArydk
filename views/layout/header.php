@@ -50,6 +50,9 @@ $roleShortLabels = [
 $roleShortLabel = $roleShortLabels[$userRole] ?? $roleLabel;
 $userName = $_SESSION['user']['name'] ?? 'Pengguna';
 $userInitial = strtoupper(substr($userName, 0, 1));
+$profilePhotoPath = $_SESSION['user']['profile_photo'] ?? '';
+$profilePhotoExists = $profilePhotoPath && is_file(__DIR__ . '/../../' . ltrim($profilePhotoPath, '/'));
+$profilePhotoStyle = $profilePhotoExists ? "background-image: url('" . e(base_url($profilePhotoPath)) . "');" : '';
 $nameParts = explode(' ', $userName, 2);
 $firstNameValue = $nameParts[0] ?? '';
 $lastNameValue = $nameParts[1] ?? '';
@@ -102,7 +105,7 @@ $sideNav = [
         ['label' => 'Dashboard', 'icon' => 'bi-grid', 'href' => base_url('index.php?page=dashboard')],
         ['label' => 'Pesanan Saya', 'icon' => 'bi-bag', 'href' => base_url('index.php?page=orders')],
         ['label' => 'Keranjang', 'icon' => 'bi-cart3', 'href' => base_url('index.php?page=cart')],
-        ['label' => 'Review', 'icon' => 'bi-star', 'href' => base_url('index.php?page=review_form')],
+        ['label' => 'Review', 'icon' => 'bi-star', 'href' => base_url('index.php?page=orders')],
     ],
     'provider' => [
         ['label' => 'Akun', 'icon' => 'bi-person-circle', 'href' => base_url('index.php?page=account_settings')],
@@ -194,10 +197,10 @@ $activeSideNav = $isLoggedIn && isset($sideNav[$userRole]) ? $sideNav[$userRole]
                 <?php endif; ?>
                 <?php if (isset($_SESSION['user'])): ?>
                     <a href="<?= base_url('index.php?page=notification') ?>" class="header-icon-btn" aria-label="Notifikasi"><i class="bi bi-bell"></i><?php if (count($unreadNotifications) > 0): ?><span><?= count($unreadNotifications) ?></span><?php endif; ?></a>
-                    <a href="#" class="header-icon-btn" aria-label="Pesan"><i class="bi bi-envelope"></i></a>
+                    <a href="<?= base_url('index.php?page=notification') ?>" class="header-icon-btn" aria-label="Pesan"><i class="bi bi-envelope"></i></a>
                     <div class="profile-dropdown-wrapper">
                         <a href="#" class="role-profile" id="profileToggle">
-                            <span class="role-profile-avatar"><?= e($userInitial) ?></span>
+                            <span class="role-profile-avatar" style="<?= $profilePhotoStyle ?>"><?= $profilePhotoExists ? '' : e($userInitial) ?></span>
                             <span class="role-profile-copy">
                                 <strong><?= e($userName) ?></strong>
                                 <small><?= e($roleLabel) ?></small>
@@ -205,7 +208,7 @@ $activeSideNav = $isLoggedIn && isset($sideNav[$userRole]) ? $sideNav[$userRole]
                         </a>
                         <div class="profile-dropdown" id="profileDropdown">
                             <div class="profile-dropdown-header">
-                                <div class="profile-dropdown-avatar"><?= e($userInitial) ?></div>
+                                <div class="profile-dropdown-avatar" style="<?= $profilePhotoStyle ?>"><?= $profilePhotoExists ? '' : e($userInitial) ?></div>
                                 <div>
                                     <strong><?= e($userName) ?></strong>
                                     <small><?= e($_SESSION['user']['email'] ?? '') ?></small>
@@ -216,7 +219,7 @@ $activeSideNav = $isLoggedIn && isset($sideNav[$userRole]) ? $sideNav[$userRole]
                             <?php if ($userRole === 'buyer'): ?>
                                 <a href="<?= base_url('index.php?page=orders') ?>" class="profile-dropdown-item">Pesanan Saya</a>
                                 <a href="<?= base_url('index.php?page=cart') ?>" class="profile-dropdown-item">Keranjang</a>
-                                <a href="<?= base_url('index.php?page=review_form') ?>" class="profile-dropdown-item">Review</a>
+                                <a href="<?= base_url('index.php?page=orders') ?>" class="profile-dropdown-item">Review</a>
                             <?php elseif ($userRole === 'provider'): ?>
                                 <a href="<?= base_url('index.php?page=provider_services') ?>" class="profile-dropdown-item">Produk</a>
                                 <a href="<?= base_url('index.php?page=provider_orders') ?>" class="profile-dropdown-item">Pesanan</a>

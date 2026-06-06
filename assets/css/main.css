@@ -226,6 +226,8 @@ body > .site-footer {
     color: #fff;
     font-weight: 800;
     background: radial-gradient(circle at 30% 25%, #53616c, #111820 70%);
+    background-size: cover;
+    background-position: center;
     flex: 0 0 auto;
 }
 
@@ -296,6 +298,8 @@ body > .site-footer {
     color: #fff;
     font-weight: 700;
     flex-shrink: 0;
+    background-size: cover;
+    background-position: center;
 }
 
 .profile-dropdown-header strong {
@@ -685,6 +689,40 @@ body > .site-footer {
     background: #d9a030;
     color: var(--ink);
     transform: none;
+}
+
+.btn,
+button,
+a.btn {
+    position: relative;
+    z-index: 2;
+    cursor: pointer;
+}
+
+.btn-primary-custom {
+    border: 1px solid #c8922a;
+    background-color: var(--gold);
+    color: #1c1a16;
+}
+
+.btn-outline-custom {
+    border: 1px solid #b5451b;
+    background-color: #ffffff;
+    color: #8f3514;
+}
+
+.btn-outline-custom:hover,
+.btn-outline-custom:focus {
+    border-color: #8f3514;
+    background-color: #8f3514;
+    color: #ffffff;
+}
+
+.btn:disabled,
+.btn.disabled,
+button:disabled {
+    cursor: not-allowed;
+    opacity: 0.72;
 }
 
 .btn-dashboard {
