@@ -85,8 +85,8 @@ CREATE TABLE `orders` (
   UNIQUE KEY `order_number` (`order_number`),
   KEY `buyer_id` (`buyer_id`),
   KEY `provider_id` (`provider_id`),
-  CONSTRAINT `orders_ibfk_1` FOREIGN KEY (`buyer_id`) REFERENCES `users` (`id`) ON DELETE RESTRICT,
-  CONSTRAINT `orders_ibfk_2` FOREIGN KEY (`provider_id`) REFERENCES `users` (`id`) ON DELETE RESTRICT
+  CONSTRAINT `orders_ibfk_1` FOREIGN KEY (`buyer_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `orders_ibfk_2` FOREIGN KEY (`provider_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -204,7 +204,7 @@ INSERT INTO `users` (`name`, `email`, `password`, `role`, `is_verified`, `phone`
 
 -- Pembeli
 INSERT INTO `users` (`name`, `email`, `password`, `role`, `is_verified`, `phone`, `address`, `profile_photo`) VALUES
-('Arpi', 'arpi@bisabantu.co', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'buyer', 1, '0833333333', 'Bekasi', NULL),
+('Arpi', 'arpi@bisabantu.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'buyer', 1, '0833333333', 'Bekasi', NULL),
 ('Nasyla Putri', 'nasyla@bisabantu.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'buyer', 1, '0844444444', 'Jakarta Pusat', NULL);
 
 

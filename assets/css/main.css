@@ -342,49 +342,49 @@ body > .site-footer {
     background: rgba(231, 76, 60, 0.15);
 }
 
-.modal-content {
+.modal .modal-content {
     background: #0d1117;
     border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-.modal-header {
+.modal .modal-header {
     border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-.modal-body {
+.modal .modal-body {
     color: rgba(255, 255, 255, 0.85);
 }
 
-.modal-body .form-label {
+.modal .modal-body .form-label {
     color: rgba(255, 255, 255, 0.85);
     font-weight: 600;
     font-size: 0.85rem;
 }
 
-.modal-body .form-control,
-.modal-body .form-select,
-.modal-body textarea {
+.modal .modal-body .form-control,
+.modal .modal-body .form-select,
+.modal .modal-body textarea {
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.08);
     color: #fff;
 }
 
-.modal-body .form-control::placeholder,
-.modal-body .form-select::placeholder,
-.modal-body textarea::placeholder {
+.modal .modal-body .form-control::placeholder,
+.modal .modal-body .form-select::placeholder,
+.modal .modal-body textarea::placeholder {
     color: rgba(255, 255, 255, 0.55);
 }
 
-.modal-body .form-control:focus,
-.modal-body .form-select:focus,
-.modal-body textarea:focus {
+.modal .modal-body .form-control:focus,
+.modal .modal-body .form-select:focus,
+.modal .modal-body textarea:focus {
     background: rgba(255, 255, 255, 0.08);
     border-color: rgba(255, 255, 255, 0.2);
     color: #fff;
     box-shadow: 0 0 0 0.2rem rgba(215, 90, 43, 0.25);
 }
 
-.modal-body hr {
+.modal .modal-body hr {
     border-color: rgba(255, 255, 255, 0.08);
 }
 
@@ -656,8 +656,7 @@ body > .site-footer {
     white-space: nowrap;
 }
 
-.btn-outline-custom,
-.btn-login {
+.btn-outline-custom {
     border: 1px solid rgba(255, 255, 255, 0.25);
     color: rgba(255, 255, 255, 0.85);
     border-radius: 8px;
@@ -667,14 +666,11 @@ body > .site-footer {
     background: none;
     transition: all 0.2s;
 }
-.btn-outline-custom:hover,
-.btn-login:hover {
+.btn-outline-custom:hover {
     background: rgba(255, 255, 255, 0.08);
     color: #fff;
-    transform: none;
 }
-.btn-primary-custom,
-.btn-register {
+.btn-primary-custom {
     background: var(--gold);
     color: var(--ink);
     border: none;
@@ -684,43 +680,50 @@ body > .site-footer {
     font-weight: 600;
     transition: all 0.2s;
 }
-.btn-primary-custom:hover,
-.btn-register:hover {
+.btn-primary-custom:hover {
     background: #d9a030;
     color: var(--ink);
-    transform: none;
+}
+.btn-login {
+    border: 1px solid var(--gold);
+    color: var(--gold);
+    border-radius: 8px;
+    padding: 7px 18px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    background: transparent;
+    transition: all 0.2s;
+}
+.btn-login:hover {
+    background: var(--gold);
+    color: var(--ink);
+}
+.btn-register {
+    background: var(--gold);
+    color: var(--ink);
+    border: 1px solid var(--gold);
+    border-radius: 8px;
+    padding: 7px 18px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    transition: all 0.2s;
+}
+.btn-register:hover {
+    background: #d9a030;
+    border-color: #d9a030;
+    color: var(--ink);
 }
 
-.btn,
-button,
-a.btn {
-    position: relative;
-    z-index: 2;
-    cursor: pointer;
-}
-
-.btn-primary-custom {
-    border: 1px solid #c8922a;
-    background-color: var(--gold);
-    color: #1c1a16;
-}
-
-.btn-outline-custom {
-    border: 1px solid #b5451b;
-    background-color: #ffffff;
-    color: #8f3514;
-}
-
-.btn-outline-custom:hover,
-.btn-outline-custom:focus {
-    border-color: #8f3514;
-    background-color: #8f3514;
-    color: #ffffff;
-}
-
-.btn:disabled,
-.btn.disabled,
-button:disabled {
+.btn-outline-custom:disabled,
+.btn-primary-custom:disabled,
+.btn-login:disabled,
+.btn-register:disabled,
+.btn-dashboard:disabled,
+.btn-outline-custom.disabled,
+.btn-primary-custom.disabled,
+.btn-login.disabled,
+.btn-register.disabled,
+.btn-dashboard.disabled {
     cursor: not-allowed;
     opacity: 0.72;
 }

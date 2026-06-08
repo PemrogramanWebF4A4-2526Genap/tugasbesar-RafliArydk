@@ -2,6 +2,7 @@
 session_start();
 require_once 'config/database.php';
 require_once 'helpers/functions.php';
+require_once 'helpers/upload.php';
 
 $page = $_GET['page'] ?? 'home';
 
@@ -75,25 +76,12 @@ if (isset($_GET['profile_update']) && $_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Optional profile photo upload
     $newProfilePhoto = null;
-    if (isset($_FILES['profile_photo']) && $_FILES['profile_photo']['error'] === UPLOAD_ERR_OK) {
-        $tmpName = $_FILES['profile_photo']['tmp_name'];
-        $originalName = basename($_FILES['profile_photo']['name']);
-        $ext = strtolower(pathinfo($originalName, PATHINFO_EXTENSION));
-        $mime = mime_content_type($tmpName);
-
-        if (in_array($ext, ['jpg', 'jpeg', 'png'], true) && in_array($mime, ['image/jpeg', 'image/png'], true)) {
-            $uploadDir = __DIR__ . '/assets/uploads/profile/';
-            if (!is_dir($uploadDir)) {
-                mkdir($uploadDir, 0775, true);
-            }
-            $fileName = time() . '_' . uniqid() . '.' . $ext;
-            if (move_uploaded_file($tmpName, $uploadDir . $fileName)) {
-                $newProfilePhoto = 'assets/uploads/profile/' . $fileName;
-            } else {
-                $errors[] = 'Gagal memindahkan file foto profil.';
-            }
+    if (isset($_FILES['profile_photo']) && $_FILES['profile_photo']['error'] !== UPLOAD_ERR_NO_FILE) {
+        $fileName = upload_image_file($_FILES['profile_photo'], __DIR__ . '/assets/uploads/profile/');
+        if ($fileName !== null) {
+            $newProfilePhoto = 'assets/uploads/profile/' . $fileName;
         } else {
-            $errors[] = 'Format foto profil harus JPG/PNG.';
+            $errors[] = 'Format foto profil harus JPG/PNG dan maksimal 2MB.';
         }
     }
 
@@ -136,30 +124,34 @@ if (isset($_GET['profile_update']) && $_SERVER['REQUEST_METHOD'] === 'POST') {
 
 
 if ($page == 'home') {
-    include 'views/layout/header.php';
-    include 'views/public/home.php';
-    include 'views/layout/footer.php';
+    include 'controllers/HomeController.php';
 } elseif ($page == 'auth') {
     // handle auth
-    include 'controllers/auth.php';
+    include 'controllers/AuthController.php';
 } elseif ($page == 'admin') {
-    include 'controllers/admin.php';
+    include 'controllers/AdminController.php';
 } elseif ($page == 'payment') {
-    include 'controllers/payment.php';
+    include 'controllers/PaymentController.php';
 } elseif ($page == 'order') {
-    include 'controllers/order.php';
+    include 'controllers/OrderController.php';
 } elseif ($page == 'invoice') {
-    include 'controllers/invoice.php';
+    include 'controllers/InvoiceController.php';
 } elseif (in_array($page, ['notification', 'settings', 'verification', 'automation'], true)) {
-    include 'controllers/' . $page . '.php';
+    $controllerMap = [
+        'notification' => 'NotificationController.php',
+        'settings' => 'SettingsController.php',
+        'verification' => 'VerificationController.php',
+        'automation' => 'AutomationController.php',
+    ];
+    include 'controllers/' . $controllerMap[$page];
 } elseif ($page == 'service') {
-    include 'controllers/service.php';
+    include 'controllers/ServiceController.php';
 } elseif ($page == 'report_export') {
-    include 'controllers/report_export.php';
+    include 'controllers/ReportExportController.php';
 } elseif ($page == 'schedule') {
-    include 'controllers/schedule.php';
+    include 'controllers/ScheduleController.php';
 } elseif ($page == 'review') {
-    include 'controllers/review.php';
+    include 'controllers/ReviewController.php';
 } elseif ($page == 'service_detail') {
     $dashboard_css = 'pembeli';
     include 'views/layout/header.php';
@@ -167,7 +159,7 @@ if ($page == 'home') {
     include 'views/layout/footer.php';
 } elseif ($page == 'cart') {
     if (isset($_GET['action'])) {
-        include 'controllers/cart.php';
+        include 'controllers/CartController.php';
         exit;
     }
     if (!isset($_SESSION['user'])) {
@@ -193,7 +185,7 @@ if ($page == 'home') {
     }
 
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        include 'controllers/checkout.php';
+        include 'controllers/CheckoutController.php';
         exit;
     }
 

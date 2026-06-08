@@ -86,9 +86,15 @@ $redirect = base_url('index.php?page=admin_users&tab=' . urlencode($tab));
                                                         <?= $isSuspended ? 'Aktifkan' : 'Suspend' ?>
                                                     </button>
                                                 </form>
+                                                <form method="post" action="<?= base_url('index.php?page=admin&action=delete_user') ?>" class="d-inline" onsubmit="return confirm('Hapus akun <?= e($user['name']) ?> permanently?');">
+                                                    <input type="hidden" name="user_id" value="<?= (int) $user['id'] ?>">
+                                                    <input type="hidden" name="redirect" value="<?= e($redirect) ?>">
+                                                    <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
+                                                </form>
                                             <?php endif; ?>
                                         </div>
-                                    </td>
+                                    </div>
+                                </td>
                                 </tr>
                             <?php endforeach; ?>
                         <?php endif; ?>

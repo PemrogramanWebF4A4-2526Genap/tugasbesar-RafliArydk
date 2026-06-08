@@ -37,6 +37,18 @@ class PaymentModel {
         return $stmt->fetchAll();
     }
 
+    public function getWithOrderForVerification($id) {
+        $stmt = $this->pdo->prepare('
+            SELECT p.*, o.id as order_id, o.order_number, o.buyer_id, o.provider_id, ub.email as buyer_email
+            FROM payments p
+            JOIN orders o ON p.order_id = o.id
+            JOIN users ub ON o.buyer_id = ub.id
+            WHERE p.id = ?
+        ');
+        $stmt->execute([$id]);
+        return $stmt->fetch();
+    }
+
     public function updateStatus($id, $status, $notes = null) {
         $stmt = $this->pdo->prepare('UPDATE payments SET status = ?, verified_at = NOW(), notes = ? WHERE id = ?');
         return $stmt->execute([$status, $notes, $id]);

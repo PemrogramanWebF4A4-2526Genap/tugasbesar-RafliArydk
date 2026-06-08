@@ -7,7 +7,7 @@ $paymentModel = new PaymentModel($pdo);
 
 $orders = $orderModel->getAllWithServices();
 $pendingPayments = $paymentModel->getPending();
-$statusOptions = ['pending', 'waiting_payment', 'paid', 'accepted', 'in_progress', 'completed', 'cancelled'];
+$statusOptions = ['waiting_payment', 'paid', 'accepted', 'in_progress', 'completed', 'cancelled'];
 ?>
 
 <main class="admin-dashboard">

@@ -3,6 +3,7 @@ require_once __DIR__ . '/../models/PaymentModel.php';
 require_once __DIR__ . '/../models/OrderModel.php';
 require_once __DIR__ . '/../models/NotificationModel.php';
 require_once __DIR__ . '/../helpers/automation.php';
+require_once __DIR__ . '/../helpers/upload.php';
 
 if (!isset($_SESSION['user'])) {
     header('Location: index.php');
@@ -30,23 +31,7 @@ if ($action === 'upload') {
         exit;
     }
 
-    $proof_image = null;
-    if (isset($_FILES['proof']) && $_FILES['proof']['error'] === UPLOAD_ERR_OK) {
-        $tmp_name = $_FILES['proof']['tmp_name'];
-        $name = basename($_FILES['proof']['name']);
-        $ext = strtolower(pathinfo($name, PATHINFO_EXTENSION));
-        $mime = mime_content_type($tmp_name);
-        if (in_array($ext, ['jpg', 'jpeg', 'png'], true) && in_array($mime, ['image/jpeg', 'image/png'], true)) {
-            $proof_image = time() . '_' . uniqid() . '.' . $ext;
-            $uploadDir = __DIR__ . '/../assets/uploads/payments/';
-            if (!is_dir($uploadDir)) {
-                mkdir($uploadDir, 0775, true);
-            }
-            if (!move_uploaded_file($tmp_name, $uploadDir . $proof_image)) {
-                $proof_image = null;
-            }
-        }
-    }
+    $proof_image = upload_image_file($_FILES['proof'] ?? null, __DIR__ . '/../assets/uploads/payments/');
 
     if ($proof_image) {
         $paymentModel->create($order_id, $method, $proof_image);
@@ -69,16 +54,7 @@ if ($action === 'verify') {
     $status = $_POST['status'] ?? 'pending';
     $notes = trim($_POST['notes'] ?? '');
 
-    // Get payment and order details
-    $stmt = $pdo->prepare('
-        SELECT p.*, o.id as order_id, o.order_number, o.buyer_id, o.provider_id, ub.email as buyer_email
-        FROM payments p
-        JOIN orders o ON p.order_id = o.id
-        JOIN users ub ON o.buyer_id = ub.id
-        WHERE p.id = ?
-    ');
-    $stmt->execute([$payment_id]);
-    $payment = $stmt->fetch();
+    $payment = $paymentModel->getWithOrderForVerification($payment_id);
 
     if ($payment) {
         $paymentModel->updateStatus($payment_id, $status, $notes);

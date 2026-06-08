@@ -11,7 +11,7 @@ $categories = $categoryModel->getAll();
 <div class="container">
     <div class="d-flex justify-content-between align-items-center gap-3 flex-wrap">
         <h2 class="fw-bold mb-0">Kelola Jasa Saya</h2>
-        <button class="btn btn-primary-custom rounded-pill" data-bs-toggle="modal" data-bs-target="#addModal">+ Tambah Jasa</button>
+        <button class="btn btn-primary-custom" data-bs-toggle="modal" data-bs-target="#addModal">+ Tambah Jasa</button>
     </div>
 
     <div class="table-responsive mt-4">
@@ -54,11 +54,11 @@ $categories = $categoryModel->getAll();
                                 <?php endif; ?>
                             </td>
                             <td class="text-end">
-                                <button class="btn btn-sm btn-outline-warning rounded-pill" data-bs-toggle="modal" data-bs-target="#editModal<?= (int) $service['id'] ?>">Edit</button>
-                                <a class="btn btn-sm btn-outline-secondary rounded-pill" href="<?= base_url('index.php?page=service&action=toggle&id=' . (int) $service['id'] . '&status=' . ((int) $service['is_active'] === 1 ? 0 : 1)) ?>">
+                                <button class="btn btn-sm btn-outline-warning" data-bs-toggle="modal" data-bs-target="#editModal<?= (int) $service['id'] ?>">Edit</button>
+                                <a class="btn btn-sm btn-outline-secondary" href="<?= base_url('index.php?page=service&action=toggle&id=' . (int) $service['id'] . '&status=' . ((int) $service['is_active'] === 1 ? 0 : 1)) ?>">
                                     <?= (int) $service['is_active'] === 1 ? 'Nonaktifkan' : 'Aktifkan' ?>
                                 </a>
-                                <a class="btn btn-sm btn-outline-danger rounded-pill" href="<?= base_url('index.php?page=service&action=delete&id=' . (int) $service['id']) ?>" onclick="return confirm('Hapus jasa ini?')">Hapus</a>
+                                <a class="btn btn-sm btn-outline-danger" href="<?= base_url('index.php?page=service&action=delete&id=' . (int) $service['id']) ?>" onclick="return confirm('Hapus jasa ini?')">Hapus</a>
                             </td>
                         </tr>
 
@@ -87,7 +87,7 @@ $categories = $categoryModel->getAll();
                                             <div class="mb-3"><label>Lokasi</label><input type="text" name="location" value="<?= e($service['location']) ?>" class="form-control rounded-pill" required></div>
                                             <div class="mb-3"><label>Deskripsi</label><textarea name="description" class="form-control" rows="3" required><?= e($service['description']) ?></textarea></div>
                                             <div class="mb-3"><label>Gambar Baru</label><input type="file" name="image" class="form-control" accept=".jpg,.jpeg,.png"></div>
-                                            <button type="submit" class="btn btn-primary-custom w-100 rounded-pill">Simpan Perubahan</button>
+                                            <button type="submit" class="btn btn-primary-custom w-100">Simpan Perubahan</button>
                                         </form>
                                     </div>
                                 </div>
@@ -124,7 +124,7 @@ $categories = $categoryModel->getAll();
                     <div class="mb-3"><label>Lokasi</label><input type="text" name="location" class="form-control rounded-pill" required></div>
                     <div class="mb-3"><label>Deskripsi</label><textarea name="description" class="form-control" rows="3" required></textarea></div>
                     <div class="mb-3"><label>Gambar</label><input type="file" name="image" class="form-control" accept=".jpg,.jpeg,.png"></div>
-                    <button type="submit" class="btn btn-primary-custom w-100 rounded-pill">Simpan Jasa</button>
+                                            <button type="submit" class="btn btn-primary-custom w-100">Simpan Jasa</button>
                 </form>
             </div>
         </div>

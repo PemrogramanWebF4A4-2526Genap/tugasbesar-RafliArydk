@@ -121,6 +121,14 @@ function clearLoginInlineError() {
     el.classList.remove('show');
 }
 
+function isValidAuthEmail(email) {
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        return false;
+    }
+    const domain = email.split('@').pop().toLowerCase();
+    return !domain.endsWith('.co');
+}
+
 function initAuthForms() {
     const loginForm = document.getElementById('authLoginForm');
     if (loginForm) {
@@ -136,8 +144,7 @@ function initAuthForms() {
                 emailInput?.focus();
                 return;
             }
-            const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-            if (!emailValid) {
+            if (!isValidAuthEmail(email)) {
                 e.preventDefault();
                 showLoginInlineError('Email tidak valid.');
                 emailInput?.focus();
@@ -162,8 +169,17 @@ function initAuthForms() {
     const regForm = document.getElementById('authRegisterForm');
     if (regForm) {
         regForm.addEventListener('submit', function (e) {
+            const emailInput = document.getElementById('reg-email');
+            const email = emailInput?.value.trim() || '';
             const confirm = regForm.querySelector('[name="password_confirm"]')?.value || '';
             const pass = document.getElementById('reg-pass')?.value || '';
+            if (!isValidAuthEmail(email)) {
+                e.preventDefault();
+                if (typeof showToast === 'function') showToast('Email tidak valid', 'warning');
+                emailInput?.focus();
+                goAuthStep(2);
+                return;
+            }
             if (pass.length < 8) {
                 e.preventDefault();
                 if (typeof showToast === 'function') showToast('Password minimal 8 karakter', 'warning');

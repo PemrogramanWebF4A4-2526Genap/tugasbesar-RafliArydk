@@ -1,5 +1,17 @@
 <?php
+require_once __DIR__ . '/../models/UserModel.php';
+
 $action = $_GET['action'] ?? '';
+$userModel = new UserModel($pdo);
+
+function is_valid_auth_email($email) {
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        return false;
+    }
+
+    $domain = strtolower(substr(strrchr($email, '@') ?: '', 1));
+    return !preg_match('/\.co$/', $domain);
+}
 
 if ($action === 'login') {
     if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -15,15 +27,12 @@ if ($action === 'login') {
         exit;
     }
 
-    $emailCandidates = [$email];
-    if (substr($email, -13) === '@bisabantu.co') {
-        $emailCandidates[] = substr($email, 0, -2) . 'com';
+    if (!is_valid_auth_email($email)) {
+        header('Location: index.php?page=home&auth=login&auth_error=email');
+        exit;
     }
 
-    $placeholders = implode(',', array_fill(0, count($emailCandidates), '?'));
-    $stmt = $pdo->prepare("SELECT id, name, email, password, role, is_verified FROM users WHERE email IN ($placeholders) LIMIT 1");
-    $stmt->execute($emailCandidates);
-    $user = $stmt->fetch();
+    $user = $userModel->getAuthUserByEmail($email);
 
     if (!$user || !password_verify($password, $user['password'])) {
         header('Location: index.php?page=home&auth=login&auth_error=invalid');
@@ -80,12 +89,16 @@ if ($action === 'register') {
         exit;
     }
 
+    if (!is_valid_auth_email($email)) {
+        header('Location: index.php?page=home&auth=register&register_error=email&' . $preserveValues);
+        exit;
+    }
+
     $hashed = password_hash($password, PASSWORD_BCRYPT);
     $isVerified = $role === 'buyer' ? 1 : 0;
 
     try {
-        $stmt = $pdo->prepare('INSERT INTO users (name, email, password, role, is_verified, phone, address) VALUES (?, ?, ?, ?, ?, ?, ?)');
-        $stmt->execute([$name, $email, $hashed, $role, $isVerified, $phone, $address]);
+        $userModel->createUser($name, $email, $hashed, $role, $isVerified, $phone, $address);
         $registerParam = $role === 'provider' ? 'success_provider' : 'success';
         header('Location: index.php?page=home&auth=login&register=' . $registerParam);
         exit;
@@ -103,25 +116,24 @@ if ($action === 'register_buyer') {
         $phone = trim($_POST['phone'] ?? '');
         $address = trim($_POST['address'] ?? '');
 
-        if ($name && $email && $password) {
+        if ($name && $email && $password && is_valid_auth_email($email)) {
             $hashed = password_hash($password, PASSWORD_BCRYPT);
             try {
-                $stmt = $pdo->prepare('INSERT INTO users (name, email, password, role, is_verified, phone, address) VALUES (?, ?, ?, "buyer", 1, ?, ?)');
-                $stmt->execute([$name, $email, $hashed, $phone, $address]);
-                // Auto login or redirect to login
+                $userModel->createUser($name, $email, $hashed, 'buyer', 1, $phone, $address);
                 header('Location: index.php?page=home&auth=login&register=success');
                 exit;
             } catch (PDOException $e) {
-                // Email might exist
                 header('Location: index.php?page=auth&action=register_buyer&error=exists');
                 exit;
             }
         }
-    } else {
-        // Show view
-        include 'views/auth/register_pembeli.php';
+
+        header('Location: index.php?page=auth&action=register_buyer&error=email');
         exit;
     }
+
+    include 'views/auth/register_pembeli.php';
+    exit;
 }
 
 if ($action === 'register_provider') {
@@ -132,12 +144,10 @@ if ($action === 'register_provider') {
         $phone = trim($_POST['phone'] ?? '');
         $address = trim($_POST['address'] ?? '');
 
-        if ($name && $email && $password) {
+        if ($name && $email && $password && is_valid_auth_email($email)) {
             $hashed = password_hash($password, PASSWORD_BCRYPT);
             try {
-                // Provider is_verified = 0 by default
-                $stmt = $pdo->prepare('INSERT INTO users (name, email, password, role, is_verified, phone, address) VALUES (?, ?, ?, "provider", 0, ?, ?)');
-                $stmt->execute([$name, $email, $hashed, $phone, $address]);
+                $userModel->createUser($name, $email, $hashed, 'provider', 0, $phone, $address);
                 header('Location: index.php?page=home&auth=login&register=success_provider');
                 exit;
             } catch (PDOException $e) {
@@ -145,11 +155,13 @@ if ($action === 'register_provider') {
                 exit;
             }
         }
-    } else {
-        // Show view
-        include 'views/auth/register_penyedia.php';
+
+        header('Location: index.php?page=auth&action=register_provider&error=email');
         exit;
     }
+
+    include 'views/auth/register_penyedia.php';
+    exit;
 }
 
 if ($action === 'logout') {

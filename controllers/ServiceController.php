@@ -1,5 +1,6 @@
 <?php
 require_once 'models/ServiceModel.php';
+require_once __DIR__ . '/../helpers/upload.php';
 
 if (!isset($_SESSION['user']) || $_SESSION['user']['role'] !== 'provider') {
     header('Location: index.php');
@@ -24,20 +25,7 @@ if ($action === 'create') {
         $estimated_duration = trim($_POST['estimated_duration'] ?? '');
         $location = trim($_POST['location'] ?? '');
         
-        $image = null;
-        if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
-            $tmp_name = $_FILES['image']['tmp_name'];
-            $name = basename($_FILES['image']['name']);
-            $ext = strtolower(pathinfo($name, PATHINFO_EXTENSION));
-            if (in_array($ext, ['jpg', 'jpeg', 'png'])) {
-                $image = time() . '_' . uniqid() . '.' . $ext;
-                $uploadDir = 'assets/uploads/services/';
-                if (!is_dir($uploadDir)) {
-                    mkdir($uploadDir, 0775, true);
-                }
-                move_uploaded_file($tmp_name, $uploadDir . $image);
-            }
-        }
+        $image = upload_image_file($_FILES['image'] ?? null, __DIR__ . '/../assets/uploads/services/');
 
         $serviceModel->create($_SESSION['user']['id'], $category_id, $title, $description, $price, $price_unit, $estimated_duration, $location, $image);
         header('Location: index.php?page=provider_services&msg=created');
@@ -56,20 +44,7 @@ if ($action === 'update') {
         $estimated_duration = trim($_POST['estimated_duration'] ?? '');
         $location = trim($_POST['location'] ?? '');
         
-        $image = null;
-        if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
-            $tmp_name = $_FILES['image']['tmp_name'];
-            $name = basename($_FILES['image']['name']);
-            $ext = strtolower(pathinfo($name, PATHINFO_EXTENSION));
-            if (in_array($ext, ['jpg', 'jpeg', 'png'])) {
-                $image = time() . '_' . uniqid() . '.' . $ext;
-                $uploadDir = 'assets/uploads/services/';
-                if (!is_dir($uploadDir)) {
-                    mkdir($uploadDir, 0775, true);
-                }
-                move_uploaded_file($tmp_name, $uploadDir . $image);
-            }
-        }
+        $image = upload_image_file($_FILES['image'] ?? null, __DIR__ . '/../assets/uploads/services/');
 
         $serviceModel->update($id, $_SESSION['user']['id'], $category_id, $title, $description, $price, $price_unit, $estimated_duration, $location, $image);
         header('Location: index.php?page=provider_services&msg=updated');

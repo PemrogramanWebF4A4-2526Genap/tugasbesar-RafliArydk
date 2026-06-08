@@ -23,6 +23,12 @@ $activeServiceCount = $serviceModel->countActive();
 $verifiedProviderCount = $userModel->countVerifiedProviders();
 $completedOrderCount = count(array_filter($orderModel->getAll(), fn($order) => $order['status'] === 'completed'));
 $avgRating = 0;
+$brandImagePath = 'assets/uploads/images/brand.png';
+$brandImageUrl = base_url($brandImagePath);
+$brandImageFile = __DIR__ . '/../../' . $brandImagePath;
+if (is_file($brandImageFile)) {
+    $brandImageUrl .= '?v=' . filemtime($brandImageFile);
+}
 $ratingRows = array_filter($homeServices, fn($service) => (int) $service['review_count'] > 0);
 if (!empty($ratingRows)) {
     $avgRating = array_sum(array_map(fn($service) => (float) $service['avg_rating'], $ratingRows)) / count($ratingRows);
@@ -64,8 +70,8 @@ if (!empty($ratingRows)) {
                     <div class="stat-card"><div class="stat-number"><?= $avgRating > 0 ? e(number_format($avgRating, 1)) : '0.0' ?></div><div class="stat-label">Rating rata-rata</div></div>
                 </div>
             </div>
-            <div class="col-lg-6 d-none d-lg-block hero-visual">
-                <img src="https://placehold.co/520x400/1C1A16/C8922A?text=BisaBantu" alt="Ilustrasi layanan BisaBantu" class="img-fluid w-100">
+            <div class="col-lg-6 d-none d-lg-block hero-visual img">
+                <img src="<?= e($brandImageUrl) ?>" alt="Ilustrasi layanan BisaBantu" class="img-fluid w-100">
             </div>
         </div>
     </div>

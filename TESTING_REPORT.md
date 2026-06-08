@@ -40,7 +40,7 @@ Semua akun default memakai password `password`.
 | --- | --- |
 | Admin | Rafli@bisabantu.com |
 | Penyedia | budi@bisabantu.com |
-| Pembeli | arpi@bisabantu.co |
+| Pembeli | arpi@bisabantu.com |
 
 ## Hasil Akhir
 

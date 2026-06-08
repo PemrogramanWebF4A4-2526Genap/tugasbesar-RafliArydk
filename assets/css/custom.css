@@ -66,7 +66,6 @@ body {
     transform: translateY(-2px);
     color: white;
 }
-
 /* Hero Section */
 .hero {
     background: linear-gradient(135deg, #FFF7ED 0%, #FFEDD5 100%);
@@ -135,12 +134,13 @@ body {
 /* Kategori Grid */
 .category-card {
     background: white;
-    border-radius: 28px;
+    border-radius: 24px;
     padding: 1.5rem;
     text-align: center;
-    transition: all 0.2s;
+    transition: all 0.2s ease;
     box-shadow: 0 4px 12px rgba(0,0,0,0.03);
     border: 1px solid #f0f0f0;
+    cursor: pointer;
 }
 .category-card:hover {
     transform: translateY(-5px);

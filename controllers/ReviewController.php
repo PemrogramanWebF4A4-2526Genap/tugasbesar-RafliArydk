@@ -1,6 +1,7 @@
 <?php
 require_once 'models/ReviewModel.php';
 require_once 'models/OrderModel.php';
+require_once __DIR__ . '/../helpers/upload.php';
 
 if (!isset($_SESSION['user']) || $_SESSION['user']['role'] !== 'buyer') {
     header('Location: index.php');
@@ -33,23 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
-    $image = null;
-    if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
-        $tmp_name = $_FILES['image']['tmp_name'];
-        $name = basename($_FILES['image']['name']);
-        $ext = strtolower(pathinfo($name, PATHINFO_EXTENSION));
-        $mime = mime_content_type($tmp_name);
-        if (in_array($ext, ['jpg', 'jpeg', 'png'], true) && in_array($mime, ['image/jpeg', 'image/png'], true)) {
-            $uploadDir = __DIR__ . '/../assets/uploads/reviews/';
-            if (!is_dir($uploadDir)) {
-                mkdir($uploadDir, 0775, true);
-            }
-            $image = time() . '_' . uniqid() . '.' . $ext;
-            if (!move_uploaded_file($tmp_name, $uploadDir . $image)) {
-                $image = null;
-            }
-        }
-    }
+    $image = upload_image_file($_FILES['image'] ?? null, __DIR__ . '/../assets/uploads/reviews/');
 
     $reviewModel->create($service_id, $order_id, $_SESSION['user']['id'], $rating, $comment, $image);
     header('Location: index.php?page=orders&msg=review_submitted');

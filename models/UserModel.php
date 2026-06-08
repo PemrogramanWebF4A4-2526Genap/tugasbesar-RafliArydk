@@ -18,6 +18,17 @@ class UserModel {
         return $stmt->fetch();
     }
 
+    public function getAuthUserByEmail($email) {
+        $stmt = $this->pdo->prepare('SELECT id, name, email, password, role, is_verified, profile_photo FROM users WHERE email = ? LIMIT 1');
+        $stmt->execute([$email]);
+        return $stmt->fetch();
+    }
+
+    public function createUser($name, $email, $passwordHash, $role, $isVerified, $phone, $address) {
+        $stmt = $this->pdo->prepare('INSERT INTO users (name, email, password, role, is_verified, phone, address) VALUES (?, ?, ?, ?, ?, ?, ?)');
+        return $stmt->execute([$name, $email, $passwordHash, $role, $isVerified, $phone, $address]);
+    }
+
     public function getUnverifiedProviders() {
         $stmt = $this->pdo->query('SELECT * FROM users WHERE role = "provider" AND is_verified = 0 ORDER BY created_at ASC');
         return $stmt->fetchAll();
@@ -56,6 +67,26 @@ class UserModel {
     public function rejectProvider($id) {
         $stmt = $this->pdo->prepare('DELETE FROM users WHERE id = ? AND role = "provider" AND is_verified = 0');
         return $stmt->execute([$id]);
+    }
+
+    public function deleteUser($id) {
+        $stmt = $this->pdo->prepare('DELETE FROM notifications WHERE user_id = ?');
+        $stmt->execute([$id]);
+        $stmt = $this->pdo->prepare('DELETE FROM reviews WHERE user_id = ?');
+        $stmt->execute([$id]);
+        $stmt = $this->pdo->prepare('DELETE FROM order_items WHERE order_id IN (SELECT id FROM orders WHERE buyer_id = ? OR provider_id = ?)');
+        $stmt->execute([$id, $id]);
+        $stmt = $this->pdo->prepare('DELETE FROM invoices WHERE order_id IN (SELECT id FROM orders WHERE buyer_id = ? OR provider_id = ?)');
+        $stmt->execute([$id, $id]);
+        $stmt = $this->pdo->prepare('DELETE FROM payments WHERE order_id IN (SELECT id FROM orders WHERE buyer_id = ? OR provider_id = ?)');
+        $stmt->execute([$id, $id]);
+        $stmt = $this->pdo->prepare('DELETE FROM orders WHERE buyer_id = ? OR provider_id = ?');
+        $stmt->execute([$id, $id]);
+        $stmt = $this->pdo->prepare('DELETE FROM services WHERE provider_id = ?');
+        $stmt->execute([$id]);
+        $stmt = $this->pdo->prepare('DELETE FROM users WHERE id = ? AND role != "admin"');
+        $stmt->execute([$id]);
+        return true;
     }
 
     public function countNewThisMonth() {

@@ -28,7 +28,14 @@
                 <?php if (isset($_GET['auth_error'])): ?>
                     <div class="auth-alert-error show" id="login-error">
                         <i class="bi bi-exclamation-circle" style="font-size:16px" aria-hidden="true"></i>
-                        <?= $_GET['auth_error'] === 'empty' ? 'Email dan password wajib diisi.' : 'Email atau password salah.' ?>
+                        <?php
+                        $authErrorMessages = [
+                            'empty' => 'Email dan password wajib diisi.',
+                            'email' => 'Format email tidak valid.',
+                            'invalid' => 'Email atau password salah.',
+                        ];
+                        ?>
+                        <?= e($authErrorMessages[$_GET['auth_error']] ?? 'Email atau password salah.') ?>
                     </div>
                 <?php endif; ?>
                 <form id="authLoginForm" method="post" action="<?= base_url('index.php?page=auth&action=login') ?>" novalidate>
@@ -70,7 +77,15 @@
                 <?php if (isset($_GET['register_error'])): ?>
                     <div class="auth-alert-error show" id="register-error">
                         <i class="bi bi-exclamation-circle" style="font-size:16px" aria-hidden="true"></i>
-                        <?= $_GET['register_error'] === 'exists' ? 'Email sudah terdaftar.' : 'Lengkapi data pendaftaran dengan benar.' ?>
+                        <?php
+                        $registerErrorMessages = [
+                            'exists' => 'Email sudah terdaftar.',
+                            'email' => 'Format email tidak valid.',
+                            'role' => 'Pilih tipe akun dengan benar.',
+                            'invalid' => 'Lengkapi data pendaftaran dengan benar.',
+                        ];
+                        ?>
+                        <?= e($registerErrorMessages[$_GET['register_error']] ?? 'Lengkapi data pendaftaran dengan benar.') ?>
                     </div>
                 <?php endif; ?>
 

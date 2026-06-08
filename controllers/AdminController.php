@@ -45,6 +45,17 @@ if ($action === 'reject_provider') {
     }
     exit;
 }
+ 
+
+if ($action === 'delete_user') {
+    $id = (int) ($_POST['user_id'] ?? 0);
+    if ($userModel->deleteUser($id)) {
+        header('Location: ' . $redirect . '&msg=user_deleted');
+    } else {
+        header('Location: ' . $redirect . '&error=delete_failed');
+    }
+    exit;
+}
 
 if ($action === 'toggle_suspend') {
     $id = (int) ($_POST['user_id'] ?? 0);

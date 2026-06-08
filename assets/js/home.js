@@ -134,6 +134,11 @@
         document.querySelectorAll('[data-service-card]').forEach(function (wrap) {
             const inner = wrap.querySelector('.service-card');
             if (!inner) return;
+            inner.querySelectorAll('a, button, form, input').forEach(function (control) {
+                control.addEventListener('click', function (e) {
+                    e.stopPropagation();
+                });
+            });
             inner.setAttribute('role', 'button');
             inner.setAttribute('tabindex', '0');
             const activate = function () {
@@ -177,12 +182,12 @@
 
     document.addEventListener('DOMContentLoaded', function () {
         if (!document.getElementById('layanan-jasa')) return;
+        setActiveFilter('semua');
         initFilterPills();
         initNavCategoryLinks();
         initCategoryCards();
         initServiceCards();
         initHeroSearch();
         initViewAll();
-        filterServices();
     });
 })();

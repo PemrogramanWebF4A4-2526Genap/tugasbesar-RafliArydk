@@ -54,16 +54,16 @@ $statusMap = [
                         <form method="POST" action="<?= base_url('index.php?page=order&action=update_status') ?>" style="display:inline">
                             <input type="hidden" name="order_id" value="<?= $o['id'] ?>">
                             <?php if ($o['status'] === 'paid'): ?>
-                                <button type="submit" name="status" value="accepted" class="btn btn-sm btn-outline-primary rounded-pill">Terima</button>
+                                <button type="submit" name="status" value="accepted" class="btn btn-sm btn-outline-primary">Terima</button>
                             <?php elseif ($o['status'] === 'accepted'): ?>
-                                <button type="submit" name="status" value="in_progress" class="btn btn-sm btn-outline-warning rounded-pill">Mulai Kerja</button>
-                                <button type="submit" name="status" value="completed" class="btn btn-sm btn-outline-success rounded-pill">Selesai</button>
+                                <button type="submit" name="status" value="in_progress" class="btn btn-sm btn-outline-warning">Mulai Kerja</button>
+                                <button type="submit" name="status" value="completed" class="btn btn-sm btn-outline-success">Selesai</button>
                             <?php endif; ?>
                         </form>
                         <?php elseif ($o['status'] === 'in_progress'): ?>
                         <form method="POST" action="<?= base_url('index.php?page=order&action=update_status') ?>" style="display:inline">
                             <input type="hidden" name="order_id" value="<?= $o['id'] ?>">
-                            <button type="submit" name="status" value="completed" class="btn btn-sm btn-outline-success rounded-pill">Selesai</button>
+                            <button type="submit" name="status" value="completed" class="btn btn-sm btn-outline-success">Selesai</button>
                         </form>
                         <?php else: ?>
                             <span class="text-muted">—</span>
