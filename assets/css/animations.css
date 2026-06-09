@@ -1,0 +1,486 @@
+/* Global motion layer for BisaBantu. Keep effects light and composited. */
+:root {
+    --bb-motion-fast: 180ms;
+    --bb-motion-base: 320ms;
+    --bb-motion-slow: 480ms;
+    --bb-motion-ease: cubic-bezier(.22, 1, .36, 1);
+    --bb-motion-shadow: 0 18px 45px rgba(15, 23, 42, .14);
+    --bb-focus-glow: 0 0 0 .22rem rgba(37, 99, 235, .16);
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    opacity: 1;
+}
+
+.page-loader {
+    display: none;
+}
+
+.page-loader.is-hidden {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+.page-loader::before {
+    content: none;
+}
+
+.animate-on-scroll {
+    opacity: 0;
+    transition:
+        opacity var(--bb-motion-slow) var(--bb-motion-ease),
+        transform var(--bb-motion-slow) var(--bb-motion-ease),
+        filter var(--bb-motion-slow) var(--bb-motion-ease);
+    transition-delay: var(--bb-stagger-delay, 0ms);
+    will-change: opacity, transform;
+}
+
+.animate-on-scroll.fade-up { transform: translate3d(0, 26px, 0); }
+.animate-on-scroll.fade-down { transform: translate3d(0, -22px, 0); }
+.animate-on-scroll.fade-left { transform: translate3d(26px, 0, 0); }
+.animate-on-scroll.fade-right { transform: translate3d(-26px, 0, 0); }
+.animate-on-scroll.zoom-in { transform: scale(.96); filter: saturate(.88); }
+
+.animate-on-scroll.in-view {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+    filter: saturate(1);
+}
+
+.card,
+.service-card,
+.order-card,
+.dashboard-card,
+.stat-card,
+.review-card,
+.notification-card,
+.admin-settings-card,
+.admin-verify-card,
+.checkout-card,
+.payment-summary-card,
+.cart-summary-card,
+.cart-item,
+.provider-service-card,
+.earnings-card,
+.admin-empty-state,
+.alert,
+.auth-role-card {
+    transition:
+        transform var(--bb-motion-base) var(--bb-motion-ease),
+        box-shadow var(--bb-motion-base) var(--bb-motion-ease),
+        border-color var(--bb-motion-base) ease,
+        background-color var(--bb-motion-base) ease;
+}
+
+.card:hover,
+.service-card:hover,
+.order-card:hover,
+.dashboard-card:hover,
+.stat-card:hover,
+.review-card:hover,
+.notification-card:hover,
+.admin-settings-card:hover,
+.admin-verify-card:hover,
+.checkout-card:hover,
+.payment-summary-card:hover,
+.cart-summary-card:hover,
+.cart-item:hover,
+.provider-service-card:hover,
+.earnings-card:hover {
+    transform: translateY(-6px);
+    box-shadow: var(--bb-motion-shadow);
+}
+
+.btn,
+button,
+[type="button"],
+[type="submit"],
+.cart-nav-btn,
+.header-icon-btn,
+.social-btn,
+.role-sidebar-nav a,
+.profile-dropdown-item {
+    position: relative;
+    overflow: hidden;
+    transition:
+        transform var(--bb-motion-fast) var(--bb-motion-ease),
+        box-shadow var(--bb-motion-fast) var(--bb-motion-ease),
+        border-color var(--bb-motion-fast) ease,
+        background-color var(--bb-motion-fast) ease,
+        color var(--bb-motion-fast) ease;
+}
+
+.btn:hover,
+button:hover,
+.cart-nav-btn:hover,
+.header-icon-btn:hover,
+.social-btn:hover {
+    transform: translateY(-1px) scale(1.03);
+    box-shadow: 0 12px 28px rgba(15, 23, 42, .16);
+}
+
+.btn:active,
+button:active,
+.cart-nav-btn:active,
+.header-icon-btn:active,
+.social-btn:active {
+    transform: scale(.97);
+}
+
+.role-actions .btn:hover,
+.role-actions .btn:active,
+.role-actions .header-icon-btn:hover,
+.role-actions .header-icon-btn:active,
+.role-actions .cart-nav-btn:hover,
+.role-actions .cart-nav-btn:active,
+.role-profile:hover,
+.role-profile:active,
+.role-sidebar-nav a:hover,
+.role-sidebar-nav a:active {
+    transform: none;
+}
+
+.role-actions .header-icon-btn,
+.role-actions .cart-nav-btn {
+    flex: 0 0 38px;
+    width: 38px;
+    height: 38px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    overflow: visible;
+}
+
+.role-actions .header-icon-btn span,
+.role-actions .cart-nav-badge {
+    position: absolute;
+    top: -6px;
+    right: -7px;
+    z-index: 4;
+    min-width: 19px;
+    height: 19px;
+    padding: 0 6px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    background: #dc5a2c;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 800;
+    line-height: 1;
+    box-shadow: 0 0 0 2px #17140f;
+    white-space: nowrap;
+    pointer-events: none;
+}
+
+.bb-ripple {
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    border-radius: 999px;
+    pointer-events: none;
+    background: rgba(255, 255, 255, .55);
+    transform: translate(-50%, -50%) scale(0);
+    animation: bb-ripple 620ms ease-out forwards;
+}
+
+.form-control,
+.form-select,
+textarea,
+input {
+    transition:
+        border-color var(--bb-motion-fast) ease,
+        box-shadow var(--bb-motion-fast) ease,
+        background-color var(--bb-motion-fast) ease,
+        transform var(--bb-motion-fast) ease;
+}
+
+.form-label,
+label {
+    transition: color var(--bb-motion-fast) ease, transform var(--bb-motion-fast) ease;
+}
+
+.form-control:focus,
+.form-select:focus,
+textarea:focus,
+input:focus {
+    border-color: #2563eb;
+    box-shadow: var(--bb-focus-glow);
+}
+
+.bb-field-active > .form-label,
+.bb-field-active > label {
+    color: #1d4ed8;
+}
+
+.is-invalid,
+.auth-alert-error.show,
+.alert-danger {
+    animation: bb-shake 420ms ease;
+}
+
+.is-valid,
+.auth-alert-success,
+.alert-success {
+    animation: bb-success-pop 420ms var(--bb-motion-ease);
+}
+
+.navbar,
+.role-header {
+    transition:
+        background-color var(--bb-motion-base) ease,
+        box-shadow var(--bb-motion-base) ease,
+        padding var(--bb-motion-base) ease,
+        backdrop-filter var(--bb-motion-base) ease;
+}
+
+.navbar.navbar-scrolled,
+.role-header.navbar-scrolled {
+    box-shadow: 0 12px 30px rgba(15, 23, 42, .16);
+    backdrop-filter: blur(14px);
+}
+
+.navbar .nav-link {
+    position: relative;
+}
+
+.navbar .nav-link::before {
+    content: "";
+    position: absolute;
+    left: .7rem;
+    right: .7rem;
+    bottom: .28rem;
+    height: 2px;
+    border-radius: 999px;
+    background: currentColor;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform var(--bb-motion-base) var(--bb-motion-ease);
+}
+
+.navbar .nav-link:hover::before,
+.navbar .nav-link.active::before {
+    transform: scaleX(1);
+}
+
+.dropdown-menu,
+.profile-dropdown,
+.cart-preview {
+    animation: bb-dropdown-in var(--bb-motion-base) var(--bb-motion-ease);
+    transform-origin: top center;
+}
+
+.modal.fade .modal-dialog {
+    transform: translateY(12px) scale(.96);
+    transition: transform var(--bb-motion-base) var(--bb-motion-ease);
+}
+
+.modal.show .modal-dialog {
+    transform: translateY(0) scale(1);
+}
+
+.auth-modal-overlay.show .auth-modal,
+.auth-modal.show,
+.auth-modal {
+    animation: bb-modal-in var(--bb-motion-base) var(--bb-motion-ease);
+}
+
+.table {
+    animation: bb-fade-up var(--bb-motion-slow) var(--bb-motion-ease) both;
+}
+
+.table tbody tr {
+    transition: background-color var(--bb-motion-fast) ease, transform var(--bb-motion-fast) ease;
+}
+
+.table tbody tr:hover {
+    background-color: rgba(37, 99, 235, .07);
+    transform: translateX(3px);
+}
+
+.pagination .page-link {
+    transition: transform var(--bb-motion-fast) ease, box-shadow var(--bb-motion-fast) ease;
+}
+
+.pagination .page-link:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 18px rgba(15, 23, 42, .12);
+}
+
+.hero-section,
+.banner,
+.home-hero,
+.hero,
+[class*="banner"] {
+    overflow: hidden;
+}
+
+.hero-section img,
+.banner img,
+.home-hero img,
+.hero img,
+[class*="banner"] img {
+    animation: bb-kenburns 12s ease-in-out infinite alternate;
+}
+
+.service-card img,
+.card img,
+.provider-photo,
+.profile-photo,
+.role-profile-avatar,
+.profile-dropdown-avatar {
+    transition: transform var(--bb-motion-base) var(--bb-motion-ease), filter var(--bb-motion-base) ease;
+}
+
+.service-card:hover img,
+.card:hover img,
+.provider-photo:hover,
+.profile-photo:hover,
+.role-profile:hover .role-profile-avatar {
+    transform: scale(1.04);
+    filter: saturate(1.08);
+}
+
+.bb-toast,
+.toast {
+    overflow: hidden;
+    animation: bb-toast-in var(--bb-motion-base) var(--bb-motion-ease) both;
+}
+
+.bb-toast::after,
+.toast::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    height: 3px;
+    width: 100%;
+    background: linear-gradient(90deg, #2563eb, #14b8a6);
+    transform-origin: left;
+    animation: bb-toast-progress 4s linear forwards;
+}
+
+.bb-toast:not(.bb-toast--show),
+.toast.hide {
+    animation: bb-toast-out var(--bb-motion-base) ease both;
+}
+
+.counter-animate {
+    font-variant-numeric: tabular-nums;
+}
+
+.stagger-children > * {
+    animation: bb-fade-up var(--bb-motion-slow) var(--bb-motion-ease) both;
+    animation-delay: var(--bb-stagger-delay, 0ms);
+}
+
+.skeleton,
+.skeleton-card,
+.skeleton-row {
+    position: relative;
+    overflow: hidden;
+    border-radius: 12px;
+    background: #e5e7eb;
+    color: transparent;
+}
+
+.skeleton::after,
+.skeleton-card::after,
+.skeleton-row::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    transform: translateX(-100%);
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,.62), transparent);
+    animation: bb-skeleton 1.35s ease-in-out infinite;
+}
+
+@keyframes bb-spin {
+    to { transform: rotate(360deg); }
+}
+
+@keyframes bb-ripple {
+    to {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(22);
+    }
+}
+
+@keyframes bb-shake {
+    10%, 90% { transform: translateX(-1px); }
+    20%, 80% { transform: translateX(2px); }
+    30%, 50%, 70% { transform: translateX(-4px); }
+    40%, 60% { transform: translateX(4px); }
+}
+
+@keyframes bb-success-pop {
+    0% { transform: scale(.98); }
+    55% { transform: scale(1.015); }
+    100% { transform: scale(1); }
+}
+
+@keyframes bb-dropdown-in {
+    from { opacity: 0; transform: translateY(8px) scale(.98); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes bb-modal-in {
+    from { opacity: 0; transform: translateY(10px) scale(.96); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes bb-fade-up {
+    from { opacity: 0; transform: translateY(18px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes bb-toast-in {
+    from { opacity: 0; transform: translateX(24px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes bb-toast-out {
+    to { opacity: 0; transform: translateX(24px); }
+}
+
+@keyframes bb-toast-progress {
+    to { transform: scaleX(0); }
+}
+
+@keyframes bb-kenburns {
+    from { transform: scale(1); }
+    to { transform: scale(1.035); }
+}
+
+@keyframes bb-skeleton {
+    to { transform: translateX(100%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+        transition-duration: .01ms !important;
+    }
+
+    body,
+    body.loaded,
+    .animate-on-scroll {
+        opacity: 1 !important;
+        transform: none !important;
+        filter: none !important;
+    }
+
+    .page-loader {
+        display: none !important;
+    }
+}

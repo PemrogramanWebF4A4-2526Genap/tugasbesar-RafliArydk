@@ -50,10 +50,10 @@ $statusMap = [
                     <td>Rp <?= number_format($o['total_price'], 0, ',', '.') ?></td>
                     <td><span class="badge bg-<?= $s[1] ?>"><?= $s[0] ?></span></td>
                     <td class="text-center">
-                        <?php if (in_array($o['status'], ['paid', 'accepted'])): ?>
+                        <?php if (in_array($o['status'], ['waiting_payment', 'paid', 'accepted'])): ?>
                         <form method="POST" action="<?= base_url('index.php?page=order&action=update_status') ?>" style="display:inline">
                             <input type="hidden" name="order_id" value="<?= $o['id'] ?>">
-                            <?php if ($o['status'] === 'paid'): ?>
+                            <?php if (in_array($o['status'], ['waiting_payment', 'paid'])): ?>
                                 <button type="submit" name="status" value="accepted" class="btn btn-sm btn-outline-primary">Terima</button>
                             <?php elseif ($o['status'] === 'accepted'): ?>
                                 <button type="submit" name="status" value="in_progress" class="btn btn-sm btn-outline-warning">Mulai Kerja</button>

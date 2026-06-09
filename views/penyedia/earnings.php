@@ -125,6 +125,13 @@ document.addEventListener('DOMContentLoaded', function() {
     const labels = <?= json_encode($chartLabels) ?>;
     const ordersData = <?= json_encode($chartOrders) ?>;
     const revenueData = <?= json_encode($chartRevenue) ?>;
+    const maxOrders = Math.max(...ordersData, 0);
+    const maxRevenue = Math.max(...revenueData, 0);
+    const rupiahTick = value => {
+        if (value >= 1000000) return 'Rp ' + (value / 1000000).toLocaleString('id-ID') + ' jt';
+        if (value >= 1000) return 'Rp ' + (value / 1000).toLocaleString('id-ID') + ' rb';
+        return 'Rp ' + value.toLocaleString('id-ID');
+    };
 
     // 1. Trend Line Chart
     new Chart(document.getElementById('trendChart'), {
@@ -157,9 +164,12 @@ document.addEventListener('DOMContentLoaded', function() {
             interaction: { mode: 'index', intersect: false },
             plugins: { legend: { position: 'top' } },
             scales: {
-                y: { type: 'linear', display: true, position: 'left', beginAtZero: true, title: { display: true, text: 'Pesanan' } },
+                y: { type: 'linear', display: true, position: 'left', beginAtZero: true, suggestedMax: maxOrders > 0 ? undefined : 5, title: { display: true, text: 'Pesanan' },
+                    ticks: { precision: 0, stepSize: 1 }
+                },
                 y1: { type: 'linear', display: true, position: 'right', beginAtZero: true, grid: { drawOnChartArea: false }, title: { display: true, text: 'Rupiah' },
-                    ticks: { callback: v => 'Rp ' + v.toLocaleString('id-ID') }
+                    suggestedMax: maxRevenue > 0 ? undefined : 100000,
+                    ticks: { callback: rupiahTick }
                 }
             }
         }
@@ -205,7 +215,8 @@ document.addEventListener('DOMContentLoaded', function() {
             scales: {
                 y: {
                     beginAtZero: true,
-                    ticks: { callback: v => 'Rp ' + v.toLocaleString('id-ID') }
+                    suggestedMax: maxRevenue > 0 ? undefined : 100000,
+                    ticks: { callback: rupiahTick }
                 }
             }
         }

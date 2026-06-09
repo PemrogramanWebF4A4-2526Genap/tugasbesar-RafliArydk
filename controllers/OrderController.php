@@ -27,6 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     
     if ($_SESSION['user']['role'] === 'provider' && (int) $order['provider_id'] === (int) $_SESSION['user']['id']) {
         $allowedTransitions = [
+            'waiting_payment' => ['accepted'],
             'paid' => ['accepted'],
             'accepted' => ['in_progress', 'completed'],
             'in_progress' => ['completed'],

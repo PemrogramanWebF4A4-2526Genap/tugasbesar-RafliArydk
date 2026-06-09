@@ -47,6 +47,9 @@ if ($action === 'login') {
         'email' => $user['email'],
         'role' => $user['role'],
         'is_verified' => (int) $user['is_verified'],
+        'phone' => $user['phone'] ?? '',
+        'address' => $user['address'] ?? '',
+        'profile_photo' => $user['profile_photo'] ?? '',
     ];
 
     header('Location: index.php?page=dashboard');

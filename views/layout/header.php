@@ -18,6 +18,7 @@ function asset_url($path) {
     <link rel="stylesheet" href="<?= asset_url('assets/css/main.css') ?>">
     <link rel="stylesheet" href="<?= base_url('assets/css/auth-modal.css') ?>">
     <link rel="stylesheet" href="<?= base_url('assets/css/footer.css') ?>">
+    <link rel="stylesheet" href="<?= asset_url('assets/css/animations.css') ?>">
     <?php if (isset($dashboard_css) && $dashboard_css === 'admin'): ?>
         <link rel="stylesheet" href="<?= asset_url('assets/css/dashboard_admin.css') ?>">
     <?php elseif (isset($dashboard_css) && $dashboard_css === 'pembeli'): ?>
@@ -84,6 +85,7 @@ $cartAction = $isLoggedIn
     : 'href="#" onclick="openAuthModal(\'login\'); return false;"';
 $adminPendingVerify = 0;
 $adminPendingPayments = 0;
+$providerOrderCount = 0;
 $unreadNotifications = [];
 if ($isLoggedIn && $userRole === 'admin') {
     require_once __DIR__ . '/../../models/UserModel.php';
@@ -92,6 +94,11 @@ if ($isLoggedIn && $userRole === 'admin') {
     $adminPaymentModel = new PaymentModel($pdo);
     $adminPendingVerify = $adminUserModel->countUnverifiedProviders();
     $adminPendingPayments = count($adminPaymentModel->getPending());
+}
+if ($isLoggedIn && $userRole === 'provider') {
+    require_once __DIR__ . '/../../models/OrderModel.php';
+    $headerOrderModel = new OrderModel($pdo);
+    $providerOrderCount = count($headerOrderModel->getByProvider($_SESSION['user']['id']));
 }
 if ($isLoggedIn) {
     require_once __DIR__ . '/../../models/NotificationModel.php';
@@ -111,7 +118,7 @@ $sideNav = [
         ['label' => 'Akun', 'icon' => 'bi-person-circle', 'href' => base_url('index.php?page=account_settings')],
         ['label' => 'Dashboard', 'icon' => 'bi-grid', 'href' => base_url('index.php?page=dashboard')],
         ['label' => 'Produk', 'icon' => 'bi-box-seam', 'href' => base_url('index.php?page=provider_services')],
-        ['label' => 'Pesanan', 'icon' => 'bi-receipt', 'href' => base_url('index.php?page=provider_orders'), 'badge' => '7'],
+        ['label' => 'Pesanan', 'icon' => 'bi-receipt', 'href' => base_url('index.php?page=provider_orders'), 'badge' => $providerOrderCount > 0 ? (string) $providerOrderCount : null],
         ['label' => 'Pengiriman', 'icon' => 'bi-send', 'href' => base_url('index.php?page=provider_shipping')],
         ['label' => 'Statistik', 'icon' => 'bi-bar-chart', 'href' => base_url('index.php?page=provider_earnings')],
         ['label' => 'Ulasan', 'icon' => 'bi-star', 'href' => base_url('index.php?page=provider_reviews')],
@@ -196,8 +203,10 @@ $activeSideNav = $isLoggedIn && isset($sideNav[$userRole]) ? $sideNav[$userRole]
                     </div>
                 <?php endif; ?>
                 <?php if (isset($_SESSION['user'])): ?>
-                    <a href="<?= base_url('index.php?page=notification') ?>" class="header-icon-btn" aria-label="Notifikasi"><i class="bi bi-bell"></i><?php if (count($unreadNotifications) > 0): ?><span><?= count($unreadNotifications) ?></span><?php endif; ?></a>
-                    <a href="<?= base_url('index.php?page=notification') ?>" class="header-icon-btn" aria-label="Pesan"><i class="bi bi-envelope"></i></a>
+                    <a href="<?= base_url('index.php?page=notification') ?>" class="header-icon-btn" aria-label="Notifikasi">
+                        <i class="bi bi-bell"></i>
+                        <?php if (count($unreadNotifications) > 0): ?><span><?= count($unreadNotifications) ?></span><?php endif; ?>
+                    </a>
                     <div class="profile-dropdown-wrapper">
                         <a href="#" class="role-profile" id="profileToggle">
                             <span class="role-profile-avatar" style="<?= $profilePhotoStyle ?>"><?= $profilePhotoExists ? '' : e($userInitial) ?></span>
