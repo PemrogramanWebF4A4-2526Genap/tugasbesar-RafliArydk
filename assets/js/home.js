@@ -167,18 +167,24 @@
         }
     }
 
-    function initViewAll() {
-        const link = document.getElementById('viewAllServices');
-        if (link) {
-            link.addEventListener('click', function (e) {
-                e.preventDefault();
-                setActiveFilter('semua');
-                document.getElementById('heroSearchInput').value = '';
-                smoothScrollTo('#layanan-jasa');
-                showToast('Semua jasa populer ditampilkan', 'info');
-            });
+function initViewAll() {
+    const link = document.getElementById('viewAllServices');
+    if (!link) return;
+    link.addEventListener('click', function (e) {
+        e.preventDefault();
+        setActiveFilter('semua');
+        const searchInput =
+            document.getElementById('heroSearchInput');
+        if (searchInput) {
+            searchInput.value = '';
         }
-    }
+        smoothScrollTo('#layanan-jasa');
+        showToast(
+            'Semua jasa populer ditampilkan',
+            'info'
+        );
+    });
+}
 
     document.addEventListener('DOMContentLoaded', function () {
         if (!document.getElementById('layanan-jasa')) return;

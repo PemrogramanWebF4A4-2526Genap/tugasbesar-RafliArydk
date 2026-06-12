@@ -1,14 +1,20 @@
 /**
- * UI umum: toast, smooth scroll, link anchor
+ * RubyBooks UI Utilities
+ * - Toast Notification
+ * - Smooth Scroll
+ * - Profile Dropdown
+ * - Profile Photo Preview
+ * - URL Hash Handling
  */
+
 (function () {
     'use strict';
-
-    let toastTimer = null;
-
-    window.showToast = function (message, type) {
-        type = type || 'info';
+    /**
+     * TOAST NOTIFICATION
+     */
+    function getToastContainer() {
         let container = document.getElementById('bbToastContainer');
+
         if (!container) {
             container = document.createElement('div');
             container.id = 'bbToastContainer';
@@ -16,172 +22,267 @@
             container.setAttribute('aria-live', 'polite');
             document.body.appendChild(container);
         }
+        return container;
+    }
 
+    window.showToast = function (message, type = 'info') {
+        const container = getToastContainer();
         const icons = {
             success: 'bi-check-circle-fill',
             error: 'bi-exclamation-circle-fill',
-            info: 'bi-info-circle-fill',
             warning: 'bi-exclamation-triangle-fill',
+            info: 'bi-info-circle-fill'
         };
 
         const toast = document.createElement('div');
-        toast.className = 'bb-toast bb-toast--' + type + ' bb-toast--show';
-        toast.innerHTML =
-            '<i class="bi ' + (icons[type] || icons.info) + '" aria-hidden="true"></i>' +
-            '<span>' + message + '</span>' +
-            '<button type="button" class="bb-toast-close" aria-label="Tutup"><i class="bi bi-x"></i></button>';
+        toast.className = `bb-toast bb-toast--${type} bb-toast--show`;
 
-        const close = function () {
+        const icon = document.createElement('i');
+        icon.className = `bi ${icons[type] || icons.info}`;
+        icon.setAttribute('aria-hidden', 'true');
+
+        const text = document.createElement('span');
+        text.textContent = message;
+
+        const closeBtn = document.createElement('button');
+        closeBtn.type = 'button';
+        closeBtn.className = 'bb-toast-close';
+        closeBtn.setAttribute('aria-label', 'Tutup');
+        closeBtn.innerHTML = '<i class="bi bi-x"></i>';
+
+        const closeToast = () => {
             toast.classList.remove('bb-toast--show');
-            setTimeout(function () {
+            setTimeout(() => {
                 toast.remove();
             }, 300);
         };
 
-        toast.querySelector('.bb-toast-close').addEventListener('click', close);
+        closeBtn.addEventListener('click', closeToast);
+
+        toast.append(icon, text, closeBtn);
         container.appendChild(toast);
 
-        clearTimeout(toastTimer);
-        toastTimer = setTimeout(close, 4000);
+        setTimeout(closeToast, 4000);
     };
 
-    window.smoothScrollTo = function (target, offset) {
-        offset = offset || 80;
-        let el = null;
+    /**
+     * SMOOTH SCROLL
+     */
+    window.smoothScrollTo = function (target, offset = 80) {
+        let element = null;
+
         if (typeof target === 'string') {
-            el = document.querySelector(target);
+            element = document.querySelector(target);
         } else if (target instanceof Element) {
-            el = target;
+            element = target;
         }
-        if (!el) return false;
-        const top = el.getBoundingClientRect().top + window.pageYOffset - offset;
-        window.scrollTo({ top: top, behavior: 'smooth' });
+
+        if (!element) return false;
+        const top =
+            element.getBoundingClientRect().top +
+            window.pageYOffset -
+            offset;
+        window.scrollTo({
+            top,
+            behavior: 'smooth'
+        });
         return true;
     };
 
     function initScrollLinks() {
-        document.querySelectorAll('[data-scroll]').forEach(function (link) {
+        document.querySelectorAll('[data-scroll]').forEach(link => {
             link.addEventListener('click', function (e) {
-                const sel = link.getAttribute('data-scroll');
-                const onHome = document.getElementById('layanan-jasa') || document.querySelector('.hero');
-                const isHashOnly = sel && sel.charAt(0) === '#';
-
-                if (isHashOnly && onHome) {
-                    const el = document.querySelector(sel);
-                    if (el) {
-                        e.preventDefault();
-                        smoothScrollTo(el);
-                        const collapse = document.getElementById('navbarMain');
-                        if (collapse && collapse.classList.contains('show')) {
-                            const toggler = document.querySelector('[data-bs-target="#navbarMain"]');
-                            if (toggler) toggler.click();
-                        }
-                    }
+                const selector = this.getAttribute('data-scroll');
+                if (!selector || selector.charAt(0) !== '#') return;
+                const target = document.querySelector(selector);
+                if (!target) return;
+                e.preventDefault();
+                smoothScrollTo(target);
+                const navbar = document.getElementById('navbarMain');
+                if (navbar && navbar.classList.contains('show')) {
+                    document
+                        .querySelector('[data-bs-target="#navbarMain"]')
+                        ?.click();
                 }
             });
         });
     }
 
+    /**
+     * PLACEHOLDER LINKS
+     */
     function initPlaceholderLinks() {
-        document.querySelectorAll('[data-toast]').forEach(function (el) {
-            el.addEventListener('click', function (e) {
-                const msg = el.getAttribute('data-toast');
-                if (!msg) return;
-                if (el.getAttribute('href') === '#' || el.getAttribute('href') === '') {
+        document.querySelectorAll('[data-toast]').forEach(element => {
+            element.addEventListener('click', function (e) {
+                const message = this.getAttribute('data-toast');
+                if (!message) return;
+                const href = this.getAttribute('href');
+                if (href === '#' || href === '') {
                     e.preventDefault();
                 }
-                showToast(msg, el.getAttribute('data-toast-type') || 'info');
+                showToast(
+                    message,
+                    this.getAttribute('data-toast-type') || 'info'
+                );
             });
         });
     }
 
+    /**
+     * PROFILE DROPDOWN
+     */
     function initProfileDropdown() {
-        const profileToggle = document.getElementById('profileToggle');
-        const profileDropdown = document.getElementById('profileDropdown');
-        if (!profileToggle || !profileDropdown) return;
-
-        profileToggle.addEventListener('click', function (e) {
+        const toggle = document.getElementById('profileToggle');
+        const dropdown = document.getElementById('profileDropdown');
+        if (!toggle || !dropdown) return;
+        toggle.addEventListener('click', function (e) {
             e.preventDefault();
-            profileDropdown.classList.toggle('show');
+            dropdown.classList.toggle('show');
         });
 
         document.addEventListener('click', function (e) {
-            if (!profileToggle.contains(e.target) && !profileDropdown.contains(e.target)) {
-                profileDropdown.classList.remove('show');
+            const clickedInside =
+                toggle.contains(e.target) ||
+                dropdown.contains(e.target);
+            if (!clickedInside) {
+                dropdown.classList.remove('show');
             }
         });
 
-        profileDropdown.querySelectorAll('a').forEach(function (link) {
+        dropdown.querySelectorAll('a').forEach(link => {
             if (!link.hasAttribute('data-bs-toggle')) {
-                link.addEventListener('click', function () {
-                    profileDropdown.classList.remove('show');
+                link.addEventListener('click', () => {
+                    dropdown.classList.remove('show');
                 });
             }
         });
     }
 
-    document.addEventListener('DOMContentLoaded', function () {
-        initScrollLinks();
-        initPlaceholderLinks();
-        initProfileDropdown();
-
+    /**
+     * PROFILE PHOTO PREVIEW
+     */
+    function initProfilePhotoPreview() {
         const fileInput = document.getElementById('profilePhotoInput');
         const preview = document.getElementById('profilePhotoPreview');
-        if (fileInput && preview) {
-            fileInput.addEventListener('change', function () {
-                const file = fileInput.files[0];
-                if (!file) {
-                    preview.style.backgroundImage = '';
-                    preview.textContent = preview.dataset.initial || '';
-                    return;
-                }
-                const reader = new FileReader();
-                reader.onload = function (e) {
-                    preview.style.backgroundImage = 'url(' + e.target.result + ')';
-                    preview.textContent = '';
-                };
-                reader.readAsDataURL(file);
-            });
-        }
+        if (!fileInput || !preview) return;
+        fileInput.addEventListener('change', function () {
+            const file = this.files?.[0];
+            if (!file) {
+                preview.style.backgroundImage = '';
+                preview.textContent =
+                    preview.dataset.initial || '';
+                return;
+            }
+            if (!file.type.startsWith('image/')) {
+                showToast(
+                    'File harus berupa gambar.',
+                    'warning'
+                );
+                this.value = '';
+                return;
+            }
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                preview.style.backgroundImage =
+                    `url(${e.target.result})`;
+                preview.textContent = '';
+            };
+            reader.readAsDataURL(file);
+        });
+    }
 
-        const params = new URLSearchParams(window.location.search);
+    /**
+     * PROFILE STATUS TOAST
+     */
+    function handleProfileStatus() {
+        const params = new URLSearchParams(
+            window.location.search
+        );
+
         if (params.get('profile_status') === 'success') {
-            showToast('Profil berhasil disimpan.', 'success');
+            showToast(
+                'Profil berhasil disimpan.',
+                'success'
+            );
             params.delete('profile_status');
             params.delete('profile_error');
             const query = params.toString();
-            history.replaceState(null, '', window.location.pathname + (query ? '?' + query : ''));
+            history.replaceState(
+                null,
+                '',
+                window.location.pathname +
+                    (query ? '?' + query : '')
+            );
         }
-        if (params.get('profile_error')) {
-            showToast(decodeURIComponent(params.get('profile_error')), 'error');
+        const error = params.get('profile_error');
+        if (error) {
+            showToast(error, 'error');
             params.delete('profile_error');
             const query = params.toString();
-            history.replaceState(null, '', window.location.pathname + (query ? '?' + query : ''));
+            history.replaceState(
+                null,
+                '',
+                window.location.pathname +
+                    (query ? '?' + query : '')
+            );
         }
+    }
 
-        function maybeOpenProfileSettingsModal(hash) {
-            if (hash === '#profile-settings') {
-                const profileModal = document.querySelector('#profileSettingsModal');
-                if (profileModal) {
-                    const modal = new bootstrap.Modal(profileModal);
-                    modal.show();
-                    return true;
-                }
-            }
+    /**
+     * HASH HANDLER
+     */
+    function openProfileSettingsModal() {
+        const modalElement = document.getElementById(
+            'profileSettingsModal'
+        );
+        if (!modalElement) return false;
+        if (
+            typeof bootstrap === 'undefined' ||
+            !bootstrap.Modal
+        ) {
+            console.warn(
+                'Bootstrap Modal belum tersedia.'
+            );
             return false;
         }
 
-        if (window.location.hash) {
-            const hash = window.location.hash;
-            setTimeout(function () {
-                if (!maybeOpenProfileSettingsModal(hash)) {
-                    smoothScrollTo(hash);
-                }
-            }, 200);
+        const modal =
+            bootstrap.Modal.getOrCreateInstance(
+                modalElement
+            );
+        modal.show();
+        return true;
+    }
+
+    function handleHash(hash) {
+        if (!hash) return;
+        if (hash === '#profile-settings') {
+            openProfileSettingsModal();
+            return;
         }
 
-        window.addEventListener('hashchange', function () {
-            maybeOpenProfileSettingsModal(window.location.hash);
-        });
-    });
+        smoothScrollTo(hash);
+    }
+    /**
+     * INITIALIZATION
+     */
+    document.addEventListener(
+        'DOMContentLoaded',
+        function () {
+            initScrollLinks();
+            initPlaceholderLinks();
+            initProfileDropdown();
+            initProfilePhotoPreview();
+            handleProfileStatus();
+            if (window.location.hash) {
+                setTimeout(() => {
+                    handleHash(window.location.hash);
+                }, 200);
+            }
+            window.addEventListener(
+                'hashchange',
+                () => handleHash(window.location.hash)
+            );
+        }
+    );
 })();
