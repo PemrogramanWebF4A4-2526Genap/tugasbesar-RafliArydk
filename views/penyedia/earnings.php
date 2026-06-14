@@ -96,14 +96,18 @@ $statusCounts = [
         <div class="col-lg-8">
             <div class="card border-0 shadow-sm rounded-4 p-4">
                 <h5 class="fw-bold mb-3"><i class="bi bi-graph-up me-2"></i>Tren Pesanan & Pendapatan</h5>
-                <canvas id="trendChart" height="280"></canvas>
+                <div class="chart-shell chart-shell-lg">
+                    <canvas id="trendChart"></canvas>
+                </div>
             </div>
         </div>
         <!-- Pie Chart: Status Distribution -->
         <div class="col-lg-4">
             <div class="card border-0 shadow-sm rounded-4 p-4">
                 <h5 class="fw-bold mb-3"><i class="bi bi-pie-chart me-2"></i>Distribusi Status</h5>
-                <canvas id="statusChart" height="280"></canvas>
+                <div class="chart-shell">
+                    <canvas id="statusChart"></canvas>
+                </div>
             </div>
         </div>
     </div>
@@ -113,7 +117,9 @@ $statusCounts = [
         <div class="col-12">
             <div class="card border-0 shadow-sm rounded-4 p-4">
                 <h5 class="fw-bold mb-3"><i class="bi bi-bar-chart me-2"></i>Pendapatan per Bulan</h5>
-                <canvas id="revenueChart" height="200"></canvas>
+                <div class="chart-shell chart-shell-sm">
+                    <canvas id="revenueChart"></canvas>
+                </div>
             </div>
         </div>
     </div>
@@ -161,6 +167,7 @@ document.addEventListener('DOMContentLoaded', function() {
         },
         options: {
             responsive: true,
+            maintainAspectRatio: false,
             interaction: { mode: 'index', intersect: false },
             plugins: { legend: { position: 'top' } },
             scales: {
@@ -189,6 +196,7 @@ document.addEventListener('DOMContentLoaded', function() {
         },
         options: {
             responsive: true,
+            maintainAspectRatio: false,
             plugins: {
                 legend: { position: 'bottom' }
             }
@@ -211,6 +219,7 @@ document.addEventListener('DOMContentLoaded', function() {
         },
         options: {
             responsive: true,
+            maintainAspectRatio: false,
             plugins: { legend: { display: false } },
             scales: {
                 y: {

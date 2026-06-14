@@ -96,27 +96,43 @@
     }
 
     function initProfileDropdown() {
-        const profileToggle = document.getElementById('profileToggle');
-        const profileDropdown = document.getElementById('profileDropdown');
-        if (!profileToggle || !profileDropdown) return;
+        var wrappers = document.querySelectorAll('.profile-dropdown-wrapper');
+        if (!wrappers.length) return;
 
-        profileToggle.addEventListener('click', function (e) {
-            e.preventDefault();
-            profileDropdown.classList.toggle('show');
+        wrappers.forEach(function (wrapper) {
+            var toggle = wrapper.querySelector('.role-profile');
+            var dropdown = wrapper.querySelector('.profile-dropdown');
+            if (!toggle || !dropdown) return;
+
+            toggle.addEventListener('click', function (e) {
+                e.preventDefault();
+                /* close every other dropdown first */
+                wrappers.forEach(function (w) {
+                    if (w !== wrapper) {
+                        var d = w.querySelector('.profile-dropdown');
+                        if (d) d.classList.remove('show');
+                    }
+                });
+                dropdown.classList.toggle('show');
+            });
+
+            dropdown.querySelectorAll('a').forEach(function (link) {
+                if (!link.hasAttribute('data-bs-toggle')) {
+                    link.addEventListener('click', function () {
+                        dropdown.classList.remove('show');
+                    });
+                }
+            });
         });
 
         document.addEventListener('click', function (e) {
-            if (!profileToggle.contains(e.target) && !profileDropdown.contains(e.target)) {
-                profileDropdown.classList.remove('show');
-            }
-        });
-
-        profileDropdown.querySelectorAll('a').forEach(function (link) {
-            if (!link.hasAttribute('data-bs-toggle')) {
-                link.addEventListener('click', function () {
-                    profileDropdown.classList.remove('show');
-                });
-            }
+            wrappers.forEach(function (wrapper) {
+                var toggle = wrapper.querySelector('.role-profile');
+                var dropdown = wrapper.querySelector('.profile-dropdown');
+                if (toggle && dropdown && !toggle.contains(e.target) && !dropdown.contains(e.target)) {
+                    dropdown.classList.remove('show');
+                }
+            });
         });
     }
 

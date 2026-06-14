@@ -31,34 +31,36 @@ $recentOrders = array_slice($orders, 0, 5);
         <?php if (empty($recentOrders)): ?>
             <p class="text-muted">Belum ada pesanan.</p>
         <?php else: ?>
-        <table class="table">
-            <thead><tr><th>No. Pesanan</th><th>Pembeli</th><th>Total</th><th>Tanggal</th><th>Status</th></tr></thead>
-            <tbody>
-                <?php foreach ($recentOrders as $o): ?>
-                <tr>
-                    <td><?= e($o['order_number']) ?></td>
-                    <td><?= e($o['buyer_name']) ?></td>
-                    <td>Rp <?= number_format($o['total_price'], 0, ',', '.') ?></td>
-                    <td><?= date('d M Y', strtotime($o['created_at'])) ?></td>
-                    <td>
-                        <?php
-                        $statusMap = [
-                            'pending' => ['Menunggu', 'secondary'],
-                            'waiting_payment' => ['Menunggu Bayar', 'warning'],
-                            'paid' => ['Dibayar', 'info'],
-                            'accepted' => ['Diterima', 'primary'],
-                            'in_progress' => ['Proses', 'warning'],
-                            'completed' => ['Selesai', 'success'],
-                            'cancelled' => ['Dibatalkan', 'danger'],
-                        ];
-                        $s = $statusMap[$o['status']] ?? ['Unknown', 'secondary'];
-                        ?>
-                        <span class="badge bg-<?= $s[1] ?>"><?= $s[0] ?></span>
-                    </td>
-                </tr>
-                <?php endforeach; ?>
-            </tbody>
-        </table>
+        <div class="table-responsive">
+            <table class="table">
+                <thead><tr><th>No. Pesanan</th><th>Pembeli</th><th>Total</th><th>Tanggal</th><th>Status</th></tr></thead>
+                <tbody>
+                    <?php foreach ($recentOrders as $o): ?>
+                    <tr>
+                        <td><?= e($o['order_number']) ?></td>
+                        <td><?= e($o['buyer_name']) ?></td>
+                        <td>Rp <?= number_format($o['total_price'], 0, ',', '.') ?></td>
+                        <td><?= date('d M Y', strtotime($o['created_at'])) ?></td>
+                        <td>
+                            <?php
+                            $statusMap = [
+                                'pending' => ['Menunggu', 'secondary'],
+                                'waiting_payment' => ['Menunggu Bayar', 'warning'],
+                                'paid' => ['Dibayar', 'info'],
+                                'accepted' => ['Diterima', 'primary'],
+                                'in_progress' => ['Proses', 'warning'],
+                                'completed' => ['Selesai', 'success'],
+                                'cancelled' => ['Dibatalkan', 'danger'],
+                            ];
+                            $s = $statusMap[$o['status']] ?? ['Unknown', 'secondary'];
+                            ?>
+                            <span class="badge bg-<?= $s[1] ?>"><?= $s[0] ?></span>
+                        </td>
+                    </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
         <?php endif; ?>
     </div>
 </div>

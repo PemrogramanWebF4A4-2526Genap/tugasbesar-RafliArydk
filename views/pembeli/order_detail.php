@@ -32,10 +32,10 @@ $progress = $currentIndex === false ? 10 : (($currentIndex + 1) / count($steps))
         <div class="col-md-8">
             <div class="card rounded-4 shadow-sm p-4">
                 <h5>Status Pesanan</h5>
-                <div class="progress mb-3" style="height: 10px;">
+                <div class="progress order-progress mb-3" style="height: 10px;">
                     <div class="progress-bar bg-warning" style="width: <?= (int) $progress ?>%"></div>
                 </div>
-                <ul class="list-unstyled d-flex justify-content-between gap-2 small">
+                <ul class="list-unstyled order-steps d-flex justify-content-between gap-2 small">
                     <?php foreach ($steps as $step): ?>
                         <?php [$label] = order_status_info($step); ?>
                         <li class="text-center"><?= e($label) ?></li>

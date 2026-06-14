@@ -34,8 +34,7 @@ body {
     opacity: 0;
     transition:
         opacity var(--bb-motion-slow) var(--bb-motion-ease),
-        transform var(--bb-motion-slow) var(--bb-motion-ease),
-        filter var(--bb-motion-slow) var(--bb-motion-ease);
+        transform var(--bb-motion-slow) var(--bb-motion-ease);
     transition-delay: var(--bb-stagger-delay, 0ms);
     will-change: opacity, transform;
 }
@@ -44,12 +43,11 @@ body {
 .animate-on-scroll.fade-down { transform: translate3d(0, -22px, 0); }
 .animate-on-scroll.fade-left { transform: translate3d(26px, 0, 0); }
 .animate-on-scroll.fade-right { transform: translate3d(-26px, 0, 0); }
-.animate-on-scroll.zoom-in { transform: scale(.96); filter: saturate(.88); }
+.animate-on-scroll.zoom-in { transform: scale(.96); }
 
 .animate-on-scroll.in-view {
     opacity: 1;
     transform: translate3d(0, 0, 0) scale(1);
-    filter: saturate(1);
 }
 
 .card,
@@ -75,6 +73,7 @@ body {
         box-shadow var(--bb-motion-base) var(--bb-motion-ease),
         border-color var(--bb-motion-base) ease,
         background-color var(--bb-motion-base) ease;
+    will-change: transform;
 }
 
 .card:hover,
@@ -296,12 +295,11 @@ input:focus {
 }
 
 .table tbody tr {
-    transition: background-color var(--bb-motion-fast) ease, transform var(--bb-motion-fast) ease;
+    transition: background-color var(--bb-motion-fast) ease;
 }
 
 .table tbody tr:hover {
     background-color: rgba(37, 99, 235, .07);
-    transform: translateX(3px);
 }
 
 .pagination .page-link {
@@ -335,7 +333,7 @@ input:focus {
 .profile-photo,
 .role-profile-avatar,
 .profile-dropdown-avatar {
-    transition: transform var(--bb-motion-base) var(--bb-motion-ease), filter var(--bb-motion-base) ease;
+    transition: transform var(--bb-motion-base) var(--bb-motion-ease);
 }
 
 .service-card:hover img,
@@ -344,7 +342,6 @@ input:focus {
 .profile-photo:hover,
 .role-profile:hover .role-profile-avatar {
     transform: scale(1.04);
-    filter: saturate(1.08);
 }
 
 .bb-toast,

@@ -139,9 +139,53 @@ $activeSideNav = $isLoggedIn && isset($sideNav[$userRole]) ? $sideNav[$userRole]
 <nav class="navbar navbar-expand-lg navbar-custom navbar-dark sticky-top role-header role-header-<?= e($userRole ?? 'guest') ?>">
     <div class="container role-header-container">
         <a class="navbar-brand" href="<?= base_url('index.php?page=home') ?>">BisaBantu<span>.</span></a>
-        <?php if ($isLoggedIn && $userRole !== 'buyer'): ?>
-            <span class="header-role-text"><?= e($roleShortLabel) ?></span>
+
+        <?php if ($isLoggedIn): ?>
+        <!-- Mobile-only quick actions: cart, notifications, profile avatar -->
+        <div class="d-flex d-lg-none align-items-center gap-2 mobile-actions">
+            <?php if ($userRole === 'buyer'): ?>
+                <div class="cart-nav">
+                    <a class="cart-nav-btn" <?= $cartAction ?> aria-label="Buka keranjang">
+                        <i class="bi bi-cart3"></i>
+                        <span class="cart-nav-badge"><?= $cartCount ?></span>
+                    </a>
+                </div>
+            <?php endif; ?>
+            <a href="<?= base_url('index.php?page=notification') ?>" class="header-icon-btn" aria-label="Notifikasi">
+                <i class="bi bi-bell"></i>
+                <?php if (count($unreadNotifications) > 0): ?><span><?= count($unreadNotifications) ?></span><?php endif; ?>
+            </a>
+            <div class="profile-dropdown-wrapper">
+                <a href="#" class="role-profile" aria-label="Menu profil">
+                    <span class="role-profile-avatar" style="<?= $profilePhotoStyle ?>"><?= $profilePhotoExists ? '' : e($userInitial) ?></span>
+                </a>
+                <div class="profile-dropdown">
+                    <div class="profile-dropdown-header">
+                        <div class="profile-dropdown-avatar" style="<?= $profilePhotoStyle ?>"><?= $profilePhotoExists ? '' : e($userInitial) ?></div>
+                        <div>
+                            <strong><?= e($userName) ?></strong>
+                            <small><?= e($_SESSION['user']['email'] ?? '') ?></small>
+                        </div>
+                    </div>
+                    <hr class="my-2">
+                    <a href="<?= base_url('index.php?page=dashboard') ?>" class="profile-dropdown-item">Dashboard</a>
+                    <a href="<?= base_url('index.php?page=account_settings') ?>" class="profile-dropdown-item">Pengaturan Profile</a>
+                    <a href="<?= base_url('index.php?page=auth&action=logout') ?>" class="profile-dropdown-item text-danger">Logout</a>
+                </div>
+            </div>
+        </div>
+        <?php else: ?>
+        <!-- Guest mobile: only cart icon -->
+        <div class="d-flex d-lg-none align-items-center gap-2 mobile-actions">
+            <div class="cart-nav">
+                <a class="cart-nav-btn" <?= $cartAction ?> aria-label="Buka keranjang">
+                    <i class="bi bi-cart3"></i>
+                    <span class="cart-nav-badge"><?= $cartCount ?></span>
+                </a>
+            </div>
+        </div>
         <?php endif; ?>
+
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain" aria-controls="navbarMain" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -162,7 +206,8 @@ $activeSideNav = $isLoggedIn && isset($sideNav[$userRole]) ? $sideNav[$userRole]
                 <li class="nav-item"><a class="nav-link" href="<?= $homeUrl ?>#cara-kerja" data-scroll="#cara-kerja">Cara Kerja</a></li>
                 <li class="nav-item"><a class="nav-link" href="<?= $homeUrl ?>#testimoni" data-scroll="#testimoni">Tentang Kami</a></li>
             </ul>
-            <div class="d-flex gap-2 align-items-center role-actions">
+            <!-- Desktop-only actions (hidden on mobile via d-none d-lg-flex) -->
+            <div class="d-none d-lg-flex gap-2 align-items-center role-actions">
                 <?php if ($isLoggedIn && $userRole === 'provider'): ?>
                     <a href="<?= base_url('index.php?page=dashboard') ?>" class="btn btn-outline-custom btn-dashboard">
                         <i class="bi bi-grid me-1"></i>Dashboard
@@ -208,14 +253,14 @@ $activeSideNav = $isLoggedIn && isset($sideNav[$userRole]) ? $sideNav[$userRole]
                         <?php if (count($unreadNotifications) > 0): ?><span><?= count($unreadNotifications) ?></span><?php endif; ?>
                     </a>
                     <div class="profile-dropdown-wrapper">
-                        <a href="#" class="role-profile" id="profileToggle">
+                        <a href="#" class="role-profile">
                             <span class="role-profile-avatar" style="<?= $profilePhotoStyle ?>"><?= $profilePhotoExists ? '' : e($userInitial) ?></span>
                             <span class="role-profile-copy">
                                 <strong><?= e($userName) ?></strong>
                                 <small><?= e($roleLabel) ?></small>
                             </span>
                         </a>
-                        <div class="profile-dropdown" id="profileDropdown">
+                        <div class="profile-dropdown">
                             <div class="profile-dropdown-header">
                                 <div class="profile-dropdown-avatar" style="<?= $profilePhotoStyle ?>"><?= $profilePhotoExists ? '' : e($userInitial) ?></div>
                                 <div>

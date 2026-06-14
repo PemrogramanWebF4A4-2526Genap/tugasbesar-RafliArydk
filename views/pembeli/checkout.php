@@ -48,12 +48,12 @@ if (isset($_GET['error'])) {
                         <div class="checkout-card">
                             <div class="card-body">
                                 <div class="checkout-section mb-4">
-                                    <div class="d-flex flex-column flex-md-row justify-content-between gap-3 align-items-start">
-                                        <div>
+                                    <div class="row g-3 align-items-start">
+                                        <div class="col-12 col-md-8">
                                             <div class="checkout-section-title">Alamat Pelaksanaan</div>
                                             <textarea name="service_address" class="form-control" rows="3" required><?= e($userAddress) ?></textarea>
                                         </div>
-                                        <div>
+                                        <div class="col-12 col-md-4">
                                             <div class="checkout-section-title">Tanggal Pelaksanaan</div>
                                             <input type="date" name="service_date" class="form-control" required>
                                         </div>

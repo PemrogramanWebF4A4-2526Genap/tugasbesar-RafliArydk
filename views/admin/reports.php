@@ -73,7 +73,9 @@ foreach ($monthlyData as $row) {
                 <div class="col-lg-7">
                     <div class="admin-chart-panel">
                         <h3>Pendapatan 6 Bulan Terakhir</h3>
-                        <canvas id="revenueChart" height="220"></canvas>
+                        <div class="chart-shell">
+                            <canvas id="revenueChart"></canvas>
+                        </div>
                     </div>
                 </div>
                 <div class="col-lg-5">
@@ -119,6 +121,7 @@ document.addEventListener('DOMContentLoaded', function () {
         },
         options: {
             responsive: true,
+            maintainAspectRatio: false,
             plugins: { legend: { display: false } },
             scales: {
                 y: {

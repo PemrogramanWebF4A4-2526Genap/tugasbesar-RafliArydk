@@ -849,6 +849,64 @@ body > .site-footer {
     text-decoration: line-through;
     font-size: 0.9rem;
 }
+
+.table-responsive {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(181, 69, 27, 0.42) rgba(28, 26, 22, 0.06);
+}
+
+.table-responsive::-webkit-scrollbar {
+    height: 8px;
+}
+
+.table-responsive::-webkit-scrollbar-track {
+    background: rgba(28, 26, 22, 0.06);
+    border-radius: 999px;
+}
+
+.table-responsive::-webkit-scrollbar-thumb {
+    background: rgba(181, 69, 27, 0.42);
+    border-radius: 999px;
+}
+
+.table-responsive::-webkit-scrollbar-thumb:hover {
+    background: rgba(181, 69, 27, 0.62);
+}
+
+.order-progress {
+    min-width: 0;
+}
+
+.order-steps {
+    flex-wrap: wrap;
+}
+
+.order-steps li {
+    flex: 1 1 92px;
+    min-width: 0;
+    line-height: 1.25;
+    overflow-wrap: anywhere;
+}
+
+.chart-shell {
+    position: relative;
+    width: 100%;
+    height: clamp(240px, 36vh, 320px);
+}
+
+.chart-shell-sm {
+    height: clamp(220px, 32vh, 280px);
+}
+
+.chart-shell-lg {
+    height: clamp(260px, 40vh, 360px);
+}
+
+.chart-shell canvas {
+    display: block;
+    width: 100% !important;
+    height: 100% !important;
+}
 .cart-qty {
     width: 96px;
     height: 34px;
@@ -1910,7 +1968,7 @@ body > .site-footer {
     color: var(--cream);
 }
 
-@media (max-width: 768px) {
+@media (max-width: 991.98px) {
     body.has-role-sidebar {
         padding-left: 0;
         padding-bottom: 74px;
@@ -1994,6 +2052,7 @@ body > .site-footer {
     }
     .cart-product {
         grid-template-columns: auto 74px minmax(0, 1fr);
+        gap: 12px;
     }
     .cart-product-price {
         grid-column: 3;
@@ -2001,5 +2060,82 @@ body > .site-footer {
     }
     .cart-summary {
         position: static;
+    }
+}
+
+@media (max-width: 575.98px) {
+    .role-header-container {
+        padding-left: 12px;
+        padding-right: 12px;
+    }
+
+    .mobile-actions {
+        margin-left: auto;
+    }
+
+    .mobile-actions .cart-nav-btn,
+    .mobile-actions .header-icon-btn,
+    .mobile-actions .role-profile-avatar {
+        width: 36px;
+        height: 36px;
+    }
+
+    .mobile-actions .role-profile {
+        padding: 0;
+        min-width: 0;
+    }
+
+    .mobile-actions .profile-dropdown {
+        position: fixed;
+        top: 68px;
+        right: 12px;
+        width: min(320px, calc(100vw - 24px));
+    }
+
+    .cart-product {
+        grid-template-columns: auto minmax(0, 1fr);
+        align-items: start;
+    }
+
+    .cart-product-thumb {
+        grid-column: 2;
+        width: 68px;
+        height: 68px;
+    }
+
+    .cart-product-info,
+    .cart-product-price {
+        grid-column: 2;
+    }
+
+    .cart-product-check {
+        grid-row: 1 / span 3;
+    }
+
+    .cart-product-price {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 4px 10px;
+        align-items: baseline;
+    }
+
+    .cart-actions {
+        flex-wrap: wrap;
+    }
+
+    .order-steps {
+        justify-content: flex-start !important;
+        font-size: 0.72rem;
+    }
+
+    .order-steps li {
+        flex-basis: calc(50% - 8px);
+        text-align: left !important;
+    }
+
+    .chart-shell,
+    .chart-shell-sm,
+    .chart-shell-lg {
+        height: 260px;
     }
 }
