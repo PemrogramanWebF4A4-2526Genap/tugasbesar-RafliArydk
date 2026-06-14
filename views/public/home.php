@@ -64,10 +64,22 @@ if (!empty($ratingRows)) {
                     </div>
                 </form>
                 <div class="hero-stats-row">
-                    <div class="stat-card"><div class="stat-number"><?= (int) $activeServiceCount ?></div><div class="stat-label">Jasa tersedia</div></div>
-                    <div class="stat-card"><div class="stat-number"><?= (int) $verifiedProviderCount ?></div><div class="stat-label">Penyedia terverifikasi</div></div>
-                    <div class="stat-card"><div class="stat-number"><?= (int) $completedOrderCount ?></div><div class="stat-label">Pesanan selesai</div></div>
-                    <div class="stat-card"><div class="stat-number"><?= $avgRating > 0 ? e(number_format($avgRating, 1)) : '0.0' ?></div><div class="stat-label">Rating rata-rata</div></div>
+                    <div class="stat-card">
+                        <div class="stat-number"><?= (int) $activeServiceCount ?></div>
+                        <div class="stat-label">Jasa tersedia</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number"><?= (int) $verifiedProviderCount ?></div>
+                        <div class="stat-label">Penyedia terverifikasi</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number"><?= (int) $completedOrderCount ?></div>
+                        <div class="stat-label">Pesanan selesai</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number"><?= $avgRating > 0 ? e(number_format($avgRating, 1)) : '0.0' ?></div>
+                        <div class="stat-label">Rating rata-rata</div>
+                    </div>
                 </div>
             </div>
             <div class="col-lg-6 d-none d-lg-block hero-visual img">
@@ -196,10 +208,34 @@ if (!empty($ratingRows)) {
             <p class="section-sub">Dari pencarian hingga jasa selesai, semuanya di satu platform</p>
         </div>
         <div class="row g-4">
-            <div class="col-md-3"><div class="step-card"><div class="step-number">1</div><h5>Cari jasa</h5><p class="small section-sub">Gunakan filter kategori, lokasi, dan harga untuk menemukan jasa yang paling sesuai.</p></div></div>
-            <div class="col-md-3"><div class="step-card"><div class="step-number">2</div><h5>Pesan & checkout</h5><p class="small section-sub">Tambahkan ke keranjang, pilih tanggal pelaksanaan dan metode pembayaran, lalu buat pesanan.</p></div></div>
-            <div class="col-md-3"><div class="step-card"><div class="step-number">3</div><h5>Bayar dengan aman</h5><p class="small section-sub">Upload bukti transfer atau bayar tunai. Dana hanya diteruskan setelah pekerjaan selesai.</p></div></div>
-            <div class="col-md-3"><div class="step-card"><div class="step-number">4</div><h5>Beri ulasan</h5><p class="small section-sub">Setelah selesai, beri rating dan komentar untuk membantu pengguna lain.</p></div></div>
+            <div class="col-md-3">
+                <div class="step-card">
+                    <div class="step-number">1</div>
+                    <h5>Cari jasa</h5>
+                    <p class="small section-sub">Gunakan filter kategori, lokasi, dan harga untuk menemukan jasa yang paling sesuai.</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="step-card">
+                    <div class="step-number">2</div>
+                    <h5>Pesan & checkout</h5>
+                    <p class="small section-sub">Tambahkan ke keranjang, pilih tanggal pelaksanaan dan metode pembayaran, lalu buat pesanan.</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="step-card">
+                    <div class="step-number">3</div>
+                    <h5>Bayar dengan aman</h5>
+                    <p class="small section-sub">Upload bukti transfer atau bayar tunai. Dana hanya diteruskan setelah pekerjaan selesai.</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="step-card">
+                    <div class="step-number">4</div>
+                    <h5>Beri ulasan</h5>
+                    <p class="small section-sub">Setelah selesai, beri rating dan komentar untuk membantu pengguna lain.</p>
+                </div>
+            </div>
         </div>
     </div>
 </section>
@@ -213,25 +249,36 @@ if (!empty($ratingRows)) {
     <div class="row g-4">
         <div class="col-md-4">
             <div class="testimonial-card">
-                <div class="d-flex gap-3 mb-2"><i class="bi bi-person-circle fs-1 section-sub"></i><div><h5 class="mb-0">Nita Permata</h5><small class="section-sub">Pembeli - Jakarta</small></div></div>
+                <div class="d-flex gap-3 mb-2"><i class="bi bi-person-circle fs-1 section-sub"></i>
+                    <div>
+                        <h5 class="mb-0">Nita Permata</h5><small class="section-sub">Pembeli - Jakarta</small>
+                    </div>
+                </div>
                 <div class="rating mb-2">★★★★★</div>
                 <p class="section-sub mb-0">Sangat mudah digunakan! Saya menemukan cleaning service yang bagus dalam hitungan menit. Penyedianya ramah dan profesional.</p>
             </div>
         </div>
         <div class="col-md-4">
             <div class="testimonial-card">
-                <div class="d-flex gap-3 mb-2"><i class="bi bi-person-circle fs-1 section-sub"></i><div><h5 class="mb-0">Rizki Kurniawan</h5><small class="section-sub">Penyedia Jasa - Bandung</small></div></div>
+                <div class="d-flex gap-3 mb-2"><i class="bi bi-person-circle fs-1 section-sub"></i>
+                    <div>
+                        <h5 class="mb-0">Rizki Kurniawan</h5><small class="section-sub">Penyedia Jasa - Bandung</small>
+                    </div>
+                </div>
                 <div class="rating mb-2">★★★★★</div>
                 <p class="section-sub mb-0">Sebagai penyedia, platform ini sangat membantu. Pesanan datang terus dan sistem pembayarannya transparan dan aman.</p>
             </div>
         </div>
         <div class="col-md-4">
             <div class="testimonial-card">
-                <div class="d-flex gap-3 mb-2"><i class="bi bi-person-circle fs-1 section-sub"></i><div><h5 class="mb-0">Maya Andriani</h5><small class="section-sub">Pembeli - Surabaya</small></div></div>
+                <div class="d-flex gap-3 mb-2"><i class="bi bi-person-circle fs-1 section-sub"></i>
+                    <div>
+                        <h5 class="mb-0">Maya Andriani</h5><small class="section-sub">Pembeli - Surabaya</small>
+                    </div>
+                </div>
                 <div class="rating mb-2">★★★★★</div>
                 <p class="section-sub mb-0">Les matematika anak saya meningkat pesat. Mudah booking dan gurunya bisa datang ke rumah sesuai jadwal yang kita tentukan.</p>
             </div>
         </div>
     </div>
 </section>
-
