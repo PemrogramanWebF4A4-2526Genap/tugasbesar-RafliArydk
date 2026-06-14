@@ -1,5 +1,4 @@
 /**
- * RubyBooks UI Utilities
  * - Toast Notification
  * - Smooth Scroll
  * - Profile Dropdown
