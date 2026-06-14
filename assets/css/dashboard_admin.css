@@ -343,7 +343,31 @@
     display: flex;
     gap: 8px;
     margin-bottom: 18px;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    max-width: 100%;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(181, 69, 27, 0.42) rgba(28, 26, 22, 0.06);
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x proximity;
+}
+
+.admin-tabs::-webkit-scrollbar {
+    height: 8px;
+}
+
+.admin-tabs::-webkit-scrollbar-track {
+    background: rgba(28, 26, 22, 0.06);
+    border-radius: 999px;
+}
+
+.admin-tabs::-webkit-scrollbar-thumb {
+    background: rgba(181, 69, 27, 0.42);
+    border-radius: 999px;
+}
+
+.admin-tabs::-webkit-scrollbar-thumb:hover {
+    background: rgba(181, 69, 27, 0.62);
 }
 
 .admin-tabs a {
@@ -354,6 +378,9 @@
     text-decoration: none;
     font-size: 0.88rem;
     font-weight: 600;
+    white-space: nowrap;
+    flex-shrink: 0;
+    scroll-snap-align: start;
 }
 
 .admin-tabs a.active,

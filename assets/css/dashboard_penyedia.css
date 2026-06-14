@@ -59,3 +59,41 @@
     background: #dc3545;
     color: white;
 }
+
+/* Modal jasa — tema terang, override style modal gelap global */
+.service-modal .modal-content {
+    background: #fff;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    color: var(--text-dark);
+}
+
+.service-modal .modal-header {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.service-modal .modal-body {
+    color: var(--text-dark);
+}
+
+.service-modal .modal-body .form-label {
+    color: var(--text-dark);
+    font-weight: 600;
+    font-size: 0.85rem;
+}
+
+.service-modal .modal-body .form-control,
+.service-modal .modal-body .form-select,
+.service-modal .modal-body textarea {
+    background: #fff;
+    border: 1px solid #dee2e6;
+    color: var(--text-dark);
+}
+
+.service-modal .modal-body .form-control:focus,
+.service-modal .modal-body .form-select:focus,
+.service-modal .modal-body textarea:focus {
+    background: #fff;
+    border-color: var(--orange-primary);
+    color: var(--text-dark);
+    box-shadow: 0 0 0 0.2rem rgba(215, 90, 43, 0.15);
+}

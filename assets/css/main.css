@@ -97,10 +97,15 @@ body > .site-footer {
     color: var(--cream) !important;
 }
 .navbar .navbar-toggler {
-    border-color: rgba(255, 255, 255, 0.25);
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    border-radius: 10px;
+    padding: 0.45rem 0.6rem;
 }
-.navbar .navbar-toggler-icon {
-    filter: invert(1);
+
+.navbar-dark .navbar-toggler-icon {
+    width: 1.35em;
+    height: 1.35em;
+    background-size: 100%;
 }
 .navbar .nav-link.text-user {
     color: var(--gold) !important;
@@ -183,7 +188,8 @@ body > .site-footer {
     background: rgba(255, 255, 255, 0.13);
 }
 
-.header-icon-btn span {
+.header-icon-btn span,
+.header-icon-badge {
     position: absolute;
     top: -4px;
     right: -3px;
@@ -198,6 +204,10 @@ body > .site-footer {
     color: #fff;
     font-size: 0.62rem;
     font-weight: 800;
+    line-height: 1;
+    z-index: 4;
+    box-shadow: 0 0 0 2px var(--ink);
+    pointer-events: none;
 }
 
 .role-profile {
@@ -570,6 +580,10 @@ body > .site-footer {
     position: absolute;
     top: -7px;
     right: -8px;
+    z-index: 4;
+    line-height: 1;
+    box-shadow: 0 0 0 2px var(--ink);
+    pointer-events: none;
 }
 .cart-preview {
     width: min(440px, calc(100vw - 32px));
@@ -1181,6 +1195,30 @@ body > .site-footer {
     background: #fbfaf7;
     border-bottom: 1px solid rgba(28, 26, 22, 0.08);
     overflow-x: auto;
+    max-width: 100%;
+    flex-wrap: nowrap;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(181, 69, 27, 0.42) rgba(28, 26, 22, 0.06);
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x proximity;
+}
+
+.account-settings-tabs::-webkit-scrollbar {
+    height: 8px;
+}
+
+.account-settings-tabs::-webkit-scrollbar-track {
+    background: rgba(28, 26, 22, 0.06);
+    border-radius: 999px;
+}
+
+.account-settings-tabs::-webkit-scrollbar-thumb {
+    background: rgba(181, 69, 27, 0.42);
+    border-radius: 999px;
+}
+
+.account-settings-tabs::-webkit-scrollbar-thumb:hover {
+    background: rgba(181, 69, 27, 0.62);
 }
 
 .account-settings-tabs a {
@@ -1195,6 +1233,8 @@ body > .site-footer {
     font-size: 0.86rem;
     font-weight: 700;
     white-space: nowrap;
+    flex-shrink: 0;
+    scroll-snap-align: start;
 }
 
 .account-settings-tabs a.active,
@@ -1974,6 +2014,115 @@ body > .site-footer {
         padding-bottom: 74px;
     }
 
+    .role-header-container {
+        padding-left: 12px;
+        padding-right: 12px;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .role-header .navbar-collapse {
+        margin-top: 10px;
+        padding: 12px 0 4px;
+        border-top: 1px solid rgba(245, 240, 232, 0.12);
+    }
+
+    .role-header .navbar-nav {
+        gap: 2px;
+        width: 100%;
+    }
+
+    .role-header .navbar-nav .nav-link {
+        padding: 0.72rem 0.85rem;
+        border-radius: 10px;
+    }
+
+    .role-header .navbar-nav .nav-link:hover,
+    .role-header .navbar-nav .nav-link.active {
+        background: rgba(255, 255, 255, 0.06);
+    }
+
+    .mobile-auth-panel {
+        margin-top: 14px;
+        padding-top: 14px;
+        border-top: 1px solid rgba(245, 240, 232, 0.12);
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .mobile-menu-link {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 0.72rem 0.85rem;
+        border-radius: 10px;
+        color: rgba(255, 255, 255, 0.92);
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 0.92rem;
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        transition: background-color 0.2s ease, border-color 0.2s ease;
+    }
+
+    .mobile-menu-link:hover {
+        color: #fff;
+        background: rgba(255, 255, 255, 0.08);
+        border-color: rgba(255, 255, 255, 0.14);
+    }
+
+    .mobile-menu-link-danger {
+        color: #ffb4a8;
+        border-color: rgba(231, 76, 60, 0.25);
+        background: rgba(231, 76, 60, 0.08);
+    }
+
+    .mobile-auth-panel .btn {
+        min-height: 44px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .mobile-actions {
+        margin-left: auto;
+        overflow: visible;
+        position: relative;
+        z-index: 2;
+        padding-right: 2px;
+    }
+
+    .mobile-actions .cart-nav,
+    .mobile-actions .header-icon-btn,
+    .mobile-actions .profile-dropdown-wrapper {
+        overflow: visible;
+        position: relative;
+    }
+
+    .mobile-actions .cart-nav-btn,
+    .mobile-actions .header-icon-btn,
+    .mobile-actions .role-profile-avatar {
+        width: 38px;
+        height: 38px;
+        overflow: visible;
+    }
+
+    .mobile-actions .cart-nav-badge,
+    .mobile-actions .header-icon-badge {
+        top: -5px;
+        right: -5px;
+        min-width: 18px;
+        height: 18px;
+        font-size: 0.65rem;
+    }
+
+    .role-header .navbar-toggler {
+        margin-left: 4px;
+        flex-shrink: 0;
+    }
+
     .role-actions {
         border-left: 0;
         padding-left: 0;
@@ -2067,10 +2216,6 @@ body > .site-footer {
     .role-header-container {
         padding-left: 12px;
         padding-right: 12px;
-    }
-
-    .mobile-actions {
-        margin-left: auto;
     }
 
     .mobile-actions .cart-nav-btn,

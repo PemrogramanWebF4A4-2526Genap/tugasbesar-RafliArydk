@@ -102,6 +102,7 @@ if ($action === 'register') {
 
     try {
         $userModel->createUser($name, $email, $hashed, $role, $isVerified, $phone, $address);
+        bisabantu_sync_sql_dump_after_write($pdo);
         $registerParam = $role === 'provider' ? 'success_provider' : 'success';
         header('Location: index.php?page=home&auth=login&register=' . $registerParam);
         exit;
@@ -123,6 +124,7 @@ if ($action === 'register_buyer') {
             $hashed = password_hash($password, PASSWORD_BCRYPT);
             try {
                 $userModel->createUser($name, $email, $hashed, 'buyer', 1, $phone, $address);
+                bisabantu_sync_sql_dump_after_write($pdo);
                 header('Location: index.php?page=home&auth=login&register=success');
                 exit;
             } catch (PDOException $e) {
@@ -151,6 +153,7 @@ if ($action === 'register_provider') {
             $hashed = password_hash($password, PASSWORD_BCRYPT);
             try {
                 $userModel->createUser($name, $email, $hashed, 'provider', 0, $phone, $address);
+                bisabantu_sync_sql_dump_after_write($pdo);
                 header('Location: index.php?page=home&auth=login&register=success_provider');
                 exit;
             } catch (PDOException $e) {

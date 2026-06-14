@@ -147,13 +147,13 @@ $activeSideNav = $isLoggedIn && isset($sideNav[$userRole]) ? $sideNav[$userRole]
                 <div class="cart-nav">
                     <a class="cart-nav-btn" <?= $cartAction ?> aria-label="Buka keranjang">
                         <i class="bi bi-cart3"></i>
-                        <span class="cart-nav-badge"><?= $cartCount ?></span>
+                        <?php if ($cartCount > 0): ?><span class="cart-nav-badge"><?= $cartCount ?></span><?php endif; ?>
                     </a>
                 </div>
             <?php endif; ?>
-            <a href="<?= base_url('index.php?page=notification') ?>" class="header-icon-btn" aria-label="Notifikasi">
+            <a href="<?= base_url('index.php?page=notification') ?>" class="header-icon-btn" aria-label="Notifikasi<?= count($unreadNotifications) > 0 ? ' (' . count($unreadNotifications) . ' belum dibaca)' : '' ?>">
                 <i class="bi bi-bell"></i>
-                <?php if (count($unreadNotifications) > 0): ?><span><?= count($unreadNotifications) ?></span><?php endif; ?>
+                <?php if (count($unreadNotifications) > 0): ?><span class="header-icon-badge"><?= count($unreadNotifications) ?></span><?php endif; ?>
             </a>
             <div class="profile-dropdown-wrapper">
                 <a href="#" class="role-profile" aria-label="Menu profil">
@@ -175,12 +175,12 @@ $activeSideNav = $isLoggedIn && isset($sideNav[$userRole]) ? $sideNav[$userRole]
             </div>
         </div>
         <?php else: ?>
-        <!-- Guest mobile: only cart icon -->
+        <!-- Guest mobile: cart + auth akan muncul di menu collapse -->
         <div class="d-flex d-lg-none align-items-center gap-2 mobile-actions">
             <div class="cart-nav">
                 <a class="cart-nav-btn" <?= $cartAction ?> aria-label="Buka keranjang">
                     <i class="bi bi-cart3"></i>
-                    <span class="cart-nav-badge"><?= $cartCount ?></span>
+                    <?php if ($cartCount > 0): ?><span class="cart-nav-badge"><?= $cartCount ?></span><?php endif; ?>
                 </a>
             </div>
         </div>
@@ -206,6 +206,41 @@ $activeSideNav = $isLoggedIn && isset($sideNav[$userRole]) ? $sideNav[$userRole]
                 <li class="nav-item"><a class="nav-link" href="<?= $homeUrl ?>#cara-kerja" data-scroll="#cara-kerja">Cara Kerja</a></li>
                 <li class="nav-item"><a class="nav-link" href="<?= $homeUrl ?>#testimoni" data-scroll="#testimoni">Tentang Kami</a></li>
             </ul>
+
+            <!-- Mobile / tablet: auth & akun (tidak ada di desktop karena sudah di role-actions) -->
+            <div class="mobile-auth-panel d-lg-none">
+                <?php if ($isLoggedIn): ?>
+                    <?php if ($userRole === 'provider'): ?>
+                        <a href="<?= base_url('index.php?page=dashboard') ?>" class="btn btn-outline-custom w-100">
+                            <i class="bi bi-grid me-1"></i>Dashboard
+                        </a>
+                    <?php endif; ?>
+                    <a href="<?= base_url('index.php?page=notification') ?>" class="mobile-menu-link">
+                        <span><i class="bi bi-bell me-2"></i>Notifikasi</span>
+                        <?php if (count($unreadNotifications) > 0): ?>
+                            <span class="nav-mini-badge"><?= count($unreadNotifications) ?></span>
+                        <?php endif; ?>
+                    </a>
+                    <?php if ($userRole === 'buyer'): ?>
+                        <a href="<?= base_url('index.php?page=cart') ?>" class="mobile-menu-link">
+                            <span><i class="bi bi-cart3 me-2"></i>Keranjang</span>
+                            <?php if ($cartCount > 0): ?>
+                                <span class="nav-mini-badge"><?= $cartCount ?></span>
+                            <?php endif; ?>
+                        </a>
+                    <?php endif; ?>
+                    <a href="<?= base_url('index.php?page=account_settings') ?>" class="mobile-menu-link">
+                        <span><i class="bi bi-person-circle me-2"></i>Pengaturan Akun</span>
+                    </a>
+                    <a href="<?= base_url('index.php?page=auth&action=logout') ?>" class="mobile-menu-link mobile-menu-link-danger">
+                        <span><i class="bi bi-box-arrow-right me-2"></i>Logout</span>
+                    </a>
+                <?php else: ?>
+                    <button type="button" class="btn btn-outline-custom w-100" onclick="openAuthModal('login')">Masuk</button>
+                    <button type="button" class="btn btn-primary-custom w-100" onclick="openAuthModal('register')">Daftar</button>
+                <?php endif; ?>
+            </div>
+
             <!-- Desktop-only actions (hidden on mobile via d-none d-lg-flex) -->
             <div class="d-none d-lg-flex gap-2 align-items-center role-actions">
                 <?php if ($isLoggedIn && $userRole === 'provider'): ?>
@@ -217,7 +252,7 @@ $activeSideNav = $isLoggedIn && isset($sideNav[$userRole]) ? $sideNav[$userRole]
                     <div class="cart-nav">
                         <a class="cart-nav-btn" <?= $cartAction ?> aria-label="Buka keranjang">
                             <i class="bi bi-cart3"></i>
-                            <span class="cart-nav-badge"><?= $cartCount ?></span>
+                            <?php if ($cartCount > 0): ?><span class="cart-nav-badge"><?= $cartCount ?></span><?php endif; ?>
                         </a>
                         <?php if ($isLoggedIn): ?>
                             <div class="cart-preview">
@@ -248,9 +283,9 @@ $activeSideNav = $isLoggedIn && isset($sideNav[$userRole]) ? $sideNav[$userRole]
                     </div>
                 <?php endif; ?>
                 <?php if (isset($_SESSION['user'])): ?>
-                    <a href="<?= base_url('index.php?page=notification') ?>" class="header-icon-btn" aria-label="Notifikasi">
+                    <a href="<?= base_url('index.php?page=notification') ?>" class="header-icon-btn" aria-label="Notifikasi<?= count($unreadNotifications) > 0 ? ' (' . count($unreadNotifications) . ' belum dibaca)' : '' ?>">
                         <i class="bi bi-bell"></i>
-                        <?php if (count($unreadNotifications) > 0): ?><span><?= count($unreadNotifications) ?></span><?php endif; ?>
+                        <?php if (count($unreadNotifications) > 0): ?><span class="header-icon-badge"><?= count($unreadNotifications) ?></span><?php endif; ?>
                     </a>
                     <div class="profile-dropdown-wrapper">
                         <a href="#" class="role-profile">

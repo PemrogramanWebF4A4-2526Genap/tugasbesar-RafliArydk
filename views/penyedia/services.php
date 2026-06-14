@@ -61,38 +61,6 @@ $categories = $categoryModel->getAll();
                                 <a class="btn btn-sm btn-outline-danger" href="<?= base_url('index.php?page=service&action=delete&id=' . (int) $service['id']) ?>" onclick="return confirm('Hapus jasa ini?')">Hapus</a>
                             </td>
                         </tr>
-
-                        <div class="modal fade" id="editModal<?= (int) $service['id'] ?>" tabindex="-1">
-                            <div class="modal-dialog">
-                                <div class="modal-content rounded-4 border-0 shadow">
-                                    <div class="modal-header border-0">
-                                        <h5 class="modal-title fw-bold">Edit Jasa</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <form method="post" action="<?= base_url('index.php?page=service&action=update') ?>" enctype="multipart/form-data">
-                                            <input type="hidden" name="id" value="<?= (int) $service['id'] ?>">
-                                            <div class="mb-3"><label>Judul Jasa</label><input type="text" name="title" value="<?= e($service['title']) ?>" class="form-control rounded-pill" required></div>
-                                            <div class="mb-3">
-                                                <label>Kategori</label>
-                                                <select name="category_id" class="form-select rounded-pill">
-                                                    <?php foreach ($categories as $category): ?>
-                                                        <option value="<?= (int) $category['id'] ?>" <?= (int) $service['category_id'] === (int) $category['id'] ? 'selected' : '' ?>><?= e($category['name']) ?></option>
-                                                    <?php endforeach; ?>
-                                                </select>
-                                            </div>
-                                            <div class="mb-3"><label>Harga (Rp)</label><input type="number" name="price" value="<?= (int) $service['price'] ?>" class="form-control rounded-pill" min="0" required></div>
-                                            <div class="mb-3"><label>Satuan Harga</label><input type="text" name="price_unit" value="<?= e($service['price_unit']) ?>" class="form-control rounded-pill"></div>
-                                            <div class="mb-3"><label>Estimasi Durasi</label><input type="text" name="estimated_duration" value="<?= e($service['estimated_duration']) ?>" class="form-control rounded-pill"></div>
-                                            <div class="mb-3"><label>Lokasi</label><input type="text" name="location" value="<?= e($service['location']) ?>" class="form-control rounded-pill" required></div>
-                                            <div class="mb-3"><label>Deskripsi</label><textarea name="description" class="form-control" rows="3" required><?= e($service['description']) ?></textarea></div>
-                                            <div class="mb-3"><label>Gambar Baru</label><input type="file" name="image" class="form-control" accept=".jpg,.jpeg,.png"></div>
-                                            <button type="submit" class="btn btn-primary-custom w-100">Simpan Perubahan</button>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
                     <?php endforeach; ?>
                 <?php endif; ?>
             </tbody>
@@ -100,31 +68,109 @@ $categories = $categoryModel->getAll();
     </div>
 </div>
 
-<div class="modal fade" id="addModal" tabindex="-1">
-    <div class="modal-dialog">
+<?php if (!empty($services)): ?>
+    <?php foreach ($services as $service): ?>
+        <div class="modal fade service-modal" id="editModal<?= (int) $service['id'] ?>" tabindex="-1" aria-labelledby="editModalLabel<?= (int) $service['id'] ?>" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                <div class="modal-content rounded-4 border-0 shadow">
+                    <div class="modal-header border-0">
+                        <h5 class="modal-title fw-bold" id="editModalLabel<?= (int) $service['id'] ?>">Edit Jasa</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form method="post" action="<?= base_url('index.php?page=service&action=update') ?>" enctype="multipart/form-data">
+                            <input type="hidden" name="id" value="<?= (int) $service['id'] ?>">
+                            <div class="mb-3">
+                                <label class="form-label">Judul Jasa</label>
+                                <input type="text" name="title" value="<?= e($service['title']) ?>" class="form-control rounded-pill" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Kategori</label>
+                                <select name="category_id" class="form-select rounded-pill">
+                                    <?php foreach ($categories as $category): ?>
+                                        <option value="<?= (int) $category['id'] ?>" <?= (int) $service['category_id'] === (int) $category['id'] ? 'selected' : '' ?>><?= e($category['name']) ?></option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Harga (Rp)</label>
+                                <input type="number" name="price" value="<?= (int) $service['price'] ?>" class="form-control rounded-pill" min="0" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Satuan Harga</label>
+                                <input type="text" name="price_unit" value="<?= e($service['price_unit']) ?>" class="form-control rounded-pill">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Estimasi Durasi</label>
+                                <input type="text" name="estimated_duration" value="<?= e($service['estimated_duration']) ?>" class="form-control rounded-pill">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Lokasi</label>
+                                <input type="text" name="location" value="<?= e($service['location']) ?>" class="form-control rounded-pill" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Deskripsi</label>
+                                <textarea name="description" class="form-control" rows="3" required><?= e($service['description']) ?></textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Gambar Baru</label>
+                                <input type="file" name="image" class="form-control" accept=".jpg,.jpeg,.png">
+                            </div>
+                            <button type="submit" class="btn btn-primary-custom w-100">Simpan Perubahan</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <?php endforeach; ?>
+<?php endif; ?>
+
+<div class="modal fade service-modal" id="addModal" tabindex="-1" aria-labelledby="addModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content rounded-4 border-0 shadow">
             <div class="modal-header border-0">
-                <h5 class="modal-title fw-bold">Tambah Jasa Baru</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                <h5 class="modal-title fw-bold" id="addModalLabel">Tambah Jasa Baru</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
             </div>
             <div class="modal-body">
                 <form method="post" action="<?= base_url('index.php?page=service&action=create') ?>" enctype="multipart/form-data">
-                    <div class="mb-3"><label>Judul Jasa</label><input type="text" name="title" class="form-control rounded-pill" required></div>
                     <div class="mb-3">
-                        <label>Kategori</label>
+                        <label class="form-label">Judul Jasa</label>
+                        <input type="text" name="title" class="form-control rounded-pill" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Kategori</label>
                         <select name="category_id" class="form-select rounded-pill">
                             <?php foreach ($categories as $category): ?>
                                 <option value="<?= (int) $category['id'] ?>"><?= e($category['name']) ?></option>
                             <?php endforeach; ?>
                         </select>
                     </div>
-                    <div class="mb-3"><label>Harga (Rp)</label><input type="number" name="price" class="form-control rounded-pill" min="0" required></div>
-                    <div class="mb-3"><label>Satuan Harga</label><input type="text" name="price_unit" class="form-control rounded-pill" value="per kunjungan"></div>
-                    <div class="mb-3"><label>Estimasi Durasi</label><input type="text" name="estimated_duration" class="form-control rounded-pill" placeholder="Contoh: 2 jam"></div>
-                    <div class="mb-3"><label>Lokasi</label><input type="text" name="location" class="form-control rounded-pill" required></div>
-                    <div class="mb-3"><label>Deskripsi</label><textarea name="description" class="form-control" rows="3" required></textarea></div>
-                    <div class="mb-3"><label>Gambar</label><input type="file" name="image" class="form-control" accept=".jpg,.jpeg,.png"></div>
-                                            <button type="submit" class="btn btn-primary-custom w-100">Simpan Jasa</button>
+                    <div class="mb-3">
+                        <label class="form-label">Harga (Rp)</label>
+                        <input type="number" name="price" class="form-control rounded-pill" min="0" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Satuan Harga</label>
+                        <input type="text" name="price_unit" class="form-control rounded-pill" value="per kunjungan">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Estimasi Durasi</label>
+                        <input type="text" name="estimated_duration" class="form-control rounded-pill" placeholder="Contoh: 2 jam">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Lokasi</label>
+                        <input type="text" name="location" class="form-control rounded-pill" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Deskripsi</label>
+                        <textarea name="description" class="form-control" rows="3" required></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Gambar</label>
+                        <input type="file" name="image" class="form-control" accept=".jpg,.jpeg,.png">
+                    </div>
+                    <button type="submit" class="btn btn-primary-custom w-100">Simpan Jasa</button>
                 </form>
             </div>
         </div>

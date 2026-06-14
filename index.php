@@ -3,6 +3,7 @@ session_start();
 require_once 'config/database.php';
 require_once 'helpers/functions.php';
 require_once 'helpers/upload.php';
+require_once 'helpers/database_dump.php';
 
 $page = $_GET['page'] ?? 'home';
 
@@ -146,6 +147,13 @@ if ($page == 'home') {
     include 'controllers/' . $controllerMap[$page];
 } elseif ($page == 'service') {
     include 'controllers/ServiceController.php';
+} elseif ($page == 'sync_dump') {
+    if (!isset($_SESSION['user']) || ($_SESSION['user']['role'] ?? '') !== 'admin') {
+        header('Location: index.php?page=home');
+        exit;
+    }
+    require __DIR__ . '/database/sync_dump.php';
+    exit;
 } elseif ($page == 'report_export') {
     include 'controllers/ReportExportController.php';
 } elseif ($page == 'schedule') {

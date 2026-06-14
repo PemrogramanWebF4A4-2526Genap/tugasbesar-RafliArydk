@@ -1,6 +1,12 @@
 function openAuthModal(tab, role) {
     const overlay = document.getElementById('authOverlay');
     if (!overlay) return;
+
+    const navbar = document.getElementById('navbarMain');
+    if (navbar && navbar.classList.contains('show')) {
+        document.querySelector('[data-bs-target="#navbarMain"]')?.click();
+    }
+
     overlay.classList.add('show');
     document.body.style.overflow = 'hidden';
     switchAuthTab(tab || 'login');

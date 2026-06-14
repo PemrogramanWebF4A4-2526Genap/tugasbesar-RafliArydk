@@ -156,6 +156,7 @@ button:active,
 }
 
 .role-actions .header-icon-btn span,
+.role-actions .header-icon-badge,
 .role-actions .cart-nav-badge {
     position: absolute;
     top: -6px;

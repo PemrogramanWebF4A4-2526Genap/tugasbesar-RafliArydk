@@ -30,6 +30,15 @@ Panduan singkat menjalankan BisaBantu di lingkungan lokal.
    database/bisabantu.sql
    ```
 
+   File ini otomatis diperbarui setiap ada data baru lewat aplikasi (register, tambah/edit jasa, dll.).
+   Untuk sinkron manual dari MySQL ke file SQL:
+
+   ```bash
+   php database/sync_dump.php
+   ```
+
+   Atau buka sebagai admin: `index.php?page=sync_dump`
+
 4. Cek konfigurasi koneksi database di:
 
    ```text
