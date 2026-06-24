@@ -1,16 +1,17 @@
 <div class="auth-overlay" id="authOverlay" onclick="handleAuthOverlayClick(event)">
     <div class="auth-modal" id="authModal" role="dialog" aria-modal="true" aria-labelledby="authModalTitle">
+        <button type="button" class="auth-modal-close" onclick="closeAuthModal()" aria-label="Tutup" style="position: absolute; right: 16px; top: 16px; z-index: 10;">
+            <i class="bi bi-x" aria-hidden="true"></i>
+        </button>
         <div class="auth-modal-header">
             <div class="auth-modal-brand">
                 <div class="auth-brand-dot"><i class="bi bi-tools" aria-hidden="true"></i></div>
                 <span class="auth-brand-name">BisaBantu</span>
             </div>
-            <button type="button" class="auth-modal-close" onclick="closeAuthModal()" aria-label="Tutup">
-                <i class="bi bi-x" aria-hidden="true"></i>
-            </button>
             <div class="auth-tab-row">
                 <button type="button" class="auth-tab active" id="auth-tab-login" onclick="switchAuthTab('login')">Masuk</button>
                 <button type="button" class="auth-tab" id="auth-tab-register" onclick="switchAuthTab('register')">Daftar</button>
+                <button type="button" class="auth-tab" id="auth-tab-verify" onclick="switchAuthTab('verify')" style="display:none">Verifikasi</button>
             </div>
         </div>
 
@@ -79,10 +80,11 @@
                         <i class="bi bi-exclamation-circle" style="font-size:16px" aria-hidden="true"></i>
                         <?php
                         $registerErrorMessages = [
-                            'exists' => 'Email sudah terdaftar.',
-                            'email' => 'Format email tidak valid.',
-                            'role' => 'Pilih tipe akun dengan benar.',
-                            'invalid' => 'Lengkapi data pendaftaran dengan benar.',
+                            'exists'         => 'Email sudah terdaftar.',
+                            'email'          => 'Format email tidak valid.',
+                            'role'           => 'Pilih tipe akun dengan benar.',
+                            'invalid'        => 'Lengkapi data pendaftaran dengan benar.',
+                            'invalid_domain' => 'Domain email tidak valid atau tidak dapat menerima email. Gunakan email dari provider terpercaya (Gmail, Yahoo, dll).',
                         ];
                         ?>
                         <?= e($registerErrorMessages[$_GET['register_error']] ?? 'Lengkapi data pendaftaran dengan benar.') ?>
@@ -222,6 +224,59 @@
                 </div>
 
                 <div class="auth-form-footer" style="margin-top:1rem">Sudah punya akun? <a onclick="switchAuthTab('login')">Masuk di sini</a></div>
+            </div>
+
+            <!-- VERIFY EMAIL -->
+            <div class="auth-panel" id="auth-panel-verify">
+                <div class="mb-4 text-center">
+                    <div class="auth-verify-icon" aria-hidden="true"><i class="bi bi-envelope-check"></i></div>
+                    <div style="font-size:17px;font-weight:500;margin-bottom:4px">Verifikasi Email</div>
+                    <div style="font-size:13px;color:var(--color-text-secondary)">Masukkan kode 6-digit yang telah dikirim ke</div>
+                    <div id="verify-email-display" style="font-size:13px;font-weight:600;color:var(--auth-accent);margin-top:3px"></div>
+                </div>
+
+                <?php if (isset($_GET['verify_error'])): ?>
+                    <div class="auth-alert-error show" id="verify-error-box">
+                        <i class="bi bi-exclamation-circle" style="font-size:16px" aria-hidden="true"></i>
+                        <?php
+                        $verifyErrorMessages = [
+                            'invalid' => 'Kode verifikasi salah atau sudah kedaluwarsa.',
+                            'expired' => 'Kode verifikasi sudah kedaluwarsa. Silakan daftar ulang.',
+                            'no_pending' => 'Tidak ada sesi pendaftaran aktif. Silakan daftar ulang.',
+                        ];
+                        ?>
+                        <?= e($verifyErrorMessages[$_GET['verify_error']] ?? 'Kode tidak valid.') ?>
+                    </div>
+                <?php endif; ?>
+
+                <form method="post" action="<?= base_url('index.php?page=auth&action=verify_email') ?>" id="authVerifyForm" novalidate data-no-validate>
+                    <div class="auth-otp-wrap">
+                        <input class="auth-otp-input" type="text" maxlength="1" id="otp0" inputmode="numeric" pattern="[0-9]" autocomplete="one-time-code" aria-label="Digit 1">
+                        <input class="auth-otp-input" type="text" maxlength="1" id="otp1" inputmode="numeric" pattern="[0-9]" aria-label="Digit 2">
+                        <input class="auth-otp-input" type="text" maxlength="1" id="otp2" inputmode="numeric" pattern="[0-9]" aria-label="Digit 3">
+                        <input class="auth-otp-input" type="text" maxlength="1" id="otp3" inputmode="numeric" pattern="[0-9]" aria-label="Digit 4">
+                        <input class="auth-otp-input" type="text" maxlength="1" id="otp4" inputmode="numeric" pattern="[0-9]" aria-label="Digit 5">
+                        <input class="auth-otp-input" type="text" maxlength="1" id="otp5" inputmode="numeric" pattern="[0-9]" aria-label="Digit 6">
+                    </div>
+                    <input type="hidden" name="otp_code" id="otp_code_hidden">
+
+                    <div class="auth-otp-timer" id="auth-otp-timer">
+                        <i class="bi bi-clock" aria-hidden="true"></i>
+                        Kode berlaku: <span id="otp-countdown">15:00</span>
+                    </div>
+
+                    <button type="submit" class="auth-btn-submit" id="verify-submit-btn">
+                        <i class="bi bi-shield-check" style="margin-right:6px" aria-hidden="true"></i>Verifikasi Akun
+                    </button>
+                </form>
+
+                <div class="auth-otp-resend">
+                    Tidak menerima kode?
+                    <a href="<?= base_url('index.php?page=auth&action=resend_otp') ?>" id="auth-resend-otp">Kirim ulang</a>
+                </div>
+                <div class="auth-form-footer" style="margin-top:0.5rem">
+                    <a onclick="switchAuthTab('register'); goAuthStep(1);" style="cursor:pointer">Kembali ke pendaftaran</a>
+                </div>
             </div>
         </div>
     </div>

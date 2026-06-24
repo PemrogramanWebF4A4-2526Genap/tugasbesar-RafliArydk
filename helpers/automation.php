@@ -60,9 +60,36 @@ function send_automation_email($to, $subject, $message) {
         return false;
     }
 
-    $headers = 'From: no-reply@bisabantu.local' . "\r\n" .
-        'Content-Type: text/plain; charset=UTF-8';
-    return @mail($to, $subject, $message, $headers);
+    // Load Composer's autoloader
+    require_once __DIR__ . '/../vendor/autoload.php';
+
+    $mail = new \PHPMailer\PHPMailer\PHPMailer(true);
+
+    try {
+        // Server settings
+        $mail->isSMTP();
+        $mail->Host       = 'smtp.gmail.com';
+        $mail->SMTPAuth   = true;
+        $mail->Username   = 'rafliaryadika100@gmail.com';
+        $mail->Password   = 'flsfkfnjjowegmbe';
+        $mail->SMTPSecure = \PHPMailer\PHPMailer\PHPMailer::ENCRYPTION_STARTTLS;
+        $mail->Port       = 587;
+
+        // Recipients
+        $mail->setFrom('rafliaryadika100@gmail.com', 'BisaBantu');
+        $mail->addAddress($to);
+
+        // Content
+        $mail->isHTML(false);
+        $mail->Subject = $subject;
+        $mail->Body    = $message;
+
+        $mail->send();
+        return true;
+    } catch (\Exception $e) {
+        error_log("Message could not be sent. Mailer Error: {$mail->ErrorInfo}");
+        return false;
+    }
 }
 
 function after_payment_verified($pdo, array $payment) {

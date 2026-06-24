@@ -31,13 +31,19 @@ function handleAuthOverlayClick(e) {
 }
 
 function switchAuthTab(tab) {
-    ['login', 'register'].forEach(function (t) {
+    ['login', 'register', 'verify'].forEach(function (t) {
         const tabEl = document.getElementById('auth-tab-' + t);
         const panelEl = document.getElementById('auth-panel-' + t);
         if (tabEl) tabEl.classList.toggle('active', t === tab);
         if (panelEl) panelEl.classList.toggle('active', t === tab);
     });
     if (tab === 'register') goAuthStep(1);
+    
+    // Hide the entire tab row when on the verify panel
+    const tabRow = document.querySelector('.auth-tab-row');
+    if (tabRow) {
+        tabRow.style.display = tab === 'verify' ? 'none' : '';
+    }
 }
 
 function toggleAuthPass(inputId, iconId) {
@@ -71,41 +77,38 @@ function selectAuthRole(role) {
 
 function goAuthStep(n) {
     if (n === 3) {
-        const form = document.getElementById('authRegisterForm');
-        if (form) {
-            const firstNameInput = form.querySelector('[name="first_name"]');
-            const emailInput = document.getElementById('reg-email');
-            const passInput = document.getElementById('reg-pass');
+        const firstNameInput = document.querySelector('input[name="first_name"][form="authRegisterForm"]');
+        const emailInput = document.getElementById('reg-email');
+        const passInput = document.getElementById('reg-pass');
 
-            const firstName = firstNameInput?.value.trim() || '';
-            const email = emailInput?.value.trim() || '';
-            const pass = passInput?.value || '';
+        const firstName = firstNameInput?.value.trim() || '';
+        const email = emailInput?.value.trim() || '';
+        const pass = passInput?.value || '';
 
-            if (!firstName) {
-                if (typeof showToast === 'function') showToast('Nama depan wajib diisi', 'warning');
-                firstNameInput?.focus();
-                return;
-            }
-            if (!email) {
-                if (typeof showToast === 'function') showToast('Email wajib diisi', 'warning');
-                emailInput?.focus();
-                return;
-            }
-            if (!isValidAuthEmail(email)) {
-                if (typeof showToast === 'function') showToast('Format email tidak valid', 'warning');
-                emailInput?.focus();
-                return;
-            }
-            if (!pass) {
-                if (typeof showToast === 'function') showToast('Password wajib diisi', 'warning');
-                passInput?.focus();
-                return;
-            }
-            if (pass.length < 8) {
-                if (typeof showToast === 'function') showToast('Password minimal 8 karakter', 'warning');
-                passInput?.focus();
-                return;
-            }
+        if (!firstName) {
+            if (typeof showToast === 'function') showToast('Nama depan wajib diisi', 'warning');
+            firstNameInput?.focus();
+            return;
+        }
+        if (!email) {
+            if (typeof showToast === 'function') showToast('Email wajib diisi', 'warning');
+            emailInput?.focus();
+            return;
+        }
+        if (!isValidAuthEmail(email)) {
+            if (typeof showToast === 'function') showToast('Format email tidak valid', 'warning');
+            emailInput?.focus();
+            return;
+        }
+        if (!pass) {
+            if (typeof showToast === 'function') showToast('Password wajib diisi', 'warning');
+            passInput?.focus();
+            return;
+        }
+        if (pass.length < 8) {
+            if (typeof showToast === 'function') showToast('Password minimal 8 karakter', 'warning');
+            passInput?.focus();
+            return;
         }
     }
 
@@ -252,12 +255,135 @@ function initAuthForms() {
             }
         });
     }
+
+    const verifyForm = document.getElementById('authVerifyForm');
+    if (verifyForm) {
+        verifyForm.addEventListener('submit', function (e) {
+            syncOtpHidden();
+            const code = document.getElementById('otp_code_hidden')?.value || '';
+            if (code.length < 6 || /\D/.test(code)) {
+                e.preventDefault();
+                if (typeof showToast === 'function') showToast('Masukkan kode 6 digit yang dikirim ke email Anda.', 'warning');
+                document.getElementById('otp0')?.focus();
+            }
+        });
+    }
 }
 
 document.addEventListener('keydown', function (e) {
     if (e.key === 'Escape') closeAuthModal();
 });
 
+// ---------------------------------------------------------------------------
+// OTP INPUT HANDLING
+// ---------------------------------------------------------------------------
+function initOtpInputs() {
+    const inputs = Array.from(document.querySelectorAll('.auth-otp-input'));
+    if (!inputs.length) return;
+
+    inputs.forEach(function (input, index) {
+        // Only allow single digit
+        input.addEventListener('input', function () {
+            this.value = this.value.replace(/[^0-9]/g, '').slice(-1);
+            if (this.value && index < inputs.length - 1) {
+                inputs[index + 1].focus();
+            }
+            syncOtpHidden();
+        });
+
+        input.addEventListener('keydown', function (e) {
+            if (e.key === 'Backspace' && !this.value && index > 0) {
+                inputs[index - 1].focus();
+                inputs[index - 1].value = '';
+                syncOtpHidden();
+            }
+        });
+
+        input.addEventListener('paste', function (e) {
+            e.preventDefault();
+            const pasted = (e.clipboardData || window.clipboardData).getData('text').replace(/\D/g, '');
+            pasted.split('').forEach(function (char, i) {
+                if (inputs[index + i]) {
+                    inputs[index + i].value = char;
+                }
+            });
+            const nextEmpty = inputs.find(function (inp) { return !inp.value; });
+            if (nextEmpty) nextEmpty.focus();
+            syncOtpHidden();
+        });
+    });
+}
+
+function syncOtpHidden() {
+    const inputs = Array.from(document.querySelectorAll('.auth-otp-input'));
+    const hidden = document.getElementById('otp_code_hidden');
+    if (hidden) hidden.value = inputs.map(function (i) { return i.value; }).join('');
+}
+
+// ---------------------------------------------------------------------------
+// OTP COUNTDOWN TIMER
+// ---------------------------------------------------------------------------
+let otpCountdownInterval = null;
+
+function startOtpCountdown(seconds) {
+    clearInterval(otpCountdownInterval);
+    const el = document.getElementById('otp-countdown');
+    if (!el) return;
+
+    let remaining = seconds;
+    function tick() {
+        const m = Math.floor(remaining / 60);
+        const s = remaining % 60;
+        el.textContent = m + ':' + String(s).padStart(2, '0');
+        if (remaining <= 0) {
+            clearInterval(otpCountdownInterval);
+            el.textContent = 'Kedaluwarsa';
+            el.style.color = 'var(--color-danger, #e24b4a)';
+            const btn = document.getElementById('verify-submit-btn');
+            if (btn) btn.disabled = true;
+        }
+        remaining--;
+    }
+    tick();
+    otpCountdownInterval = setInterval(tick, 1000);
+}
+
+// ---------------------------------------------------------------------------
+// VERIFY PANEL: populate email display + resent toast
+// ---------------------------------------------------------------------------
+function initVerifyPanel() {
+    const params = new URLSearchParams(window.location.search);
+    const pendingEmail = params.get('pending_email');
+    const resent = params.get('resent');
+    const emailDisplay = document.getElementById('verify-email-display');
+
+    if (emailDisplay && pendingEmail) {
+        emailDisplay.textContent = decodeURIComponent(pendingEmail);
+    }
+
+    if (resent === '1' && typeof showToast === 'function') {
+        showToast('Kode verifikasi baru telah dikirim ke email Anda.', 'success');
+    }
+
+    startOtpCountdown(900);
+    initOtpInputs();
+
+    // Auto-submit when all 6 digits are filled
+    const form = document.getElementById('authVerifyForm');
+    const inputs = Array.from(document.querySelectorAll('.auth-otp-input'));
+    if (form && inputs.length === 6) {
+        inputs[5].addEventListener('input', function () {
+            if (inputs.every(function (i) { return i.value; })) {
+                syncOtpHidden();
+                form.submit();
+            }
+        });
+    }
+}
+
+// ---------------------------------------------------------------------------
+// DOMContentLoaded
+// ---------------------------------------------------------------------------
 document.addEventListener('DOMContentLoaded', function () {
     initAuthForms();
 
@@ -265,7 +391,8 @@ document.addEventListener('DOMContentLoaded', function () {
     const auth = params.get('auth');
     const role = params.get('role');
     const registerStep = params.get('register_step');
-    if (auth === 'login' || auth === 'register') {
+
+    if (auth === 'login' || auth === 'register' || auth === 'verify') {
         openAuthModal(auth);
     }
     if (auth === 'register') {
@@ -276,4 +403,8 @@ document.addEventListener('DOMContentLoaded', function () {
             goAuthStep(Number(registerStep));
         }
     }
+    if (auth === 'verify') {
+        initVerifyPanel();
+    }
 });
+

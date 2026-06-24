@@ -289,10 +289,7 @@ if ($page == 'home') {
         header('Location: index.php?page=home&auth=login');
         exit;
     }
-} elseif (in_array($page, ['about', 'contact'], true)) {
-    include 'views/layout/header.php';
-    include 'views/public/' . $page . '.php';
-    include 'views/layout/footer.php';
+
     if ($_SESSION['user']['role'] == 'admin') {
         $dashboard_css = 'admin';
     } elseif ($_SESSION['user']['role'] == 'provider') {
@@ -302,6 +299,7 @@ if ($page == 'home') {
     }
 
     include 'views/layout/header.php';
+    
     if ($_SESSION['user']['role'] == 'admin') {
         include 'views/admin/dashboard.php';
     } elseif ($_SESSION['user']['role'] == 'provider') {
@@ -313,6 +311,11 @@ if ($page == 'home') {
     } else {
         include 'views/pembeli/dashboard.php';
     }
+    include 'views/layout/footer.php';
+
+} elseif (in_array($page, ['about', 'contact'], true)) {
+    include 'views/layout/header.php';
+    include 'views/public/' . $page . '.php';
     include 'views/layout/footer.php';
 } else {
     include 'views/layout/header.php';

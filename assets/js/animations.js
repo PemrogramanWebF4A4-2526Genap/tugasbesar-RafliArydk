@@ -55,8 +55,15 @@
         if (!nav) {
             return;
         }
+        var ticking = false;
         var onScroll = function () {
-            nav.classList.toggle('navbar-scrolled', window.scrollY > 12);
+            if (!ticking) {
+                window.requestAnimationFrame(function() {
+                    nav.classList.toggle('navbar-scrolled', window.scrollY > 12);
+                    ticking = false;
+                });
+                ticking = true;
+            }
         };
         onScroll();
         window.addEventListener('scroll', onScroll, { passive: true });

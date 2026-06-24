@@ -73,7 +73,6 @@ body {
         box-shadow var(--bb-motion-base) var(--bb-motion-ease),
         border-color var(--bb-motion-base) ease,
         background-color var(--bb-motion-base) ease;
-    will-change: transform;
 }
 
 .card:hover,
@@ -91,7 +90,7 @@ body {
 .cart-item:hover,
 .provider-service-card:hover,
 .earnings-card:hover {
-    transform: translateY(-6px);
+    transform: translateY(-4px);
     box-shadow: var(--bb-motion-shadow);
 }
 
