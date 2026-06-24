@@ -4,7 +4,8 @@ require_once __DIR__ . '/../models/UserModel.php';
 $action = $_GET['action'] ?? '';
 $userModel = new UserModel($pdo);
 
-function is_valid_auth_email($email) {
+function is_valid_auth_email($email)
+{
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         return false;
     }
@@ -110,64 +111,6 @@ if ($action === 'register') {
         header('Location: index.php?page=home&auth=register&register_error=exists&' . $preserveValues);
         exit;
     }
-}
-
-if ($action === 'register_buyer') {
-    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        $name = trim($_POST['name'] ?? '');
-        $email = trim($_POST['email'] ?? '');
-        $password = $_POST['password'] ?? '';
-        $phone = trim($_POST['phone'] ?? '');
-        $address = trim($_POST['address'] ?? '');
-
-        if ($name && $email && $password && is_valid_auth_email($email)) {
-            $hashed = password_hash($password, PASSWORD_BCRYPT);
-            try {
-                $userModel->createUser($name, $email, $hashed, 'buyer', 1, $phone, $address);
-                bisabantu_sync_sql_dump_after_write($pdo);
-                header('Location: index.php?page=home&auth=login&register=success');
-                exit;
-            } catch (PDOException $e) {
-                header('Location: index.php?page=auth&action=register_buyer&error=exists');
-                exit;
-            }
-        }
-
-        header('Location: index.php?page=auth&action=register_buyer&error=email');
-        exit;
-    }
-
-    include 'views/auth/register_pembeli.php';
-    exit;
-}
-
-if ($action === 'register_provider') {
-    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        $name = trim($_POST['name'] ?? '');
-        $email = trim($_POST['email'] ?? '');
-        $password = $_POST['password'] ?? '';
-        $phone = trim($_POST['phone'] ?? '');
-        $address = trim($_POST['address'] ?? '');
-
-        if ($name && $email && $password && is_valid_auth_email($email)) {
-            $hashed = password_hash($password, PASSWORD_BCRYPT);
-            try {
-                $userModel->createUser($name, $email, $hashed, 'provider', 0, $phone, $address);
-                bisabantu_sync_sql_dump_after_write($pdo);
-                header('Location: index.php?page=home&auth=login&register=success_provider');
-                exit;
-            } catch (PDOException $e) {
-                header('Location: index.php?page=auth&action=register_provider&error=exists');
-                exit;
-            }
-        }
-
-        header('Location: index.php?page=auth&action=register_provider&error=email');
-        exit;
-    }
-
-    include 'views/auth/register_penyedia.php';
-    exit;
 }
 
 if ($action === 'logout') {

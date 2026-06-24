@@ -25,11 +25,11 @@ $settings = $settingsModel->getAll();
                             <h3><i class="bi bi-percent"></i> Biaya Admin & Ongkir</h3>
                             <div class="mb-3">
                                 <label class="form-label">Komisi Platform (%)</label>
-                                <input type="number" name="commission_rate" class="form-control" min="0" max="100" value="<?= (int) $settings['commission_rate'] ?>">
+                                <input type="number" name="commission_rate" class="form-control" min="0" max="100" value="<?= (int) $settings['commission_rate'] ?>" required>
                             </div>
                             <div class="mb-0">
                                 <label class="form-label">Biaya Ongkir Default (Rp)</label>
-                                <input type="number" name="shipping_cost" class="form-control" min="0" value="<?= (int) $settings['shipping_cost'] ?>">
+                                <input type="number" name="shipping_cost" class="form-control" min="0" value="<?= (int) $settings['shipping_cost'] ?>" required>
                             </div>
                         </div>
                     </div>
@@ -53,11 +53,11 @@ $settings = $settingsModel->getAll();
                             <h3><i class="bi bi-envelope"></i> Template Email</h3>
                             <div class="mb-3">
                                 <label class="form-label">Email Selamat Datang</label>
-                                <textarea name="email_template_welcome" class="form-control" rows="2"><?= e($settings['email_template_welcome']) ?></textarea>
+                                <textarea name="email_template_welcome" class="form-control" rows="2" required><?= e($settings['email_template_welcome']) ?></textarea>
                             </div>
                             <div class="mb-0">
                                 <label class="form-label">Email Konfirmasi Pesanan</label>
-                                <textarea name="email_template_order" class="form-control" rows="2"><?= e($settings['email_template_order']) ?></textarea>
+                                <textarea name="email_template_order" class="form-control" rows="2" required><?= e($settings['email_template_order']) ?></textarea>
                             </div>
                         </div>
                     </div>

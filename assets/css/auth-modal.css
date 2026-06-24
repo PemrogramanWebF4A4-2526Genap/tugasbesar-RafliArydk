@@ -87,61 +87,36 @@
     color: var(--color-text-primary);
 }
 .auth-tab-row {
-    display: flex;
-    border-bottom: 0.5px solid var(--color-border-tertiary);
-    margin: 0 -1.5rem;
-    padding: 0 1.5rem;
-    overflow-x: auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin: 1.25rem 0 0 0;
+    padding: 0;
     max-width: 100%;
-    flex-wrap: nowrap;
-    scrollbar-width: thin;
-    scrollbar-color: rgba(181, 69, 27, 0.42) rgba(28, 26, 22, 0.06);
-    -webkit-overflow-scrolling: touch;
-    scroll-snap-type: x proximity;
-}
-
-.auth-tab-row::-webkit-scrollbar {
-    height: 8px;
-}
-
-.auth-tab-row::-webkit-scrollbar-track {
-    background: rgba(28, 26, 22, 0.06);
-    border-radius: 999px;
-}
-
-.auth-tab-row::-webkit-scrollbar-thumb {
-    background: rgba(181, 69, 27, 0.42);
-    border-radius: 999px;
-}
-
-.auth-tab-row::-webkit-scrollbar-thumb:hover {
-    background: rgba(181, 69, 27, 0.62);
 }
 
 .auth-tab {
-    flex: 0 0 auto;
     text-align: center;
-    padding: 10px;
-    font-size: 13px;
+    padding: 10px 16px;
+    font-size: 14px;
+    font-weight: 600;
     cursor: pointer;
-    color: var(--color-text-secondary);
-    border-bottom: 2px solid transparent;
-    margin-bottom: -0.5px;
-    font-weight: 500;
-    transition: color 0.15s, border-color 0.15s;
-    background: none;
-    border-top: none;
-    border-left: none;
-    border-right: none;
+    border-radius: 8px;
+    transition: all 0.22s ease;
     white-space: nowrap;
-    scroll-snap-align: start;
+    border: 1.5px solid var(--auth-gold);
+    background: transparent;
+    color: var(--auth-gold);
 }
+
 .auth-tab.active {
-    color: var(--auth-accent);
-    border-bottom-color: var(--auth-accent);
-}
-.auth-tab:hover:not(.active) {
+    background: var(--auth-gold);
     color: var(--color-text-primary);
+}
+
+.auth-tab:hover:not(.active) {
+    background: rgba(200, 146, 42, 0.08);
+    color: var(--auth-gold);
 }
 .auth-modal-body {
     padding: 1.5rem;
@@ -164,10 +139,10 @@
 }
 .auth-form-input {
     width: 100%;
-    padding: 9px 12px;
+    padding: 11px 14px;
     border: 0.5px solid var(--color-border-secondary);
     border-radius: var(--border-radius-md);
-    font-size: 13px;
+    font-size: 14px;
     background: var(--color-background-primary);
     color: var(--color-text-primary);
     outline: none;
@@ -208,10 +183,10 @@
     background: var(--auth-accent);
     color: #fff;
     border: none;
-    padding: 11px;
+    padding: 13px 16px;
     border-radius: var(--border-radius-md);
-    font-size: 14px;
-    font-weight: 500;
+    font-size: 15px;
+    font-weight: 600;
     cursor: pointer;
     margin-top: 0.25rem;
 }
@@ -227,10 +202,10 @@
     background: transparent;
     color: var(--color-text-primary);
     border: 0.5px solid var(--color-border-secondary);
-    padding: 10px 22px;
+    padding: 12px 22px;
     border-radius: var(--border-radius-md);
-    font-size: 13px;
-    font-weight: 500;
+    font-size: 14px;
+    font-weight: 600;
     cursor: pointer;
 }
 .auth-btn-outline:hover {

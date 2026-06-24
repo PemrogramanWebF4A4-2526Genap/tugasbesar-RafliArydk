@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 function base_url($path = '') {
     $scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
     $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
@@ -55,8 +55,4 @@ function slugify($value) {
     $value = strtolower(trim((string) $value));
     $value = preg_replace('/[^a-z0-9]+/i', '-', $value);
     return trim($value, '-') ?: 'lainnya';
-}
-
-function service_icon($categoryName) {
-    return category_icon($categoryName);
 }

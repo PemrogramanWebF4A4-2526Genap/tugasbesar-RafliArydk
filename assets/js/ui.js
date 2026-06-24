@@ -276,12 +276,116 @@
 
         smoothScrollTo(hash);
     }
+
+    /**
+     * GLOBAL FORM VALIDATION
+     */
+    function getLabelText(element) {
+        if (element.id) {
+            const label = document.querySelector(`label[for="${element.id}"]`);
+            if (label) return label.textContent.replace(/[*:]/g, '').trim();
+        }
+        if (element.parentElement) {
+            const label = element.parentElement.querySelector('label');
+            if (label) return label.textContent.replace(/[*:]/g, '').trim();
+        }
+        const parentLabel = element.closest('label');
+        if (parentLabel) {
+            return parentLabel.textContent.replace(/[*:]/g, '').trim();
+        }
+        if (element.placeholder) {
+            return element.placeholder.trim();
+        }
+        if (element.name) {
+            return element.name.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+        }
+        return 'Field';
+    }
+
+    function initGlobalFormValidation() {
+        document.addEventListener('submit', function (e) {
+            const form = e.target;
+            if (form.hasAttribute('data-no-validate')) return;
+
+            const inputs = Array.from(form.querySelectorAll('input, select, textarea'));
+            
+            for (const input of inputs) {
+                if (input.disabled || input.type === 'submit' || input.type === 'button' || input.type === 'hidden') {
+                    continue;
+                }
+
+                // If input is not visible (unless it is a file upload input which can be styled/hidden in custom wrappers)
+                if (input.offsetWidth === 0 && input.offsetHeight === 0 && input.type !== 'file') {
+                    continue;
+                }
+
+                let isValid = true;
+                let errorMessage = '';
+                const label = getLabelText(input);
+
+                if (input.required) {
+                    if (input.type === 'checkbox') {
+                        if (!input.checked) {
+                            isValid = false;
+                            errorMessage = `${label} harus disetujui.`;
+                        }
+                    } else if (input.type === 'radio') {
+                        const name = input.name;
+                        if (name) {
+                            const checked = form.querySelector(`input[name="${name}"]:checked`);
+                            if (!checked) {
+                                isValid = false;
+                                errorMessage = `Pilih salah satu ${label}.`;
+                            }
+                        }
+                    } else {
+                        if (input.value.trim() === '') {
+                            isValid = false;
+                            errorMessage = `${label} wajib diisi.`;
+                        }
+                    }
+                }
+
+                if (isValid && input.value.trim() !== '') {
+                    if (input.type === 'email') {
+                        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(input.value.trim())) {
+                            isValid = false;
+                            errorMessage = `Format ${label} tidak valid.`;
+                        } else {
+                            const domain = input.value.trim().split('@').pop().toLowerCase();
+                            if (domain.endsWith('.co') && !domain.endsWith('.com')) {
+                                if (domain.endsWith('.co') && domain.split('.').length <= 2) {
+                                    isValid = false;
+                                    errorMessage = `Format ${label} tidak valid.`;
+                                }
+                            }
+                        }
+                    } else if (input.minLength && input.value.length < input.minLength) {
+                        isValid = false;
+                        errorMessage = `${label} minimal ${input.minLength} karakter.`;
+                    }
+                }
+
+                if (!isValid) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    if (typeof window.showToast === 'function') {
+                        window.showToast(errorMessage, 'warning');
+                    }
+                    input.focus();
+                    break;
+                }
+            }
+        });
+    }
+
     /**
      * INITIALIZATION
      */
     document.addEventListener(
         'DOMContentLoaded',
         function () {
+            initGlobalFormValidation();
             initScrollLinks();
             initPlaceholderLinks();
             initProfileDropdown();

@@ -7,7 +7,8 @@ require_once 'helpers/database_dump.php';
 
 $page = $_GET['page'] ?? 'home';
 
-function ensure_user_profile_photo_column(PDO $pdo) {
+function ensure_user_profile_photo_column(PDO $pdo)
+{
     static $checked = false;
     if ($checked) {
         return;
@@ -127,7 +128,6 @@ if (isset($_GET['profile_update']) && $_SERVER['REQUEST_METHOD'] === 'POST') {
 if ($page == 'home') {
     include 'controllers/HomeController.php';
 } elseif ($page == 'auth') {
-    // handle auth
     include 'controllers/AuthController.php';
 } elseif ($page == 'admin') {
     include 'controllers/AdminController.php';
@@ -137,14 +137,8 @@ if ($page == 'home') {
     include 'controllers/OrderController.php';
 } elseif ($page == 'invoice') {
     include 'controllers/InvoiceController.php';
-} elseif (in_array($page, ['notification', 'settings', 'verification', 'automation'], true)) {
-    $controllerMap = [
-        'notification' => 'NotificationController.php',
-        'settings' => 'SettingsController.php',
-        'verification' => 'VerificationController.php',
-        'automation' => 'AutomationController.php',
-    ];
-    include 'controllers/' . $controllerMap[$page];
+} elseif ($page == 'notification') {
+    include 'controllers/NotificationController.php';
 } elseif ($page == 'service') {
     include 'controllers/ServiceController.php';
 } elseif ($page == 'sync_dump') {
@@ -290,17 +284,15 @@ if ($page == 'home') {
     include 'views/layout/header.php';
     include 'views/admin/' . $adminPages[$page];
     include 'views/layout/footer.php';
-} elseif (in_array($page, ['about', 'contact'], true)) {
-    include 'views/layout/header.php';
-    include 'views/public/' . $page . '.php';
-    include 'views/layout/footer.php';
 } elseif ($page == 'dashboard') {
-    // Basic routing for dashboard to prevent 404s
     if (!isset($_SESSION['user'])) {
         header('Location: index.php?page=home&auth=login');
         exit;
     }
-
+} elseif (in_array($page, ['about', 'contact'], true)) {
+    include 'views/layout/header.php';
+    include 'views/public/' . $page . '.php';
+    include 'views/layout/footer.php';
     if ($_SESSION['user']['role'] == 'admin') {
         $dashboard_css = 'admin';
     } elseif ($_SESSION['user']['role'] == 'provider') {
@@ -331,4 +323,3 @@ if ($page == 'home') {
           </div>";
     include 'views/layout/footer.php';
 }
-?>

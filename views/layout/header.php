@@ -16,8 +16,8 @@ function asset_url($path) {
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="<?= asset_url('assets/css/main.css') ?>">
-    <link rel="stylesheet" href="<?= base_url('assets/css/auth-modal.css') ?>">
-    <link rel="stylesheet" href="<?= base_url('assets/css/footer.css') ?>">
+    <link rel="stylesheet" href="<?= asset_url('assets/css/auth-modal.css') ?>">
+    <link rel="stylesheet" href="<?= asset_url('assets/css/footer.css') ?>">
     <link rel="stylesheet" href="<?= asset_url('assets/css/animations.css') ?>">
     <?php if (isset($dashboard_css) && $dashboard_css === 'admin'): ?>
         <link rel="stylesheet" href="<?= asset_url('assets/css/dashboard_admin.css') ?>">
@@ -76,7 +76,7 @@ if ($isLoggedIn && $userRole === 'buyer' && !empty($_SESSION['cart'])) {
             'meta' => $service['provider_name'] . ' - ' . $service['location'],
             'price' => format_rupiah($service['price']),
             'quantity' => $quantity,
-            'icon' => service_icon($service['category_name']),
+            'icon' => category_icon($service['category_name']),
         ];
     }
 }

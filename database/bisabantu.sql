@@ -1,30 +1,3 @@
--- ======================================================
--- Database: bisabantu
--- BisaBantu (Lokal Service Marketplace)
--- Dump otomatis (mysqldump): 2026-06-14 10:08:30
--- ======================================================
-
--- MySQL dump 10.13  Distrib 8.4.3, for Win64 (x86_64)
---
--- Host: localhost    Database: bisabantu
--- ------------------------------------------------------
--- Server version	8.4.3
-
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!50503 SET NAMES utf8mb4 */;
-/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
-/*!40103 SET TIME_ZONE='+00:00' */;
-/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
-/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
-/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
-/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
-
---
--- Table structure for table `categories`
---
-
 DROP TABLE IF EXISTS `categories`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
@@ -43,7 +16,14 @@ CREATE TABLE `categories` (
 
 LOCK TABLES `categories` WRITE;
 /*!40000 ALTER TABLE `categories` DISABLE KEYS */;
-INSERT INTO `categories` VALUES (1,'Bersih-bersih','Layanan kebersihan rumah, kantor','2026-06-01 13:47:36'),(2,'Perbaikan','Servis AC, kulkas, pipa, elektronik','2026-06-01 13:47:36'),(3,'Les Privat','Bimbingan belajar SD, SMP, SMA','2026-06-01 13:47:36'),(4,'Laundry','Cuci setrika, kiloan antar jemput','2026-06-01 13:47:36'),(5,'Taman','Perawatan taman, potong rumput','2026-06-01 13:47:36'),(6,'Penitipan','Penitipan anak, hewan peliharaan','2026-06-01 13:47:36'),(7,'Memasak','Jasa catering, koki pribadi','2026-06-01 13:47:36');
+INSERT INTO `categories` VALUES 
+  (1,'Bersih-bersih','Layanan kebersihan rumah, kantor','2026-06-01 13:47:36'),
+(2,'Perbaikan','Servis AC, kulkas, pipa, elektronik','2026-06-01 13:47:36'),
+(3,'Les Privat','Bimbingan belajar SD, SMP, SMA','2026-06-01 13:47:36'),
+(4,'Laundry','Cuci setrika, kiloan antar jemput','2026-06-01 13:47:36'),
+(5,'Taman','Perawatan taman, potong rumput','2026-06-01 13:47:36'),
+(6,'Penitipan','Penitipan anak, hewan peliharaan','2026-06-01 13:47:36'),
+(7,'Memasak','Jasa catering, koki pribadi','2026-06-01 13:47:36');
 /*!40000 ALTER TABLE `categories` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -73,7 +53,14 @@ CREATE TABLE `invoices` (
 
 LOCK TABLES `invoices` WRITE;
 /*!40000 ALTER TABLE `invoices` DISABLE KEYS */;
-INSERT INTO `invoices` VALUES (2,2,'INV202606050002','assets/invoices/invoice_ORD202506010002.html','2026-06-05 14:39:02'),(3,5,'INV202606060005','assets/invoices/invoice_ORD202606064295.html','2026-06-06 21:20:15'),(4,4,'INV202606060004','assets/invoices/invoice_ORD202606069684.html','2026-06-06 21:20:17'),(5,3,'INV202606060003','assets/invoices/invoice_ORD202606065061.html','2026-06-06 21:20:53'),(6,6,'INV202606090006','assets/invoices/invoice_ORD202606092955.html','2026-06-09 20:36:35'),(7,7,'INV202606090007','assets/invoices/invoice_ORD202606091953.html','2026-06-09 20:36:35'),(8,8,'INV202606090008','assets/invoices/invoice_ORD202606094573.html','2026-06-09 21:47:14');
+INSERT INTO `invoices` VALUES 
+(2,2,'INV202606050002','assets/invoices/invoice_ORD202506010002.html','2026-06-05 14:39:02'),
+(3,5,'INV202606060005','assets/invoices/invoice_ORD202606064295.html','2026-06-06 21:20:15'),
+(4,4,'INV202606060004','assets/invoices/invoice_ORD202606069684.html','2026-06-06 21:20:17'),
+(5,3,'INV202606060003','assets/invoices/invoice_ORD202606065061.html','2026-06-06 21:20:53'),
+(6,6,'INV202606090006','assets/invoices/invoice_ORD202606092955.html','2026-06-09 20:36:35'),
+(7,7,'INV202606090007','assets/invoices/invoice_ORD202606091953.html','2026-06-09 20:36:35'),
+(8,8,'INV202606090008','assets/invoices/invoice_ORD202606094573.html','2026-06-09 21:47:14');
 /*!40000 ALTER TABLE `invoices` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -103,7 +90,43 @@ CREATE TABLE `notifications` (
 
 LOCK TABLES `notifications` WRITE;
 /*!40000 ALTER TABLE `notifications` DISABLE KEYS */;
-INSERT INTO `notifications` VALUES (2,2,'Pesanan Baru','Anda mendapatkan pesanan baru #ORD202506010001',1,'2026-06-01 13:47:37'),(3,3,'Akun Terverifikasi','Selamat! Akun penyedia Anda telah diverifikasi oleh admin.',0,'2026-06-05 05:50:59'),(4,2,'Pesanan Baru','Anda mendapat pesanan baru dengan No. Order ORD202606065061',0,'2026-06-06 13:33:26'),(5,6,'Pesanan Dibuat','Pesanan ORD202606065061 berhasil dibuat. Silakan upload bukti pembayaran.',0,'2026-06-06 13:33:26'),(6,2,'Pesanan Baru','Anda mendapat pesanan baru dengan No. Order ORD202606069684',0,'2026-06-06 13:35:30'),(7,5,'Pesanan Dibuat','Pesanan ORD202606069684 berhasil dibuat. Silakan upload bukti pembayaran.',1,'2026-06-06 13:35:30'),(8,3,'Pesanan Baru','Anda mendapat pesanan baru dengan No. Order ORD202606064295',0,'2026-06-06 14:09:09'),(9,5,'Pesanan Dibuat','Pesanan ORD202606064295 berhasil dibuat. Silakan upload bukti pembayaran.',0,'2026-06-06 14:09:09'),(10,5,'Pembayaran Berhasil','Pembayaran untuk pesanan ORD202606064295 telah diverifikasi.',0,'2026-06-06 14:20:15'),(11,3,'Pesanan Dibayar','Pesanan ORD202606064295 telah dibayar oleh pembeli. Silakan kerjakan.',0,'2026-06-06 14:20:15'),(12,5,'Pembayaran Berhasil','Pembayaran untuk pesanan ORD202606069684 telah diverifikasi.',1,'2026-06-06 14:20:17'),(13,2,'Pesanan Dibayar','Pesanan ORD202606069684 telah dibayar oleh pembeli. Silakan kerjakan.',0,'2026-06-06 14:20:17'),(14,5,'Status Pesanan Diperbarui','Pesanan Anda ORD202606064295 sekarang berstatus: Diterima.',0,'2026-06-06 14:21:48'),(15,5,'Status Pesanan Diperbarui','Pesanan Anda ORD202606064295 sekarang berstatus: Diproses.',0,'2026-06-06 14:21:54'),(16,5,'Status Pesanan Diperbarui','Pesanan Anda ORD202606064295 sekarang berstatus: Selesai.',0,'2026-06-06 14:21:57'),(17,5,'Status Pesanan Diperbarui','Pesanan Anda ORD202606069684 sekarang berstatus: Diterima.',0,'2026-06-07 04:56:20'),(18,5,'Status Pesanan Diperbarui','Pesanan Anda ORD202606069684 sekarang berstatus: Diproses.',0,'2026-06-07 05:59:41'),(19,5,'Status Pesanan Diperbarui','Pesanan Anda ORD202606069684 sekarang berstatus: Selesai.',0,'2026-06-07 05:59:43'),(20,6,'Status Pesanan Diperbarui','Pesanan Anda ORD202606065061 sekarang berstatus: Diproses.',0,'2026-06-07 05:59:44'),(21,6,'Status Pesanan Diperbarui','Pesanan Anda ORD202606065061 sekarang berstatus: Selesai.',0,'2026-06-08 13:11:02'),(22,3,'Pesanan Baru','Anda mendapat pesanan baru dengan No. Order ORD202606092955',0,'2026-06-09 13:36:35'),(23,5,'Pesanan COD Dibuat','Pesanan ORD202606092955 berhasil dibuat dengan metode COD.',0,'2026-06-09 13:36:35'),(24,2,'Pesanan Baru','Anda mendapat pesanan baru dengan No. Order ORD202606091953',0,'2026-06-09 13:36:35'),(25,5,'Pesanan COD Dibuat','Pesanan ORD202606091953 berhasil dibuat dengan metode COD.',0,'2026-06-09 13:36:35'),(26,9,'Akun Terverifikasi','Selamat! Akun penyedia Anda telah diverifikasi oleh admin.',1,'2026-06-09 13:49:07'),(27,5,'Status Pesanan Diperbarui','Pesanan Anda ORD202606091953 sekarang berstatus: Diterima.',0,'2026-06-09 14:14:11'),(28,5,'Status Pesanan Diperbarui','Pesanan Anda ORD202606091953 sekarang berstatus: Diproses.',0,'2026-06-09 14:14:13'),(29,5,'Status Pesanan Diperbarui','Pesanan Anda ORD202606091953 sekarang berstatus: Selesai.',0,'2026-06-09 14:14:15'),(30,9,'Pesanan Baru','Anda mendapat pesanan baru dengan No. Order ORD202606094573',1,'2026-06-09 14:15:24'),(31,5,'Pesanan Dibuat','Pesanan ORD202606094573 berhasil dibuat. Silakan upload bukti pembayaran.',0,'2026-06-09 14:15:24'),(32,5,'Status Pesanan Diperbarui','Pesanan Anda ORD202606092955 sekarang berstatus: Diterima.',0,'2026-06-09 14:18:56'),(33,5,'Status Pesanan Diperbarui','Pesanan Anda ORD202606092955 sekarang berstatus: Diproses.',0,'2026-06-09 14:18:57'),(34,5,'Status Pesanan Diperbarui','Pesanan Anda ORD202606094573 sekarang berstatus: Diterima.',0,'2026-06-09 14:25:35'),(35,5,'Status Pesanan Diperbarui','Pesanan Anda ORD202606094573 sekarang berstatus: Diproses.',0,'2026-06-09 14:47:10'),(36,5,'Status Pesanan Diperbarui','Pesanan Anda ORD202606094573 sekarang berstatus: Selesai.',1,'2026-06-09 14:47:14'),(37,5,'Status Pesanan Diperbarui','Pesanan Anda ORD202606092955 sekarang berstatus: Selesai.',0,'2026-06-14 09:55:17');
+INSERT INTO `notifications` VALUES 
+(2,2,'Pesanan Baru','Anda mendapatkan pesanan baru #ORD202506010001',1,'2026-06-01 13:47:37'),
+(3,3,'Akun Terverifikasi','Selamat! Akun penyedia Anda telah diverifikasi oleh admin.',0,'2026-06-05 05:50:59'),
+(4,2,'Pesanan Baru','Anda mendapat pesanan baru dengan No. Order ORD202606065061',0,'2026-06-06 13:33:26'),
+(5,6,'Pesanan Dibuat','Pesanan ORD202606065061 berhasil dibuat. Silakan upload bukti pembayaran.',0,'2026-06-06 13:33:26'),
+(6,2,'Pesanan Baru','Anda mendapat pesanan baru dengan No. Order ORD202606069684',0,'2026-06-06 13:35:30'),
+(7,5,'Pesanan Dibuat','Pesanan ORD202606069684 berhasil dibuat. Silakan upload bukti pembayaran.',1,'2026-06-06 13:35:30'),
+(8,3,'Pesanan Baru','Anda mendapat pesanan baru dengan No. Order ORD202606064295',0,'2026-06-06 14:09:09'),
+(9,5,'Pesanan Dibuat','Pesanan ORD202606064295 berhasil dibuat. Silakan upload bukti pembayaran.',0,'2026-06-06 14:09:09'),
+(10,5,'Pembayaran Berhasil','Pembayaran untuk pesanan ORD202606064295 telah diverifikasi.',0,'2026-06-06 14:20:15'),
+(11,3,'Pesanan Dibayar','Pesanan ORD202606064295 telah dibayar oleh pembeli. Silakan kerjakan.',0,'2026-06-06 14:20:15'),
+(12,5,'Pembayaran Berhasil','Pembayaran untuk pesanan ORD202606069684 telah diverifikasi.',1,'2026-06-06 14:20:17'),
+(13,2,'Pesanan Dibayar','Pesanan ORD202606069684 telah dibayar oleh pembeli. Silakan kerjakan.',0,'2026-06-06 14:20:17'),
+(14,5,'Status Pesanan Diperbarui','Pesanan Anda ORD202606064295 sekarang berstatus: Diterima.',0,'2026-06-06 14:21:48'),
+(15,5,'Status Pesanan Diperbarui','Pesanan Anda ORD202606064295 sekarang berstatus: Diproses.',0,'2026-06-06 14:21:54'),
+(16,5,'Status Pesanan Diperbarui','Pesanan Anda ORD202606064295 sekarang berstatus: Selesai.',0,'2026-06-06 14:21:57'),
+(17,5,'Status Pesanan Diperbarui','Pesanan Anda ORD202606069684 sekarang berstatus: Diterima.',0,'2026-06-07 04:56:20'),
+(18,5,'Status Pesanan Diperbarui','Pesanan Anda ORD202606069684 sekarang berstatus: Diproses.',0,'2026-06-07 05:59:41'),
+(19,5,'Status Pesanan Diperbarui','Pesanan Anda ORD202606069684 sekarang berstatus: Selesai.',0,'2026-06-07 05:59:43'),
+(20,6,'Status Pesanan Diperbarui','Pesanan Anda ORD202606065061 sekarang berstatus: Diproses.',0,'2026-06-07 05:59:44'),
+(21,6,'Status Pesanan Diperbarui','Pesanan Anda ORD202606065061 sekarang berstatus: Selesai.',0,'2026-06-08 13:11:02'),
+(22,3,'Pesanan Baru','Anda mendapat pesanan baru dengan No. Order ORD202606092955',0,'2026-06-09 13:36:35'),
+(23,5,'Pesanan COD Dibuat','Pesanan ORD202606092955 berhasil dibuat dengan metode COD.',0,'2026-06-09 13:36:35'),
+(24,2,'Pesanan Baru','Anda mendapat pesanan baru dengan No. Order ORD202606091953',0,'2026-06-09 13:36:35'),
+(25,5,'Pesanan COD Dibuat','Pesanan ORD202606091953 berhasil dibuat dengan metode COD.',0,'2026-06-09 13:36:35'),
+(26,9,'Akun Terverifikasi','Selamat! Akun penyedia Anda telah diverifikasi oleh admin.',1,'2026-06-09 13:49:07'),
+(27,5,'Status Pesanan Diperbarui','Pesanan Anda ORD202606091953 sekarang berstatus: Diterima.',0,'2026-06-09 14:14:11'),
+(28,5,'Status Pesanan Diperbarui','Pesanan Anda ORD202606091953 sekarang berstatus: Diproses.',0,'2026-06-09 14:14:13'),
+(29,5,'Status Pesanan Diperbarui','Pesanan Anda ORD202606091953 sekarang berstatus: Selesai.',0,'2026-06-09 14:14:15'),
+(30,9,'Pesanan Baru','Anda mendapat pesanan baru dengan No. Order ORD202606094573',1,'2026-06-09 14:15:24'),
+(31,5,'Pesanan Dibuat','Pesanan ORD202606094573 berhasil dibuat. Silakan upload bukti pembayaran.',0,'2026-06-09 14:15:24'),
+(32,5,'Status Pesanan Diperbarui','Pesanan Anda ORD202606092955 sekarang berstatus: Diterima.',0,'2026-06-09 14:18:56'),
+(33,5,'Status Pesanan Diperbarui','Pesanan Anda ORD202606092955 sekarang berstatus: Diproses.',0,'2026-06-09 14:18:57'),
+(34,5,'Status Pesanan Diperbarui','Pesanan Anda ORD202606094573 sekarang berstatus: Diterima.',0,'2026-06-09 14:25:35'),
+(35,5,'Status Pesanan Diperbarui','Pesanan Anda ORD202606094573 sekarang berstatus: Diproses.',0,'2026-06-09 14:47:10'),
+(36,5,'Status Pesanan Diperbarui','Pesanan Anda ORD202606094573 sekarang berstatus: Selesai.',1,'2026-06-09 14:47:14'),
+(37,5,'Status Pesanan Diperbarui','Pesanan Anda ORD202606092955 sekarang berstatus: Selesai.',0,'2026-06-14 09:55:17');
 /*!40000 ALTER TABLE `notifications` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -134,7 +157,15 @@ CREATE TABLE `order_items` (
 
 LOCK TABLES `order_items` WRITE;
 /*!40000 ALTER TABLE `order_items` DISABLE KEYS */;
-INSERT INTO `order_items` VALUES (2,2,3,2,75000.00),(3,3,1,1,150000.00),(4,4,1,1,150000.00),(5,4,2,1,200000.00),(6,5,3,1,75000.00),(7,5,4,1,8000.00),(8,6,4,1,8000.00),(9,7,1,1,150000.00),(10,8,5,1,150000.00);
+INSERT INTO `order_items` VALUES (2,2,3,2,75000.00),
+(3,3,1,1,150000.00),
+(4,4,1,1,150000 .00),
+(5,4,2,1,200000.00),
+(6,5,3,1,75000.00),
+(7,5,4,1,8000.00),
+(8,6,4,1,8000.00),
+(9,7,1,1,150000.00),
+(10,8,5,1,150000.00);
 /*!40000 ALTER TABLE `order_items` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -173,7 +204,14 @@ CREATE TABLE `orders` (
 
 LOCK TABLES `orders` WRITE;
 /*!40000 ALTER TABLE `orders` DISABLE KEYS */;
-INSERT INTO `orders` VALUES (2,5,3,'ORD202506010002',150000.00,2,'2025-06-07','Jl. Sudirman No. 5, Jakarta Pusat','completed','Terima kasih','2026-06-01 13:47:36','2026-06-05 07:39:02'),(3,6,2,'ORD202606065061',150000.00,1,'2026-06-10','Alamat smoke test','completed','Smoke test integrasi','2026-06-06 13:33:26','2026-06-08 13:11:02'),(4,5,2,'ORD202606069684',350000.00,2,'2026-06-06','awda','completed','awdwad','2026-06-06 13:35:30','2026-06-07 05:59:43'),(5,5,3,'ORD202606064295',83000.00,2,'2026-06-06','bababall','completed','awdawd','2026-06-06 14:09:09','2026-06-06 14:21:57'),(6,5,3,'ORD202606092955',8000.00,1,'2026-06-09','Jl perjuangan','completed','gang meerah putih','2026-06-09 13:36:35','2026-06-14 09:55:17'),(7,5,2,'ORD202606091953',150000.00,1,'2026-06-09','Jl perjuangan','completed','gang meerah putih','2026-06-09 13:36:35','2026-06-09 14:14:15'),(8,5,9,'ORD202606094573',150000.00,1,'2026-05-28','jalann mana aja','completed','awdwadaw','2026-06-09 14:15:24','2026-06-09 14:47:14');
+INSERT INTO `orders` VALUES 
+(2,5,3,'ORD202506010002',150000.00,2,'2025-06-07','Jl. Sudirman No. 5, Jakarta Pusat','completed','Terima kasih','2026-06-01 13:47:36','2026-06-05 07:39:02'),
+(3,6,2,'ORD202606065061',150000.00,1,'2026-06-10','Alamat smoke test','completed','Smoke test integrasi','2026-06-06 13:33:26','2026-06-08 13:11:02'),
+(4,5,2,'ORD202606069684',350000.00,2,'2026-06-06','awda','completed','awdwad','2026-06-06 13:35:30','2026-06-07 05:59:43'),
+(5,5,3,'ORD202606064295',83000.00,2,'2026-06-06','bababall','completed','awdawd','2026-06-06 14:09:09','2026-06-06 14:21:57'),
+(6,5,3,'ORD202606092955',8000.00,1,'2026-06-09','Jl perjuangan','completed','gang meerah putih','2026-06-09 13:36:35','2026-06-14 09:55:17'),
+(7,5,2,'ORD202606091953',150000.00,1,'2026-06-09','Jl perjuangan','completed','gang meerah putih','2026-06-09 13:36:35','2026-06-09 14:14:15'),
+(8,5,9,'ORD202606094573',150000.00,1,'2026-05-28','jalann mana aja','completed','awdwadaw','2026-06-09 14:15:24','2026-06-09 14:47:14');
 /*!40000 ALTER TABLE `orders` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -205,7 +243,11 @@ CREATE TABLE `payments` (
 
 LOCK TABLES `payments` WRITE;
 /*!40000 ALTER TABLE `payments` DISABLE KEYS */;
-INSERT INTO `payments` VALUES (1,2,'bank_transfer','proof_ord002.jpg','verified','2026-06-01 20:47:37','Pembayaran valid','2026-06-01 13:47:37'),(2,4,'cash','1780752943_6a24222f25290.png','verified','2026-06-06 21:20:17','','2026-06-06 13:35:43'),(3,5,'bank_transfer','1780754961_6a242a112df92.png','verified','2026-06-06 21:20:15','','2026-06-06 14:09:21'),(4,8,'bank_transfer','6a28200537da86.03016244.jpg','pending',NULL,NULL,'2026-06-09 14:15:33');
+INSERT INTO `payments` VALUES 
+(1,2,'bank_transfer','proof_ord002.jpg','verified','2026-06-01 20:47:37','Pembayaran valid','2026-06-01 13:47:37'),
+(2,4,'cash','1780752943_6a24222f25290.png','verified','2026-06-06 21:20:17','','2026-06-06 13:35:43'),
+(3,5,'bank_transfer','1780754961_6a242a112df92.png','verified','2026-06-06 21:20:15','','2026-06-06 14:09:21'),
+(4,8,'bank_transfer','6a28200537da86.03016244.jpg','pending',NULL,NULL,'2026-06-09 14:15:33');
 /*!40000 ALTER TABLE `payments` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -235,7 +277,10 @@ CREATE TABLE `provider_schedules` (
 
 LOCK TABLES `provider_schedules` WRITE;
 /*!40000 ALTER TABLE `provider_schedules` DISABLE KEYS */;
-INSERT INTO `provider_schedules` VALUES (1,2,0,'08:00:00','17:00:00',1),(2,9,0,'08:00:00','17:00:00',1),(3,9,4,'08:00:00','17:00:00',1);
+INSERT INTO `provider_schedules` VALUES 
+(1,2,0,'08:00:00','17:00:00',1),
+(2,9,0,'08:00:00','17:00:00',1),
+(3,9,4,'08:00:00','17:00:00',1);
 /*!40000 ALTER TABLE `provider_schedules` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -272,7 +317,13 @@ CREATE TABLE `reviews` (
 
 LOCK TABLES `reviews` WRITE;
 /*!40000 ALTER TABLE `reviews` DISABLE KEYS */;
-INSERT INTO `reviews` VALUES (1,3,2,5,5,'Lesnya sangat membantu, nilai anak saya meningkat','review1.jpg','2026-06-01 13:47:37'),(2,3,5,5,4,'sangat bagus',NULL,'2026-06-06 14:23:30'),(3,1,4,5,5,'sangat baik','1780812083_6a25093344409.jpg','2026-06-07 06:01:23'),(4,1,3,6,5,'Tepat Waktu',NULL,'2026-06-08 13:11:29'),(5,1,7,5,3,'biasa saja',NULL,'2026-06-09 14:36:42'),(6,5,8,5,5,'gutttt',NULL,'2026-06-14 09:54:25');
+INSERT INTO `reviews` VALUES 
+(1,3,2,5,5,'Lesnya sangat membantu, nilai anak saya meningkat','review1.jpg','2026-06-01 13:47:37'),
+(2,3,5,5,4,'sangat bagus',NULL,'2026-06-06 14:23:30'),
+(3,1,4,5,5,'sangat baik','1780812083_6a25093344409.jpg','2026-06-07 06:01:23'),
+(4,1,3,6,5,'Tepat Waktu',NULL,'2026-06-08 13:11:29'),
+(5,1,7,5,3,'biasa saja',NULL,'2026-06-09 14:36:42'),
+(6,5,8,5,5,'gutttt',NULL,'2026-06-14 09:54:25');
 /*!40000 ALTER TABLE `reviews` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -311,7 +362,12 @@ CREATE TABLE `services` (
 
 LOCK TABLES `services` WRITE;
 /*!40000 ALTER TABLE `services` DISABLE KEYS */;
-INSERT INTO `services` VALUES (1,2,1,'Jasa Bersih Rumah Profesional','Membersihkan seluruh rumah dengan standar hotel',150000.00,'per kunjungan','3-4 jam','Bandung Raya','service1.jpg',1,'2026-06-01 13:47:36','2026-06-05 06:20:37'),(2,2,2,'Servis AC & Kulkas Rumahan','Service AC dan kulkas untuk rumah tangga',200000.00,'per unit','1-2 jam','Bandung','service2.jpg',1,'2026-06-01 13:47:36','2026-06-01 13:47:36'),(3,3,3,'Les Matematika SD-SMP','Guru privat matematika, persiapan ujian',75000.00,'per jam','1 jam','Jakarta Selatan','1780755468_6a242c0cc8ace.png',1,'2026-06-01 13:47:36','2026-06-06 14:17:48'),(4,3,4,'Laundry Kiloan Antar Jemput','Laundry kiloan dengan kualitas bersih dan wangi',8000.00,'per kg','2 hari','Jakarta Selatan','6a2e7c1015a815.39695712.jpg',1,'2026-06-01 13:47:36','2026-06-14 10:01:52'),(5,9,2,'Service TV','Memperbaiki TV anda yang rusak, LCD maupun TV Tabung',150000.00,'per kunjungan','2 jam','Bekasi Utara',NULL,1,'2026-06-09 14:05:45','2026-06-09 14:05:45');
+INSERT INTO `services` VALUES 
+(1,2,1,'Jasa Bersih Rumah Profesional','Membersihkan seluruh rumah dengan standar hotel',150000.00,'per kunjungan','3-4 jam','Bandung Raya','service1.jpg',1,'2026-06-01 13:47:36','2026-06-05 06:20:37'),
+(2,2,2,'Servis AC & Kulkas Rumahan','Service AC dan kulkas untuk rumah tangga',200000.00,'per unit','1-2 jam','Bandung','service2.jpg',1,'2026-06-01 13:47:36','2026-06-01 13:47:36'),
+(3,3,3,'Les Matematika SD-SMP','Guru privat matematika, persiapan ujian',75000.00,'per jam','1 jam','Jakarta Selatan','1780755468_6a242c0cc8ace.png',1,'2026-06-01 13:47:36','2026-06-06 14:17:48'),
+(4,3,4,'Laundry Kiloan Antar Jemput','Laundry kiloan dengan kualitas bersih dan wangi',8000.00,'per kg','2 hari','Jakarta Selatan','6a2e7c1015a815.39695712.jpg',1,'2026-06-01 13:47:36','2026-06-14 10:01:52'),
+(5,9,2,'Service TV','Memperbaiki TV anda yang rusak, LCD maupun TV Tabung',150000.00,'per kunjungan','2 jam','Bekasi Utara',NULL,1,'2026-06-09 14:05:45','2026-06-09 14:05:45');
 /*!40000 ALTER TABLE `services` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -346,21 +402,12 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,'Rafli Aryadika','rafli@bisabantu.admin.com','$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi','admin',1,'','',NULL,'assets/uploads/profile/6a2819e0ea6e45.70898538.png','2026-06-01 13:47:36','2026-06-09 13:49:20'),(2,'Budi Wijaya','budi@bisabantu.com','$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi','provider',1,'','',NULL,'assets/uploads/profile/1780812028_6a2508fcc607f.jpg','2026-06-01 13:47:36','2026-06-07 06:00:28'),(3,'Sienna','sienna@bisabantu.com','$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi','provider',1,'0822222222','Jakarta Selatan',NULL,'assets/uploads/profile/6a2e7aa2168a05.85800877.png','2026-06-01 13:47:36','2026-06-14 09:55:46'),(5,'Nasyla Putri','nasyla@bisabantu.com','$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi','buyer',1,'','',NULL,'assets/uploads/profile/6a26bf489370f8.86045145.png','2026-06-01 13:47:36','2026-06-08 13:10:32'),(6,'Arpi','arpi@bisabantu.com','$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi','buyer',1,'0833333333','Bekasi',NULL,NULL,'2026-06-03 14:16:50','2026-06-07 06:05:25'),(9,'Mat Sohe','Sohe@gmail.com','$2y$10$SvjDyvLBwaBpp9uPB./2vOK.4RpRItae4qcxEo8As53vghnziLbZe','provider',1,'085171076449','Jl. Perjuangan',NULL,NULL,'2026-06-09 13:38:42','2026-06-09 16:53:48');
+INSERT INTO `users` VALUES 
+(1,'Rafli Aryadika','rafli@bisabantu.admin.com','$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi','admin',1,'','',NULL,'assets/uploads/profile/6a2819e0ea6e45.70898538.png','2026-06-01 13:47:36','2026-06-09 13:49:20'),
+(2,'Budi Wijaya','budi@bisabantu.com','$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi','provider',1,'','',NULL,'assets/uploads/profile/1780812028_6a2508fcc607f.jpg','2026-06-01 13:47:36','2026-06-07 06:00:28'),
+(3,'Sienna','sienna@bisabantu.com','$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi','provider',1,'0822222222','Jakarta Selatan',NULL,'assets/uploads/profile/6a2e7aa2168a05.85800877.png','2026-06-01 13:47:36','2026-06-14 09:55:46'),
+(5,'Nasyla Putri','nasyla@bisabantu.com','$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi','buyer',1,'','',NULL,'assets/uploads/profile/6a26bf489370f8.86045145.png','2026-06-01 13:47:36','2026-06-08 13:10:32'),
+(6,'Arpi','arpi@bisabantu.com','$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi','buyer',1,'0833333333','Bekasi',NULL,NULL,'2026-06-03 14:16:50','2026-06-07 06:05:25'),
+(9,'Mat Sohe','Sohe@gmail.com','$2y$10$SvjDyvLBwaBpp9uPB./2vOK.4RpRItae4qcxEo8As53vghnziLbZe','provider',1,'085171076449','Jl. Perjuangan',NULL,NULL,'2026-06-09 13:38:42','2026-06-09 16:53:48');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
-
---
--- Dumping routines for database 'bisabantu'
---
-/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
-
-/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
-/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
-/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
-
--- Dump completed on 2026-06-14 17:08:30

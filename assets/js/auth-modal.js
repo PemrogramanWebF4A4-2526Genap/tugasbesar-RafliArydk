@@ -70,6 +70,45 @@ function selectAuthRole(role) {
 }
 
 function goAuthStep(n) {
+    if (n === 3) {
+        const form = document.getElementById('authRegisterForm');
+        if (form) {
+            const firstNameInput = form.querySelector('[name="first_name"]');
+            const emailInput = document.getElementById('reg-email');
+            const passInput = document.getElementById('reg-pass');
+
+            const firstName = firstNameInput?.value.trim() || '';
+            const email = emailInput?.value.trim() || '';
+            const pass = passInput?.value || '';
+
+            if (!firstName) {
+                if (typeof showToast === 'function') showToast('Nama depan wajib diisi', 'warning');
+                firstNameInput?.focus();
+                return;
+            }
+            if (!email) {
+                if (typeof showToast === 'function') showToast('Email wajib diisi', 'warning');
+                emailInput?.focus();
+                return;
+            }
+            if (!isValidAuthEmail(email)) {
+                if (typeof showToast === 'function') showToast('Format email tidak valid', 'warning');
+                emailInput?.focus();
+                return;
+            }
+            if (!pass) {
+                if (typeof showToast === 'function') showToast('Password wajib diisi', 'warning');
+                passInput?.focus();
+                return;
+            }
+            if (pass.length < 8) {
+                if (typeof showToast === 'function') showToast('Password minimal 8 karakter', 'warning');
+                passInput?.focus();
+                return;
+            }
+        }
+    }
+
     [1, 2, 3].forEach(function (i) {
         const step = document.getElementById('reg-step-' + i);
         if (step) step.style.display = i === n ? 'block' : 'none';
@@ -139,6 +178,7 @@ function initAuthForms() {
     const loginForm = document.getElementById('authLoginForm');
     if (loginForm) {
         loginForm.addEventListener('submit', function (e) {
+            if (e.defaultPrevented) return;
             const emailInput = document.getElementById('login-email');
             const passwordInput = document.getElementById('login-pass');
             const email = emailInput?.value.trim() || '';
@@ -175,6 +215,7 @@ function initAuthForms() {
     const regForm = document.getElementById('authRegisterForm');
     if (regForm) {
         regForm.addEventListener('submit', function (e) {
+            if (e.defaultPrevented) return;
             const emailInput = document.getElementById('reg-email');
             const email = emailInput?.value.trim() || '';
             const confirm = regForm.querySelector('[name="password_confirm"]')?.value || '';

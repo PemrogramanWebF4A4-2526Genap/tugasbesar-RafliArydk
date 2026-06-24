@@ -61,4 +61,18 @@ class ReviewModel {
         $stmt->execute([$provider_id]);
         return $stmt->fetchAll();
     }
+
+    public function getRecentReviews($limit = 3) {
+        $stmt = $this->pdo->prepare('
+            SELECT r.*, u.name as reviewer_name, u.role as reviewer_role, u.address as reviewer_address, u.profile_photo as reviewer_photo, s.title as service_title, s.location as service_location
+            FROM reviews r
+            JOIN users u ON r.user_id = u.id
+            JOIN services s ON r.service_id = s.id
+            ORDER BY r.created_at DESC
+            LIMIT :limit
+        ');
+        $stmt->bindValue(':limit', (int)$limit, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll();
+    }
 }

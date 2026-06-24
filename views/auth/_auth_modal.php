@@ -114,7 +114,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="auth-provider-note" id="provider-note"<?= $regRole === 'provider' ? ' class="show"' : '' ?>>
+                    <div class="auth-provider-note" id="provider-note" <?= $regRole === 'provider' ? ' class="show"' : '' ?>>
                         <i class="bi bi-info-circle" style="margin-right:4px" aria-hidden="true"></i>
                         Akun penyedia perlu verifikasi admin sebelum bisa menawarkan jasa.
                     </div>
@@ -135,24 +135,24 @@
                     <div class="auth-form-row">
                         <div class="auth-form-group">
                             <label class="auth-form-label">Nama depan</label>
-                            <input class="auth-form-input" type="text" name="first_name" form="authRegisterForm" placeholder="Budi" value="<?= htmlspecialchars($_GET['first_name'] ?? '', ENT_QUOTES) ?>" required>
+                            <input class="auth-form-input" type="text" name="first_name" form="authRegisterForm" placeholder="Nama Depan" value="<?= htmlspecialchars($_GET['first_name'] ?? '', ENT_QUOTES) ?>" required>
                         </div>
                         <div class="auth-form-group">
                             <label class="auth-form-label">Nama belakang</label>
-                            <input class="auth-form-input" type="text" name="last_name" form="authRegisterForm" placeholder="Santoso" value="<?= htmlspecialchars($_GET['last_name'] ?? '', ENT_QUOTES) ?>">
+                            <input class="auth-form-input" type="text" name="last_name" form="authRegisterForm" placeholder="Nama Belakang" value="<?= htmlspecialchars($_GET['last_name'] ?? '', ENT_QUOTES) ?>">
                         </div>
                     </div>
                     <div class="auth-form-group">
                         <label class="auth-form-label">Email</label>
                         <div class="auth-input-wrap">
-                            <input class="auth-form-input" type="email" id="reg-email" name="email" form="authRegisterForm" placeholder="budi@email.com" value="<?= htmlspecialchars($_GET['email'] ?? '', ENT_QUOTES) ?>" required>
+                            <input class="auth-form-input" type="email" id="reg-email" name="email" form="authRegisterForm" placeholder="Email" value="<?= htmlspecialchars($_GET['email'] ?? '', ENT_QUOTES) ?>" required>
                             <i class="bi bi-envelope auth-input-icon" aria-hidden="true"></i>
                         </div>
                     </div>
                     <div class="auth-form-group">
                         <label class="auth-form-label">Nomor telepon</label>
                         <div class="auth-input-wrap">
-                            <input class="auth-form-input" type="tel" name="phone" form="authRegisterForm" placeholder="+62 812 3456 7890" value="<?= htmlspecialchars($_GET['phone'] ?? '', ENT_QUOTES) ?>">
+                            <input class="auth-form-input" type="tel" name="phone" form="authRegisterForm" placeholder="No Telepon" value="<?= htmlspecialchars($_GET['phone'] ?? '', ENT_QUOTES) ?>">
                             <i class="bi bi-telephone auth-input-icon" aria-hidden="true"></i>
                         </div>
                     </div>

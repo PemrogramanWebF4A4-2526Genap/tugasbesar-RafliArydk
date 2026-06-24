@@ -11,14 +11,17 @@ require_once __DIR__ . '/../../models/ServiceModel.php';
 require_once __DIR__ . '/../../models/CategoryModel.php';
 require_once __DIR__ . '/../../models/UserModel.php';
 require_once __DIR__ . '/../../models/OrderModel.php';
+require_once __DIR__ . '/../../models/ReviewModel.php';
 
 $serviceModel = new ServiceModel($pdo);
 $categoryModel = new CategoryModel($pdo);
 $userModel = new UserModel($pdo);
 $orderModel = new OrderModel($pdo);
+$reviewModel = new ReviewModel($pdo);
 
 $homeServices = $serviceModel->getAllActive();
 $homeCategories = $categoryModel->getAllWithServiceCount();
+$homeReviews = $reviewModel->getRecentReviews(3);
 $activeServiceCount = $serviceModel->countActive();
 $verifiedProviderCount = $userModel->countVerifiedProviders();
 $completedOrderCount = count(array_filter($orderModel->getAll(), fn($order) => $order['status'] === 'completed'));
@@ -167,11 +170,13 @@ if (!empty($ratingRows)) {
                 <div class="col-md-6 col-lg-3" data-service-card data-category="<?= e($serviceCategorySlug) ?>" data-title="<?= e($service['title']) ?>">
                     <div class="service-card">
                         <div class="service-img">
-                            <?php if ($hasImage): ?>
-                                <img src="<?= e(base_url($imagePath)) ?>" alt="<?= e($service['title']) ?>" class="img-fluid w-100 h-100" style="object-fit: cover;">
-                            <?php else: ?>
-                                <i class="bi <?= e(service_icon($service['category_name'])) ?> fa-3x"></i>
-                            <?php endif; ?>
+                            <a href="<?= base_url('index.php?page=service_detail&id=' . (int) $service['id']) ?>" class="d-flex align-items-center justify-content-center w-100 h-100" style="text-decoration: none; color: inherit;">
+                                <?php if ($hasImage): ?>
+                                    <img src="<?= e(base_url($imagePath)) ?>" alt="<?= e($service['title']) ?>" class="img-fluid w-100 h-100" style="object-fit: cover;">
+                                <?php else: ?>
+                                    <i class="bi <?= e(category_icon($service['category_name'])) ?> fa-3x"></i>
+                                <?php endif; ?>
+                            </a>
                         </div>
                         <div class="p-3">
                             <h5><?= e($service['title']) ?></h5>
@@ -247,38 +252,88 @@ if (!empty($ratingRows)) {
         <h2 class="section-title">Apa kata <em>pengguna</em> kami</h2>
     </div>
     <div class="row g-4">
-        <div class="col-md-4">
-            <div class="testimonial-card">
-                <div class="d-flex gap-3 mb-2"><i class="bi bi-person-circle fs-1 section-sub"></i>
-                    <div>
-                        <h5 class="mb-0">Nita Permata</h5><small class="section-sub">Pembeli - Jakarta</small>
+        <?php if (!empty($homeReviews)): ?>
+            <?php foreach ($homeReviews as $review): ?>
+                <?php
+                $reviewerRole = $review['reviewer_role'] === 'provider' ? 'Penyedia Jasa' : 'Pembeli';
+                
+                // Dapatkan kota / lokasi
+                $address = trim($review['reviewer_address'] ?? '');
+                if ($address === '') {
+                    $address = trim($review['service_location'] ?? 'Indonesia');
+                }
+                $city = 'Indonesia';
+                if ($address !== '') {
+                    $parts = explode(',', $address);
+                    $city = trim(end($parts));
+                }
+                $roleLocation = $reviewerRole . ' - ' . $city;
+                
+                $profilePhoto = $review['reviewer_photo'] ? base_url($review['reviewer_photo']) : null;
+                ?>
+                <div class="col-md-4">
+                    <div class="testimonial-card">
+                        <div class="d-flex gap-3 mb-2">
+                            <?php if ($profilePhoto && is_file(__DIR__ . '/../../' . $review['reviewer_photo'])): ?>
+                                <img src="<?= e($profilePhoto) ?>" alt="<?= e($review['reviewer_name']) ?>" class="rounded-circle" style="width: 48px; height: 48px; object-fit: cover;">
+                            <?php else: ?>
+                                <i class="bi bi-person-circle fs-1 section-sub"></i>
+                            <?php endif; ?>
+                            <div>
+                                <h5 class="mb-0"><?= e($review['reviewer_name']) ?></h5>
+                                <small class="section-sub"><?= e($roleLocation) ?></small>
+                            </div>
+                        </div>
+                        <div class="rating mb-2" style="color: #ffc107;">
+                            <?php
+                            $stars = (int)$review['rating'];
+                            for ($i = 1; $i <= 5; $i++) {
+                                echo $i <= $stars ? '★' : '☆';
+                            }
+                            ?>
+                        </div>
+                        <p class="section-sub mb-0">"<?= e($review['comment']) ?>"</p>
+                        <?php if ($review['service_title']): ?>
+                            <small class="text-muted d-block mt-2" style="font-size: 0.75rem;">Jasa: <?= e($review['service_title']) ?></small>
+                        <?php endif; ?>
                     </div>
                 </div>
-                <div class="rating mb-2">★★★★★</div>
-                <p class="section-sub mb-0">Sangat mudah digunakan! Saya menemukan cleaning service yang bagus dalam hitungan menit. Penyedianya ramah dan profesional.</p>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="testimonial-card">
-                <div class="d-flex gap-3 mb-2"><i class="bi bi-person-circle fs-1 section-sub"></i>
-                    <div>
-                        <h5 class="mb-0">Rizki Kurniawan</h5><small class="section-sub">Penyedia Jasa - Bandung</small>
+            <?php endforeach; ?>
+        <?php else: ?>
+            <!-- Fallback static reviews if database is empty -->
+            <div class="col-md-4">
+                <div class="testimonial-card">
+                    <div class="d-flex gap-3 mb-2"><i class="bi bi-person-circle fs-1 section-sub"></i>
+                        <div>
+                            <h5 class="mb-0">Nita Permata</h5><small class="section-sub">Pembeli - Jakarta</small>
+                        </div>
                     </div>
+                    <div class="rating mb-2">★★★★★</div>
+                    <p class="section-sub mb-0">Sangat mudah digunakan! Saya menemukan cleaning service yang bagus dalam hitungan menit. Penyedianya ramah dan profesional.</p>
                 </div>
-                <div class="rating mb-2">★★★★★</div>
-                <p class="section-sub mb-0">Sebagai penyedia, platform ini sangat membantu. Pesanan datang terus dan sistem pembayarannya transparan dan aman.</p>
             </div>
-        </div>
-        <div class="col-md-4">
-            <div class="testimonial-card">
-                <div class="d-flex gap-3 mb-2"><i class="bi bi-person-circle fs-1 section-sub"></i>
-                    <div>
-                        <h5 class="mb-0">Maya Andriani</h5><small class="section-sub">Pembeli - Surabaya</small>
+            <div class="col-md-4">
+                <div class="testimonial-card">
+                    <div class="d-flex gap-3 mb-2"><i class="bi bi-person-circle fs-1 section-sub"></i>
+                        <div>
+                            <h5 class="mb-0">Rizki Kurniawan</h5><small class="section-sub">Penyedia Jasa - Bandung</small>
+                        </div>
                     </div>
+                    <div class="rating mb-2">★★★★★</div>
+                    <p class="section-sub mb-0">Sebagai penyedia, platform ini sangat membantu. Pesanan datang terus dan sistem pembayarannya transparan dan aman.</p>
                 </div>
-                <div class="rating mb-2">★★★★★</div>
-                <p class="section-sub mb-0">Les matematika anak saya meningkat pesat. Mudah booking dan gurunya bisa datang ke rumah sesuai jadwal yang kita tentukan.</p>
             </div>
-        </div>
+            <div class="col-md-4">
+                <div class="testimonial-card">
+                    <div class="d-flex gap-3 mb-2"><i class="bi bi-person-circle fs-1 section-sub"></i>
+                        <div>
+                            <h5 class="mb-0">Maya Andriani</h5><small class="section-sub">Pembeli - Surabaya</small>
+                        </div>
+                    </div>
+                    <div class="rating mb-2">★★★★★</div>
+                    <p class="section-sub mb-0">Les matematika anak saya meningkat pesat. Mudah booking dan gurunya bisa datang ke rumah sesuai jadwal yang kita tentukan.</p>
+                </div>
+            </div>
+        <?php endif; ?>
     </div>
 </section>

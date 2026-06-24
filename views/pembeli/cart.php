@@ -47,7 +47,7 @@ if (!empty($_SESSION['cart'])) {
                                     <input type="checkbox" checked aria-label="Pilih <?= e($item['service']['title']) ?>">
                                 </label>
                                 <div class="cart-product-thumb">
-                                    <i class="bi <?= e(service_icon($item['service']['category_name'])) ?>"></i>
+                                    <i class="bi <?= e(category_icon($item['service']['category_name'])) ?>"></i>
                                 </div>
                                 <div class="cart-product-info">
                                     <h3><?= e($item['service']['title']) ?></h3>

@@ -28,7 +28,7 @@ $averageRating = number_format($service['avg_rating'] ?? 0, 1);
                             <img src="<?= e(base_url($imagePath)) ?>" alt="<?= e($service['title']) ?>" class="img-fluid w-100 h-100" style="object-fit: cover;">
                         <?php else: ?>
                             <div class="text-center text-muted">
-                                <i class="bi <?= e(service_icon($service['category_name'])) ?> fs-1"></i>
+                                <i class="bi <?= e(category_icon($service['category_name'])) ?> fs-1"></i>
                                 <p class="mb-0">Tidak ada gambar</p>
                             </div>
                         <?php endif; ?>
