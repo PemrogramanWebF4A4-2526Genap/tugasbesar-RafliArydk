@@ -1,9 +1,9 @@
 <?php
 session_start();
-require_once 'config/database.php';
-require_once 'helpers/functions.php';
-require_once 'helpers/upload.php';
-require_once 'helpers/database_dump.php';
+require_once 'src/config/database.php';
+require_once 'src/helpers/functions.php';
+require_once 'src/helpers/upload.php';
+require_once 'src/helpers/database_dump.php';
 
 $page = $_GET['page'] ?? 'home';
 
@@ -81,7 +81,7 @@ if (isset($_GET['profile_update']) && $_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_FILES['profile_photo']) && $_FILES['profile_photo']['error'] !== UPLOAD_ERR_NO_FILE) {
         $fileName = upload_image_file($_FILES['profile_photo'], __DIR__ . '/assets/uploads/profile/');
         if ($fileName !== null) {
-            $newProfilePhoto = 'assets/uploads/profile/' . $fileName;
+            $newProfilePhoto = 'src/assets/uploads/profile/' . $fileName;
         } else {
             $errors[] = 'Format foto profil harus JPG/PNG dan maksimal 2MB.';
         }
@@ -126,21 +126,21 @@ if (isset($_GET['profile_update']) && $_SERVER['REQUEST_METHOD'] === 'POST') {
 
 
 if ($page == 'home') {
-    include 'controllers/HomeController.php';
+    include 'src/controllers/HomeController.php';
 } elseif ($page == 'auth') {
-    include 'controllers/AuthController.php';
+    include 'src/controllers/AuthController.php';
 } elseif ($page == 'admin') {
-    include 'controllers/AdminController.php';
+    include 'src/controllers/AdminController.php';
 } elseif ($page == 'payment') {
-    include 'controllers/PaymentController.php';
+    include 'src/controllers/PaymentController.php';
 } elseif ($page == 'order') {
-    include 'controllers/OrderController.php';
+    include 'src/controllers/OrderController.php';
 } elseif ($page == 'invoice') {
-    include 'controllers/InvoiceController.php';
+    include 'src/controllers/InvoiceController.php';
 } elseif ($page == 'notification') {
-    include 'controllers/NotificationController.php';
+    include 'src/controllers/NotificationController.php';
 } elseif ($page == 'service') {
-    include 'controllers/ServiceController.php';
+    include 'src/controllers/ServiceController.php';
 } elseif ($page == 'sync_dump') {
     if (!isset($_SESSION['user']) || ($_SESSION['user']['role'] ?? '') !== 'admin') {
         header('Location: index.php?page=home');
@@ -149,19 +149,19 @@ if ($page == 'home') {
     require __DIR__ . '/database/sync_dump.php';
     exit;
 } elseif ($page == 'report_export') {
-    include 'controllers/ReportExportController.php';
+    include 'src/controllers/ReportExportController.php';
 } elseif ($page == 'schedule') {
-    include 'controllers/ScheduleController.php';
+    include 'src/controllers/ScheduleController.php';
 } elseif ($page == 'review') {
-    include 'controllers/ReviewController.php';
+    include 'src/controllers/ReviewController.php';
 } elseif ($page == 'service_detail') {
-    $dashboard_css = 'pembeli';
-    include 'views/layout/header.php';
-    include 'views/pembeli/service_detail.php';
-    include 'views/layout/footer.php';
+    $dashboard_css = 'buyer';
+    include 'src/views/layout/header.php';
+    include 'src/views/buyer/service_detail.php';
+    include 'src/views/layout/footer.php';
 } elseif ($page == 'cart') {
     if (isset($_GET['action'])) {
-        include 'controllers/CartController.php';
+        include 'src/controllers/CartController.php';
         exit;
     }
     if (!isset($_SESSION['user'])) {
@@ -173,9 +173,9 @@ if ($page == 'home') {
         exit;
     }
 
-    include 'views/layout/header.php';
-    include 'views/pembeli/cart.php';
-    include 'views/layout/footer.php';
+    include 'src/views/layout/header.php';
+    include 'src/views/buyer/cart.php';
+    include 'src/views/layout/footer.php';
 } elseif ($page == 'checkout') {
     if (!isset($_SESSION['user'])) {
         header('Location: index.php?page=home&auth=login');
@@ -187,13 +187,13 @@ if ($page == 'home') {
     }
 
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        include 'controllers/CheckoutController.php';
+        include 'src/controllers/CheckoutController.php';
         exit;
     }
 
-    include 'views/layout/header.php';
-    include 'views/pembeli/checkout.php';
-    include 'views/layout/footer.php';
+    include 'src/views/layout/header.php';
+    include 'src/views/buyer/checkout.php';
+    include 'src/views/layout/footer.php';
 } elseif ($page == 'account_settings') {
     if (!isset($_SESSION['user'])) {
         header('Location: index.php?page=home&auth=login');
@@ -203,14 +203,14 @@ if ($page == 'home') {
     if (($_SESSION['user']['role'] ?? '') === 'admin') {
         $dashboard_css = 'admin';
     } elseif (($_SESSION['user']['role'] ?? '') === 'provider') {
-        $dashboard_css = 'penyedia';
+        $dashboard_css = 'seller';
     } else {
-        $dashboard_css = 'pembeli';
+        $dashboard_css = 'buyer';
     }
 
-    include 'views/layout/header.php';
-    include 'views/layout/account_settings.php';
-    include 'views/layout/footer.php';
+    include 'src/views/layout/header.php';
+    include 'src/views/layout/account_settings.php';
+    include 'src/views/layout/footer.php';
 } elseif (in_array($page, ['orders', 'order_detail', 'upload_payment', 'review_form'], true)) {
     if (!isset($_SESSION['user'])) {
         header('Location: index.php?page=home&auth=login');
@@ -221,7 +221,7 @@ if ($page == 'home') {
         exit;
     }
 
-    $dashboard_css = 'pembeli';
+    $dashboard_css = 'buyer';
     $buyerPages = [
         'orders' => 'orders.php',
         'order_detail' => 'order_detail.php',
@@ -229,9 +229,9 @@ if ($page == 'home') {
         'review_form' => 'review_form.php',
     ];
 
-    include 'views/layout/header.php';
-    include 'views/pembeli/' . $buyerPages[$page];
-    include 'views/layout/footer.php';
+    include 'src/views/layout/header.php';
+    include 'src/views/buyer/' . $buyerPages[$page];
+    include 'src/views/layout/footer.php';
 } elseif (in_array($page, ['provider_services', 'provider_orders', 'provider_shipping', 'provider_earnings', 'provider_reviews'], true)) {
     if (!isset($_SESSION['user'])) {
         header('Location: index.php?page=home&auth=login');
@@ -242,14 +242,14 @@ if ($page == 'home') {
         exit;
     }
     if ((int) ($_SESSION['user']['is_verified'] ?? 0) !== 1) {
-        $dashboard_css = 'penyedia';
-        include 'views/layout/header.php';
-        include 'views/public/provider_pending.php';
-        include 'views/layout/footer.php';
+        $dashboard_css = 'seller';
+        include 'src/views/layout/header.php';
+        include 'src/views/public/provider_pending.php';
+        include 'src/views/layout/footer.php';
         exit;
     }
 
-    $dashboard_css = 'penyedia';
+    $dashboard_css = 'seller';
     $providerPages = [
         'provider_services' => 'services.php',
         'provider_orders' => 'orders.php',
@@ -258,9 +258,9 @@ if ($page == 'home') {
         'provider_reviews' => 'reviews.php',
     ];
 
-    include 'views/layout/header.php';
-    include 'views/penyedia/' . $providerPages[$page];
-    include 'views/layout/footer.php';
+    include 'src/views/layout/header.php';
+    include 'src/views/seller/' . $providerPages[$page];
+    include 'src/views/layout/footer.php';
 } elseif (in_array($page, ['admin_users', 'admin_verify', 'admin_categories', 'admin_orders', 'admin_reports', 'admin_settings'], true)) {
     if (!isset($_SESSION['user'])) {
         header('Location: index.php?page=home&auth=login');
@@ -281,9 +281,9 @@ if ($page == 'home') {
         'admin_settings' => 'settings.php',
     ];
 
-    include 'views/layout/header.php';
-    include 'views/admin/' . $adminPages[$page];
-    include 'views/layout/footer.php';
+    include 'src/views/layout/header.php';
+    include 'src/views/admin/' . $adminPages[$page];
+    include 'src/views/layout/footer.php';
 } elseif ($page == 'dashboard') {
     if (!isset($_SESSION['user'])) {
         header('Location: index.php?page=home&auth=login');
@@ -293,36 +293,33 @@ if ($page == 'home') {
     if ($_SESSION['user']['role'] == 'admin') {
         $dashboard_css = 'admin';
     } elseif ($_SESSION['user']['role'] == 'provider') {
-        $dashboard_css = 'penyedia';
+        $dashboard_css = 'seller';
     } else {
-        $dashboard_css = 'pembeli';
+        $dashboard_css = 'buyer';
     }
 
-    include 'views/layout/header.php';
+    include 'src/views/layout/header.php';
     
     if ($_SESSION['user']['role'] == 'admin') {
-        include 'views/admin/dashboard.php';
+        include 'src/views/admin/dashboard.php';
     } elseif ($_SESSION['user']['role'] == 'provider') {
         if ((int) ($_SESSION['user']['is_verified'] ?? 0) !== 1) {
-            include 'views/public/provider_pending.php';
+            include 'src/views/public/provider_pending.php';
         } else {
-            include 'views/penyedia/dashboard.php';
+            include 'src/views/seller/dashboard.php';
         }
     } else {
-        include 'views/pembeli/dashboard.php';
+        include 'src/views/buyer/dashboard.php';
     }
-    include 'views/layout/footer.php';
+    include 'src/views/layout/footer.php';
 
-} elseif (in_array($page, ['about', 'contact'], true)) {
-    include 'views/layout/header.php';
-    include 'views/public/' . $page . '.php';
-    include 'views/layout/footer.php';
+
 } else {
-    include 'views/layout/header.php';
+    include 'src/views/layout/header.php';
     echo "<div class='container mt-5 text-center' style='min-height: 50vh;'>
             <h1 class='fw-bold' style='color: var(--accent);'>404</h1>
             <h2>Halaman tidak ditemukan</h2>
             <a href='index.php' class='btn btn-primary-custom mt-3'>Kembali ke Beranda</a>
           </div>";
-    include 'views/layout/footer.php';
+    include 'src/views/layout/footer.php';
 }
