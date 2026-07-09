@@ -61,7 +61,7 @@ function send_automation_email($to, $subject, $message) {
     }
 
     // Load Composer's autoloader
-    require_once __DIR__ . '/../vendor/autoload.php';
+    require_once __DIR__ . '/../../vendor/autoload.php';
 
     $mail = new \PHPMailer\PHPMailer\PHPMailer(true);
 

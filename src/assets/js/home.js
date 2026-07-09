@@ -139,16 +139,24 @@
                     e.stopPropagation();
                 });
             });
+            // Also stop submit events on cart forms from bubbling to card
+            inner.querySelectorAll('form.js-cart-add').forEach(function (cartForm) {
+                cartForm.addEventListener('submit', function (e) {
+                    e.stopPropagation();
+                });
+            });
             inner.setAttribute('role', 'button');
             inner.setAttribute('tabindex', '0');
-            const activate = function () {
+            const activate = function (e) {
+                // Don't activate if click came from a button, form, or link
+                if (e.target.closest('a, button, form, input, select')) return;
                 handleServiceCard(wrap);
             };
             inner.addEventListener('click', activate);
             inner.addEventListener('keydown', function (e) {
                 if (e.key === 'Enter' || e.key === ' ') {
                     e.preventDefault();
-                    activate();
+                    handleServiceCard(wrap);
                 }
             });
         });

@@ -52,7 +52,7 @@ $roleShortLabel = $roleShortLabels[$userRole] ?? $roleLabel;
 $userName = $_SESSION['user']['name'] ?? 'Pengguna';
 $userInitial = strtoupper(substr($userName, 0, 1));
 $profilePhotoPath = $_SESSION['user']['profile_photo'] ?? '';
-$profilePhotoExists = $profilePhotoPath && is_file(__DIR__ . '/../../' . ltrim($profilePhotoPath, '/'));
+$profilePhotoExists = $profilePhotoPath && is_file(__DIR__ . '/../../../' . ltrim($profilePhotoPath, '/'));
 $profilePhotoStyle = $profilePhotoExists ? "background-image: url('" . e(base_url($profilePhotoPath)) . "');" : '';
 $nameParts = explode(' ', $userName, 2);
 $firstNameValue = $nameParts[0] ?? '';
@@ -130,7 +130,7 @@ $sideNav = [
         ['label' => 'Verifikasi Penjual', 'icon' => 'bi-arrow-repeat', 'href' => base_url('index.php?page=admin_verify'), 'badge' => $adminPendingVerify > 0 ? (string) $adminPendingVerify : null],
         ['label' => 'Manage Kategori', 'icon' => 'bi-grid-3x3', 'href' => base_url('index.php?page=admin_categories')],
         ['label' => 'Semua Pesanan', 'icon' => 'bi-clipboard-check', 'href' => base_url('index.php?page=admin_orders'), 'badge' => $adminPendingPayments > 0 ? (string) $adminPendingPayments : null],
-        ['label' => 'Report & Analytics', 'icon' => 'bi-pie-chart', 'href' => base_url('index.php?page=admin_reports')],
+        ['label' => 'Report dan Analytics', 'icon' => 'bi-pie-chart', 'href' => base_url('index.php?page=admin_reports')],
         ['label' => 'System Settings', 'icon' => 'bi-gear', 'href' => base_url('index.php?page=admin_settings')],
     ],
 ];
@@ -207,7 +207,7 @@ $activeSideNav = $isLoggedIn && isset($sideNav[$userRole]) ? $sideNav[$userRole]
                 <li class="nav-item"><a class="nav-link" href="<?= $homeUrl ?>#testimoni" data-scroll="#testimoni">Tentang Kami</a></li>
             </ul>
 
-            <!-- Mobile / tablet: auth & akun (tidak ada di desktop karena sudah di role-actions) -->
+            <!-- Mobile / tablet: auth dan akun (tidak ada di desktop karena sudah di role-actions) -->
             <div class="mobile-auth-panel d-lg-none">
                 <?php if ($isLoggedIn): ?>
                     <?php if ($userRole === 'provider'): ?>

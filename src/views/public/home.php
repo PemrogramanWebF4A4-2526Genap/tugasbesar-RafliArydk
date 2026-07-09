@@ -165,7 +165,7 @@ if (!empty($ratingRows)) {
                 $serviceCategorySlug = slugify($service['category_name']);
                 $rating = (float) $service['avg_rating'];
                 $imagePath = $service['image'] ? 'src/assets/uploads/services/' . $service['image'] : '';
-                $hasImage = $imagePath && is_file(__DIR__ . '/../../' . $imagePath);
+                $hasImage = $imagePath && is_file(__DIR__ . '/../../../' . ltrim($imagePath, '/'));
                 ?>
                 <div class="col-md-6 col-lg-3" data-service-card data-category="<?= e($serviceCategorySlug) ?>" data-title="<?= e($service['title']) ?>">
                     <div class="service-card">
@@ -189,7 +189,7 @@ if (!empty($ratingRows)) {
                             <div class="d-grid gap-2 mt-3">
                                 <a href="<?= base_url('index.php?page=service_detail&id=' . (int) $service['id']) ?>" class="btn btn-sm btn-outline-custom w-100">Detail</a>
                                 <?php if (isset($_SESSION['user']) && ($_SESSION['user']['role'] ?? '') === 'buyer'): ?>
-                                    <form method="post" action="<?= base_url('index.php?page=cart&action=add') ?>" class="m-0" onclick="event.stopPropagation();">
+                                    <form method="post" action="<?= base_url('index.php?page=cart&action=add') ?>" class="m-0 js-cart-add" onclick="event.stopPropagation();">
                                         <input type="hidden" name="service_id" value="<?= (int) $service['id'] ?>">
                                         <input type="hidden" name="quantity" value="1">
                                         <button type="submit" class="btn btn-sm btn-primary-custom w-100">Tambah ke Keranjang</button>
@@ -223,7 +223,7 @@ if (!empty($ratingRows)) {
             <div class="col-md-3">
                 <div class="step-card">
                     <div class="step-number">2</div>
-                    <h5>Pesan & checkout</h5>
+                    <h5>Pesan dan checkout</h5>
                     <p class="small section-sub">Tambahkan ke keranjang, pilih tanggal pelaksanaan dan metode pembayaran, lalu buat pesanan.</p>
                 </div>
             </div>
@@ -274,7 +274,7 @@ if (!empty($ratingRows)) {
                 <div class="col-md-4">
                     <div class="testimonial-card">
                         <div class="d-flex gap-3 mb-2">
-                            <?php if ($profilePhoto && is_file(__DIR__ . '/../../' . $review['reviewer_photo'])): ?>
+                            <?php if ($profilePhoto && is_file(__DIR__ . '/../../../' . ltrim($review['reviewer_photo'], '/'))): ?>
                                 <img src="<?= e($profilePhoto) ?>" alt="<?= e($review['reviewer_name']) ?>" class="rounded-circle" style="width: 48px; height: 48px; object-fit: cover;">
                             <?php else: ?>
                                 <i class="bi bi-person-circle fs-1 section-sub"></i>

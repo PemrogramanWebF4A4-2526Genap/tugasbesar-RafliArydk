@@ -14,7 +14,7 @@ if (!$service || (int) $service['is_active'] !== 1) {
 
 $reviews = $reviewModel->getByService($serviceId);
 $imagePath = $service['image'] ? 'src/assets/uploads/services/' . $service['image'] : '';
-$hasImage = $imagePath && is_file(__DIR__ . '/../../' . $imagePath);
+$hasImage = $imagePath && is_file(__DIR__ . '/../../../' . ltrim($imagePath, '/'));
 $averageRating = number_format($service['avg_rating'] ?? 0, 1);
 ?>
 
@@ -77,18 +77,22 @@ $averageRating = number_format($service['avg_rating'] ?? 0, 1);
         </div>
 
         <div class="col-lg-4">
-            <div class="sticky-top" style="top: 100px;">
+            <div>
                 <div class="card rounded-4 shadow-sm p-4 mb-4">
                     <h5 class="mb-3">Ringkasan Layanan</h5>
                     <p class="mb-2"><strong>Harga:</strong> <?= e(format_rupiah($service['price'])) ?> / <?= e($service['price_unit']) ?></p>
                     <p class="mb-2"><strong>Durasi:</strong> <?= e($service['estimated_duration']) ?></p>
                     <p class="mb-2"><strong>Lokasi:</strong> <?= e($service['location']) ?></p>
                     <?php if (isset($_SESSION['user']) && ($_SESSION['user']['role'] ?? '') === 'buyer'): ?>
-                        <form method="post" action="<?= base_url('index.php?page=cart&action=add') ?>">
+                        <form method="post" action="<?= base_url('index.php?page=cart&action=add') ?>" class="js-cart-add">
                             <input type="hidden" name="service_id" value="<?= (int) $serviceId ?>">
                             <div class="mb-3">
                                 <label class="form-label">Jumlah</label>
-                                <input type="number" name="quantity" min="1" value="1" class="form-control">
+                                <div class="input-group">
+                                    <button class="btn btn-outline-secondary" type="button" onclick="this.parentNode.querySelector('input[type=number]').stepDown()">-</button>
+                                    <input type="number" name="quantity" min="1" value="1" class="form-control text-center">
+                                    <button class="btn btn-outline-secondary" type="button" onclick="this.parentNode.querySelector('input[type=number]').stepUp()">+</button>
+                                </div>
                             </div>
                             <button type="submit" class="btn btn-primary-custom w-100">Tambah ke Keranjang</button>
                         </form>

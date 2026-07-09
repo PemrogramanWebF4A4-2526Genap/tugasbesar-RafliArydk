@@ -247,6 +247,127 @@ if ($action === 'resend_otp') {
 }
 
 // ---------------------------------------------------------------------------
+// ACTION: forgot_password
+// ---------------------------------------------------------------------------
+if ($action === 'forgot_password') {
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+        header('Location: index.php?page=home&auth=forgot');
+        exit;
+    }
+
+    $email = trim($_POST['email'] ?? '');
+    $user = $userModel->getAuthUserByEmail($email);
+
+    if (!$user) {
+        // Pretend it succeeded for security, or show error. Let's show error for better UX here.
+        header('Location: index.php?page=home&auth=forgot&forgot_error=not_found');
+        exit;
+    }
+
+    $otp = generate_otp();
+    $_SESSION['forgot_pwd'] = [
+        'email'      => $email,
+        'otp'        => $otp,
+        'expires_at' => time() + 900,
+        'verified'   => false
+    ];
+
+    send_otp_email($email, $otp);
+
+    header('Location: index.php?page=home&auth=forgot-verify&pending_email=' . urlencode($email));
+    exit;
+}
+
+// ---------------------------------------------------------------------------
+// ACTION: forgot_verify
+// ---------------------------------------------------------------------------
+if ($action === 'forgot_verify') {
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+        header('Location: index.php?page=home&auth=forgot-verify');
+        exit;
+    }
+
+    $forgot = $_SESSION['forgot_pwd'] ?? null;
+    if (!$forgot) {
+        header('Location: index.php?page=home&auth=forgot-verify&verify_error=no_pending');
+        exit;
+    }
+
+    if (time() > $forgot['expires_at']) {
+        unset($_SESSION['forgot_pwd']);
+        header('Location: index.php?page=home&auth=forgot-verify&verify_error=expired');
+        exit;
+    }
+
+    $submittedOtp = trim($_POST['otp_code'] ?? '');
+    if ($submittedOtp !== $forgot['otp']) {
+        $email = urlencode($forgot['email']);
+        header("Location: index.php?page=home&auth=forgot-verify&verify_error=invalid&pending_email={$email}");
+        exit;
+    }
+
+    $_SESSION['forgot_pwd']['verified'] = true;
+    header('Location: index.php?page=home&auth=forgot-reset');
+    exit;
+}
+
+// ---------------------------------------------------------------------------
+// ACTION: forgot_reset
+// ---------------------------------------------------------------------------
+if ($action === 'forgot_reset') {
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+        header('Location: index.php?page=home&auth=forgot-reset');
+        exit;
+    }
+
+    $forgot = $_SESSION['forgot_pwd'] ?? null;
+    if (!$forgot || empty($forgot['verified'])) {
+        header('Location: index.php?page=home&auth=forgot-reset&reset_error=unauthorized');
+        exit;
+    }
+
+    $password = $_POST['password'] ?? '';
+    $confirm = $_POST['confirm_password'] ?? '';
+
+    if (strlen($password) < 6) {
+        header('Location: index.php?page=home&auth=forgot-reset&reset_error=length');
+        exit;
+    }
+
+    if ($password !== $confirm) {
+        header('Location: index.php?page=home&auth=forgot-reset&reset_error=mismatch');
+        exit;
+    }
+
+    $hashed = password_hash($password, PASSWORD_BCRYPT);
+    $userModel->updatePasswordByEmail($forgot['email'], $hashed);
+    unset($_SESSION['forgot_pwd']);
+
+    header('Location: index.php?page=home&auth=login&reset=success');
+    exit;
+}
+
+// ---------------------------------------------------------------------------
+// ACTION: forgot_resend
+// ---------------------------------------------------------------------------
+if ($action === 'forgot_resend') {
+    $forgot = $_SESSION['forgot_pwd'] ?? null;
+    if (!$forgot) {
+        header('Location: index.php?page=home&auth=forgot');
+        exit;
+    }
+
+    $otp = generate_otp();
+    $_SESSION['forgot_pwd']['otp'] = $otp;
+    $_SESSION['forgot_pwd']['expires_at'] = time() + 900;
+    
+    send_otp_email($forgot['email'], $otp);
+
+    header('Location: index.php?page=home&auth=forgot-verify&pending_email=' . urlencode($forgot['email']) . '&resent=1');
+    exit;
+}
+
+// ---------------------------------------------------------------------------
 // ACTION: logout
 // ---------------------------------------------------------------------------
 if ($action === 'logout') {

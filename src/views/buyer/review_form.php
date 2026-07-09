@@ -30,7 +30,7 @@ $serviceId = $items[0]['service_id'] ?? 0;
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card rounded-4 shadow-sm p-4">
-                <h4 class="text-center mb-3">Beri Review & Rating</h4>
+                <h4 class="text-center mb-3">Beri Review dan Rating</h4>
                 <p class="text-center text-muted">Pesanan <strong><?= e($order['order_number']) ?></strong> - <?= e($order['provider_name']) ?></p>
 
                 <div class="mb-4">

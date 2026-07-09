@@ -12,7 +12,7 @@ $firstNameValue = $firstNameValue ?? (explode(' ', trim($_SESSION['user']['name'
 $lastNameValue = $lastNameValue ?? (explode(' ', trim($_SESSION['user']['name'] ?? ''))[1] ?? '');
 $userInitial = $userInitial ?? strtoupper(substr(trim($_SESSION['user']['name'] ?? ''), 0, 1));
 $profilePhotoPath = $profilePhotoPath ?? ($_SESSION['user']['profile_photo'] ?? '');
-$profilePhotoExists = $profilePhotoExists ?? ($profilePhotoPath && is_file(__DIR__ . '/../../' . ltrim($profilePhotoPath, '/')));
+$profilePhotoExists = $profilePhotoExists ?? ($profilePhotoPath && is_file(__DIR__ . '/../../../' . ltrim($profilePhotoPath, '/')));
 $profilePhotoStyle = $profilePhotoStyle ?? ($profilePhotoExists ? "background-image: url('" . e(base_url($profilePhotoPath)) . "');" : '');
 ?>
 

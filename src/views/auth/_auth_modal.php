@@ -26,6 +26,12 @@
                     <i class="bi bi-check-circle" style="font-size:16px" aria-hidden="true"></i>
                     Login berhasil! Mengarahkan ke dashboard...
                 </div>
+                <?php if (isset($_GET['reset']) && $_GET['reset'] === 'success'): ?>
+                    <div class="auth-alert-success show">
+                        <i class="bi bi-check-circle" style="font-size:16px" aria-hidden="true"></i>
+                        Password berhasil diubah! Silakan masuk dengan password baru Anda.
+                    </div>
+                <?php endif; ?>
                 <?php if (isset($_GET['auth_error'])): ?>
                     <div class="auth-alert-error show" id="login-error">
                         <i class="bi bi-exclamation-circle" style="font-size:16px" aria-hidden="true"></i>
@@ -58,7 +64,7 @@
                         <label class="auth-checkbox-wrap">
                             <input type="checkbox" name="remember"> Ingat saya
                         </label>
-                        <span class="auth-forgot-link" id="authForgotLink" role="button" tabindex="0">Lupa password?</span>
+                        <span class="auth-forgot-link" id="authForgotLink" role="button" tabindex="0" onclick="switchAuthTab('forgot')">Lupa password?</span>
                     </div>
                     <button type="submit" class="auth-btn-submit">
                         <i class="bi bi-box-arrow-in-right" style="margin-right:6px" aria-hidden="true"></i>Masuk
@@ -105,7 +111,7 @@
                             <div class="auth-role-icon" id="ri-buyer"><i class="bi bi-cart3" aria-hidden="true"></i></div>
                             <div>
                                 <div class="auth-role-label">Pembeli</div>
-                                <div class="auth-role-sub">Cari & pesan jasa</div>
+                                <div class="auth-role-sub">Cari dan pesan jasa</div>
                             </div>
                         </div>
                         <div class="auth-role-card<?= $regRole === 'provider' ? ' selected' : '' ?>" id="role-provider" onclick="selectAuthRole('provider')">
@@ -206,7 +212,7 @@
                         </div>
                         <label class="auth-checkbox-wrap" style="margin-bottom:1rem;align-items:flex-start;gap:8px">
                             <input type="checkbox" required style="margin-top:2px">
-                            <span>Saya menyetujui <a style="color:var(--auth-accent);cursor:pointer">syarat & ketentuan</a> dan <a style="color:var(--auth-accent);cursor:pointer">kebijakan privasi</a> BisaBantu.</span>
+                            <span>Saya menyetujui <a style="color:var(--auth-accent);cursor:pointer">syarat dan ketentuan</a> dan <a style="color:var(--auth-accent);cursor:pointer">kebijakan privasi</a> BisaBantu.</span>
                         </label>
                         <div class="auth-alert-success" id="reg-success">
                             <i class="bi bi-check-circle" style="font-size:16px" aria-hidden="true"></i>
@@ -276,6 +282,150 @@
                 </div>
                 <div class="auth-form-footer" style="margin-top:0.5rem">
                     <a onclick="switchAuthTab('register'); goAuthStep(1);" style="cursor:pointer">Kembali ke pendaftaran</a>
+                </div>
+            </div>
+            <!-- FORGOT PASSWORD REQUEST -->
+            <div class="auth-panel" id="auth-panel-forgot">
+                <!-- Brand header -->
+                <div style="display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:28px">
+                    <div class="auth-brand-dot" style="width:32px;height:32px;font-size:15px"><i class="bi bi-tools"></i></div>
+                    <span style="font-size:17px;font-weight:700;color:var(--auth-accent)">BisaBantu</span>
+                </div>
+
+                <div style="text-align:center;margin-bottom:24px">
+                    <h2 style="font-size:22px;font-weight:700;margin:0 0 6px">Lupa Password?</h2>
+                    <p style="font-size:13px;color:var(--color-text-secondary);margin:0">Masukkan email Anda untuk menerima kode verifikasi.</p>
+                </div>
+
+                <?php if (isset($_GET['forgot_error'])): ?>
+                    <div class="auth-alert-error show" style="margin-bottom:16px">
+                        <i class="bi bi-exclamation-circle" style="font-size:16px" aria-hidden="true"></i>
+                        <?php
+                        $forgotErrors = ['not_found' => 'Email tidak terdaftar atau format salah.'];
+                        ?>
+                        <?= e($forgotErrors[$_GET['forgot_error']] ?? 'Terjadi kesalahan.') ?>
+                    </div>
+                <?php endif; ?>
+
+                <form id="authForgotRequestForm" method="post" action="<?= base_url('index.php?page=auth&action=forgot_password') ?>" novalidate>
+                    <div class="auth-form-group">
+                        <label class="auth-form-label">Email</label>
+                        <div class="auth-input-wrap">
+                            <input id="fotp-email" class="auth-form-input" type="email" name="email" placeholder="contoh@email.com" required>
+                            <i class="bi bi-envelope auth-input-icon" aria-hidden="true"></i>
+                        </div>
+                    </div>
+                    <button type="submit" class="auth-btn-submit" style="margin-top:8px;border-radius:10px">
+                        Kirim Kode &nbsp;<i class="bi bi-arrow-right" aria-hidden="true"></i>
+                    </button>
+                </form>
+
+                <div style="text-align:center;margin-top:18px">
+                    <a onclick="switchAuthTab('login')" style="color:var(--auth-accent);cursor:pointer;font-size:13px;font-weight:500;display:inline-flex;align-items:center;gap:5px">
+                        <i class="bi bi-arrow-left" style="font-size:11px"></i> Kembali ke Login
+                    </a>
+                </div>
+            </div>
+
+            <!-- FORGOT PASSWORD VERIFY -->
+            <div class="auth-panel" id="auth-panel-forgot-verify">
+                <!-- Icon circle -->
+                <div style="text-align:center;margin-bottom:20px">
+                    <div style="display:inline-flex;align-items:center;justify-content:center;width:64px;height:64px;border-radius:50%;background:var(--auth-accent-soft);margin-bottom:16px">
+                        <i class="bi bi-envelope-check" style="font-size:28px;color:var(--auth-accent)"></i>
+                    </div>
+                    <h2 style="font-size:22px;font-weight:700;margin:0 0 6px">Verifikasi Email</h2>
+                    <p style="font-size:13px;color:var(--color-text-secondary);margin:0">Masukkan 6 digit kode yang kami kirimkan ke email Anda.</p>
+                    <div id="forgot-verify-email-display" style="font-size:13px;font-weight:600;color:var(--auth-accent);margin-top:4px"></div>
+                </div>
+
+                <?php if (isset($_GET['verify_error']) && isset($_GET['auth']) && strpos($_GET['auth'], 'forgot') !== false): ?>
+                    <div class="auth-alert-error show" style="margin-bottom:14px">
+                        <i class="bi bi-exclamation-circle" style="font-size:16px" aria-hidden="true"></i>
+                        <?php
+                        $verifyErrors = [
+                            'invalid' => 'Kode verifikasi salah.',
+                            'expired' => 'Kode sudah kedaluwarsa. Silakan ulangi.',
+                            'no_pending' => 'Sesi tidak ditemukan. Silakan ulangi.',
+                        ];
+                        ?>
+                        <?= e($verifyErrors[$_GET['verify_error']] ?? 'Kode tidak valid.') ?>
+                    </div>
+                <?php endif; ?>
+
+                <form method="post" action="<?= base_url('index.php?page=auth&action=forgot_verify') ?>" id="authForgotVerifyForm" novalidate data-no-validate>
+                    <div class="auth-otp-wrap" style="margin-bottom:20px">
+                        <input class="auth-otp-input" type="text" maxlength="1" id="fotp0" inputmode="numeric" pattern="[0-9]" autocomplete="one-time-code">
+                        <input class="auth-otp-input" type="text" maxlength="1" id="fotp1" inputmode="numeric" pattern="[0-9]">
+                        <input class="auth-otp-input" type="text" maxlength="1" id="fotp2" inputmode="numeric" pattern="[0-9]">
+                        <input class="auth-otp-input" type="text" maxlength="1" id="fotp3" inputmode="numeric" pattern="[0-9]">
+                        <input class="auth-otp-input" type="text" maxlength="1" id="fotp4" inputmode="numeric" pattern="[0-9]">
+                        <input class="auth-otp-input" type="text" maxlength="1" id="fotp5" inputmode="numeric" pattern="[0-9]">
+                    </div>
+                    <input type="hidden" name="otp_code" id="fotp_code_hidden">
+
+                    <button type="submit" class="auth-btn-submit" style="border-radius:10px">
+                        Verifikasi
+                    </button>
+                </form>
+
+                <div style="text-align:center;margin-top:14px;font-size:13px;color:var(--color-text-secondary)">
+                    Kirim ulang kode &nbsp;
+                    <a href="<?= base_url('index.php?page=auth&action=forgot_resend') ?>" style="color:var(--auth-accent);font-weight:500">
+                        (<span id="fotp-countdown">01:00</span>)
+                    </a>
+                </div>
+            </div>
+
+            <!-- FORGOT PASSWORD RESET -->
+            <div class="auth-panel" id="auth-panel-forgot-reset">
+                <!-- Icon circle -->
+                <div style="text-align:center;margin-bottom:20px">
+                    <div style="display:inline-flex;align-items:center;justify-content:center;width:64px;height:64px;border-radius:50%;background:var(--auth-accent-soft);margin-bottom:16px">
+                        <i class="bi bi-shield-lock" style="font-size:28px;color:var(--auth-accent)"></i>
+                    </div>
+                    <h2 style="font-size:22px;font-weight:700;margin:0 0 6px">Buat Password Baru</h2>
+                    <p style="font-size:13px;color:var(--auth-accent);margin:0">Password baru Anda harus berbeda dari password sebelumnya.</p>
+                </div>
+
+                <?php if (isset($_GET['reset_error'])): ?>
+                    <div class="auth-alert-error show" style="margin-bottom:14px">
+                        <i class="bi bi-exclamation-circle" style="font-size:16px" aria-hidden="true"></i>
+                        <?php
+                        $resetErrors = [
+                            'unauthorized' => 'Sesi tidak valid.',
+                            'length' => 'Password minimal 6 karakter.',
+                            'mismatch' => 'Konfirmasi password tidak cocok.'
+                        ];
+                        ?>
+                        <?= e($resetErrors[$_GET['reset_error']] ?? 'Terjadi kesalahan.') ?>
+                    </div>
+                <?php endif; ?>
+
+                <form id="authForgotResetForm" method="post" action="<?= base_url('index.php?page=auth&action=forgot_reset') ?>" novalidate>
+                    <div class="auth-form-group">
+                        <label class="auth-form-label">Password Baru</label>
+                        <div class="auth-input-wrap">
+                            <input class="auth-form-input" type="password" id="freset-pass" name="password" placeholder="Masukkan password baru" required>
+                            <i class="bi bi-eye auth-input-icon" id="toggle-freset-pass" onclick="toggleAuthPass('freset-pass','toggle-freset-pass')" role="button" tabindex="0" aria-label="Tampilkan password"></i>
+                        </div>
+                    </div>
+                    <div class="auth-form-group">
+                        <label class="auth-form-label">Konfirmasi Password Baru</label>
+                        <div class="auth-input-wrap">
+                            <input class="auth-form-input" type="password" id="freset-confirm" name="confirm_password" placeholder="Konfirmasi password baru" required>
+                            <i class="bi bi-eye auth-input-icon" id="toggle-freset-confirm" onclick="toggleAuthPass('freset-confirm','toggle-freset-confirm')" role="button" tabindex="0" aria-label="Tampilkan password"></i>
+                        </div>
+                    </div>
+                    <button type="submit" class="auth-btn-submit" style="margin-top:8px;border-radius:10px">
+                        Simpan Password
+                    </button>
+                </form>
+
+                <div style="text-align:center;margin-top:18px">
+                    <a onclick="switchAuthTab('login')" style="color:var(--auth-accent);cursor:pointer;font-size:13px;font-weight:500;display:inline-flex;align-items:center;gap:5px">
+                        <i class="bi bi-arrow-left" style="font-size:11px"></i> Kembali ke Login
+                    </a>
                 </div>
             </div>
         </div>

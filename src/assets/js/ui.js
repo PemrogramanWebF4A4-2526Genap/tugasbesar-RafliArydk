@@ -65,6 +65,57 @@
     };
 
     /**
+     * CENTER ALERT POPUP
+     * Centered modal popup for cart success and major notifications
+     */
+    window.showCenterAlert = function (message, type = 'success', title = null) {
+        let existing = document.getElementById('bb-center-alert');
+        if (existing) existing.remove();
+
+        const overlay = document.createElement('div');
+        overlay.id = 'bb-center-alert';
+        overlay.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.45);z-index:99999;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity 0.2s ease;';
+
+        const box = document.createElement('div');
+        box.style.cssText = 'background:var(--color-background-primary,#fff);border-radius:16px;padding:28px 24px 24px;text-align:center;box-shadow:0 16px 40px rgba(0,0,0,0.18);width:90%;max-width:320px;transform:scale(0.88);transition:transform 0.22s cubic-bezier(0.34,1.56,0.64,1);';
+
+        let iconHtml = '';
+        if (type === 'success') {
+            iconHtml = '<div style="display:inline-flex;align-items:center;justify-content:center;width:56px;height:56px;border-radius:50%;background:#E8F5E9;color:#4CAF50;font-size:26px;margin-bottom:14px;"><i class="bi bi-check-circle-fill"></i></div>';
+        } else if (type === 'warning' || type === 'error') {
+            iconHtml = '<div style="display:inline-flex;align-items:center;justify-content:center;width:56px;height:56px;border-radius:50%;background:#FFF4E5;color:#EF9F27;font-size:26px;margin-bottom:14px;"><i class="bi bi-exclamation-triangle-fill"></i></div>';
+        } else {
+            iconHtml = '<div style="display:inline-flex;align-items:center;justify-content:center;width:56px;height:56px;border-radius:50%;background:#F2F2F2;color:#555;font-size:26px;margin-bottom:14px;"><i class="bi bi-info-circle-fill"></i></div>';
+        }
+
+        const heading = title || (type === 'success' ? 'Berhasil!' : 'Pemberitahuan');
+
+        box.innerHTML = `
+            ${iconHtml}
+            <h3 style="margin:0 0 8px;font-size:18px;font-weight:700;color:var(--color-text-primary,#111);">${heading}</h3>
+            <p style="margin:0 0 20px;font-size:14px;color:var(--color-text-secondary,#555);line-height:1.5;">${message}</p>
+            <button class="bb-alert-ok" style="width:100%;padding:10px;background:var(--color-primary,#B5451B);color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;transition:opacity 0.15s;">Mengerti</button>
+        `;
+
+        overlay.appendChild(box);
+        document.body.appendChild(overlay);
+
+        requestAnimationFrame(() => {
+            overlay.style.opacity = '1';
+            box.style.transform = 'scale(1)';
+        });
+
+        const closeAlert = () => {
+            overlay.style.opacity = '0';
+            box.style.transform = 'scale(0.88)';
+            setTimeout(() => { if (overlay.parentNode) overlay.remove(); }, 220);
+        };
+
+        box.querySelector('.bb-alert-ok').addEventListener('click', closeAlert);
+        overlay.addEventListener('click', (e) => { if (e.target === overlay) closeAlert(); });
+    };
+
+    /**
      * SMOOTH SCROLL
      */
     window.smoothScrollTo = function (target, offset = 80) {
@@ -394,6 +445,9 @@
         document.addEventListener('submit', function (e) {
             const form = e.target;
             if (form.hasAttribute('data-no-validate')) return;
+            // Skip auth modal forms (handled by auth-modal.js with inline errors)
+            // Skip cart forms (handled by initCartAjax with AJAX)
+            if (form.closest('#authModal') || form.classList.contains('js-cart-add')) return;
 
             const inputs = Array.from(form.querySelectorAll('input, select, textarea'));
             
@@ -468,6 +522,85 @@
     }
 
     /**
+     * AJAX CART ADD
+     * Uses event delegation on document - more reliable than per-form listeners
+     */
+    function initCartAjax() {
+        document.addEventListener('submit', function (e) {
+            const form = e.target;
+            if (!form.classList.contains('js-cart-add')) return;
+
+            e.preventDefault();
+            e.stopImmediatePropagation();
+
+            const btn = form.querySelector('button[type="submit"]');
+            const originalHTML = btn ? btn.innerHTML : '';
+            if (btn) {
+                btn.disabled = true;
+                btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span> Menambahkan...';
+            }
+
+            const formData = new FormData(form);
+            fetch(form.action, {
+                method: 'POST',
+                headers: { 'X-Requested-With': 'XMLHttpRequest' },
+                body: formData
+            })
+            .then(function (res) {
+                if (!res.ok) throw new Error('Network error');
+                return res.json();
+            })
+            .then(function (data) {
+                if (data.success) {
+                    showCenterAlert('Jasa berhasil ditambahkan ke keranjang!', 'success', 'Ditambahkan!');
+                    // Update all cart badge counts
+                    document.querySelectorAll('.cart-nav-badge').forEach(badge => {
+                        if (data.cart_count !== undefined) {
+                            badge.textContent = data.cart_count;
+                            badge.style.display = data.cart_count > 0 ? '' : 'none';
+                        }
+                    });
+                    
+                    // If badge doesn't exist but we have count > 0, we might need to create it inside .cart-nav-btn
+                    if (data.cart_count > 0) {
+                        document.querySelectorAll('.cart-nav-btn').forEach(btn => {
+                            if (!btn.querySelector('.cart-nav-badge')) {
+                                const newBadge = document.createElement('span');
+                                newBadge.className = 'cart-nav-badge';
+                                newBadge.textContent = data.cart_count;
+                                btn.appendChild(newBadge);
+                            }
+                        });
+                    }
+                    
+                    // Update the cart preview dropdown list if it exists
+                    if (data.preview_html !== undefined) {
+                        const previewLists = document.querySelectorAll('.cart-preview-list');
+                        previewLists.forEach(list => {
+                            list.innerHTML = data.preview_html;
+                        });
+                        const previewHeads = document.querySelectorAll('.cart-preview-head strong');
+                        previewHeads.forEach(head => {
+                            head.textContent = 'Keranjang (' + data.cart_count + ')';
+                        });
+                    }
+                } else {
+                    showCenterAlert('Gagal menambahkan ke keranjang.', 'warning');
+                }
+            })
+            .catch(function () {
+                showCenterAlert('Terjadi kesalahan jaringan. Silakan coba lagi.', 'warning');
+            })
+            .finally(function () {
+                if (btn) {
+                    btn.disabled = false;
+                    btn.innerHTML = originalHTML;
+                }
+            });
+        }, true); // useCapture = true so it fires before other listeners
+    }
+
+    /**
      * INITIALIZATION
      */
     document.addEventListener(
@@ -480,6 +613,7 @@
             initProfilePhotoPreview();
             handleProfileStatus();
             handleActionMsg();
+            initCartAjax();
             if (window.location.hash) {
                 setTimeout(() => {
                     handleHash(window.location.hash);

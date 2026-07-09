@@ -840,13 +840,6 @@ body > .site-footer {
     display: flex;
     gap: 16px;
 }
-.cart-actions button {
-    border: 0;
-    background: transparent;
-    color: #8a95aa;
-    font-size: 1.2rem;
-    padding: 0;
-}
 .cart-product-price {
     text-align: right;
 }
@@ -2270,4 +2263,15 @@ body > .site-footer {
     .chart-shell-lg {
         height: 260px;
     }
+}
+
+/* Remove arrows/spinners from input type number */
+input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button { 
+  -webkit-appearance: none; 
+  margin: 0; 
+}
+
+input[type=number] {
+  -moz-appearance: textfield;
 }

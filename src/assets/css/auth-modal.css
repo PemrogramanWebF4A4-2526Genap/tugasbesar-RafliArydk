@@ -153,8 +153,21 @@
     border-color: var(--auth-accent);
     box-shadow: 0 0 0 3px rgba(181, 69, 27, 0.12);
 }
+.auth-form-input.error {
+    border-color: #E24B4A;
+    box-shadow: 0 0 0 3px rgba(226, 75, 74, 0.12);
+}
 .auth-form-input::placeholder {
     color: var(--color-text-tertiary);
+}
+.auth-inline-error {
+    color: #E24B4A;
+    font-size: 12px;
+    margin-top: 6px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 4px;
 }
 .auth-input-wrap {
     position: relative;

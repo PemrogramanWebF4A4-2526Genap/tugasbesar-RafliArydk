@@ -35,8 +35,9 @@ foreach ($orders as $o) {
 ksort($monthlyData);
 
 // Ensure at least 6 months of data for a nice chart
-$endMonth = date('Y-m');
-$startMonth = date('Y-m', strtotime('-5 months'));
+$maxMonthData = !empty($monthlyData) ? max(array_keys($monthlyData)) : date('Y-m');
+$endMonth = max(date('Y-m'), $maxMonthData);
+$startMonth = date('Y-m', strtotime($endMonth . '-01 -5 months'));
 $allMonths = [];
 $current = $startMonth;
 while ($current <= $endMonth) {
@@ -56,7 +57,7 @@ $statusCounts = [
 ];
 ?>
 <div class="container">
-    <h2 class="fw-bold mb-4">Statistik & Pendapatan</h2>
+    <h2 class="fw-bold mb-4">Statistik dan Pendapatan</h2>
 
     <!-- Summary Cards -->
     <div class="row g-3 mb-4">
@@ -92,10 +93,10 @@ $statusCounts = [
 
     <!-- Charts Row -->
     <div class="row g-4 mb-4">
-        <!-- Line Chart: Orders & Revenue per Month -->
+        <!-- Line Chart: Orders dan Revenue per Month -->
         <div class="col-lg-8">
             <div class="card border-0 shadow-sm rounded-4 p-4">
-                <h5 class="fw-bold mb-3"><i class="bi bi-graph-up me-2"></i>Tren Pesanan & Pendapatan</h5>
+                <h5 class="fw-bold mb-3"><i class="bi bi-graph-up me-2"></i>Tren Pesanan dan Pendapatan</h5>
                 <div class="chart-shell chart-shell-lg">
                     <canvas id="trendChart"></canvas>
                 </div>

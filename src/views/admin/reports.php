@@ -29,7 +29,7 @@ foreach ($monthlyData as $row) {
         <section class="admin-panel">
             <div class="admin-panel-head">
                 <div>
-                    <h2>Report & Analytics</h2>
+                    <h2>Report dan Analytics</h2>
                     <p>Grafik pendapatan, jasa terlaris, dan pertumbuhan pengguna.</p>
                 </div>
                 <div class="d-flex gap-2 flex-wrap">

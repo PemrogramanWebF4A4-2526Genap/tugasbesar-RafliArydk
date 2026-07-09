@@ -79,7 +79,7 @@ if (isset($_GET['profile_update']) && $_SERVER['REQUEST_METHOD'] === 'POST') {
     // Optional profile photo upload
     $newProfilePhoto = null;
     if (isset($_FILES['profile_photo']) && $_FILES['profile_photo']['error'] !== UPLOAD_ERR_NO_FILE) {
-        $fileName = upload_image_file($_FILES['profile_photo'], __DIR__ . '/assets/uploads/profile/');
+        $fileName = upload_image_file($_FILES['profile_photo'], __DIR__ . '/src/assets/uploads/profile/');
         if ($fileName !== null) {
             $newProfilePhoto = 'src/assets/uploads/profile/' . $fileName;
         } else {

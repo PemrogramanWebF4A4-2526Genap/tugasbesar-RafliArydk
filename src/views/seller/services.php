@@ -34,7 +34,7 @@ $categories = $categoryModel->getAll();
                         <?php $imagePath = $service['image'] ? 'src/assets/uploads/services/' . $service['image'] : ''; ?>
                         <tr>
                             <td>
-                                <?php if ($imagePath && is_file(__DIR__ . '/../../' . $imagePath)): ?>
+                                <?php if ($imagePath && is_file(__DIR__ . '/../../../' . ltrim($imagePath, '/'))): ?>
                                     <img src="<?= e(base_url($imagePath)) ?>" alt="<?= e($service['title']) ?>" style="width:56px;height:56px;object-fit:cover;border-radius:8px;">
                                 <?php else: ?>
                                     <i class="bi bi-image fs-3 text-muted"></i>

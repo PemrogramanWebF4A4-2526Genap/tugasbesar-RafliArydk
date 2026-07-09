@@ -22,7 +22,7 @@ $settings = $settingsModel->getAll();
                 <div class="row g-4">
                     <div class="col-md-6">
                         <div class="admin-settings-card">
-                            <h3><i class="bi bi-percent"></i> Biaya Admin & Ongkir</h3>
+                            <h3><i class="bi bi-percent"></i> Biaya Admin dan Ongkir</h3>
                             <div class="mb-3">
                                 <label class="form-label">Komisi Platform (%)</label>
                                 <input type="number" name="commission_rate" class="form-control" min="0" max="100" value="<?= (int) $settings['commission_rate'] ?>" required>
@@ -64,7 +64,7 @@ $settings = $settingsModel->getAll();
 
                     <div class="col-md-6">
                         <div class="admin-settings-card">
-                            <h3><i class="bi bi-shield-lock"></i> Keamanan & Notifikasi</h3>
+                            <h3><i class="bi bi-shield-lock"></i> Keamanan dan Notifikasi</h3>
                             <div class="form-check mb-3">
                                 <input class="form-check-input" type="checkbox" name="notification_enabled" id="notif_on" <?= $settings['notification_enabled'] ? 'checked' : '' ?>>
                                 <label class="form-check-label" for="notif_on">Aktifkan notifikasi sistem</label>

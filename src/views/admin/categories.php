@@ -17,7 +17,10 @@ $editCategory = $editId ? $categoryModel->getById($editId) : null;
                     <h2>Manage Kategori</h2>
                     <p>CRUD kategori jasa: bersih-bersih, tukang, les, dan lainnya.</p>
                 </div>
-                <a href="<?= base_url('index.php?page=dashboard') ?>" class="link-accent">Kembali</a>
+                <div class="d-flex gap-3 align-items-center">
+                    <input type="text" id="tableSearch" class="form-control form-control-sm" placeholder="Cari kategori..." style="width: 200px;">
+                    <a href="<?= base_url('index.php?page=dashboard') ?>" class="link-accent">Kembali</a>
+                </div>
             </div>
 
             <form method="post" action="<?= base_url('index.php?page=admin&action=' . ($editCategory ? 'category_update' : 'category_create')) ?>" class="admin-form-row">
@@ -73,3 +76,14 @@ $editCategory = $editId ? $categoryModel->getById($editId) : null;
         </section>
     </div>
 </main>
+
+<script>
+document.getElementById('tableSearch')?.addEventListener('input', function(e) {
+    const term = e.target.value.toLowerCase();
+    document.querySelectorAll('.admin-table tbody tr').forEach(row => {
+        if (row.cells.length === 1) return;
+        const text = row.textContent.toLowerCase();
+        row.style.display = text.includes(term) ? '' : 'none';
+    });
+});
+</script>

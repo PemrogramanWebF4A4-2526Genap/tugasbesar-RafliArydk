@@ -12,8 +12,8 @@ if (!empty($_SESSION['cart'])) {
             $subTotal = $service['price'] * (int) $quantity;
             $total += $subTotal;
             $cartItems[] = [
-                'service' => $service,
-                'quantity' => (int) $quantity,
+                'service'   => $service,
+                'quantity'  => (int) $quantity,
                 'sub_total' => $subTotal,
             ];
         }
@@ -41,7 +41,7 @@ if (!empty($_SESSION['cart'])) {
                     </section>
 
                     <?php foreach ($cartItems as $item): ?>
-                        <section class="cart-panel cart-shop mb-3">
+                        <section class="cart-panel cart-shop mb-3" id="cart-item-<?= (int) $item['service']['id'] ?>">
                             <div class="cart-product">
                                 <label class="cart-check cart-product-check">
                                     <input type="checkbox" checked aria-label="Pilih <?= e($item['service']['title']) ?>">
@@ -52,18 +52,33 @@ if (!empty($_SESSION['cart'])) {
                                 <div class="cart-product-info">
                                     <h3><?= e($item['service']['title']) ?></h3>
                                     <p><?= e($item['service']['provider_name']) ?> · <?= e($item['service']['location']) ?></p>
-                                    <div class="cart-actions mt-2">
-                                        <form method="post" action="<?= base_url('index.php?page=cart&action=update') ?>" class="d-flex gap-2 align-items-center">
-                                            <input type="hidden" name="service_id" value="<?= (int) $item['service']['id'] ?>">
-                                            <input type="number" name="quantity" min="1" value="<?= (int) $item['quantity'] ?>" class="form-control form-control-sm" style="width: 80px;">
-                                            <button type="submit" class="btn btn-sm btn-outline-custom">Update</button>
-                                        </form>
-                                        <a href="<?= base_url('index.php?page=cart&action=remove&id=' . (int) $item['service']['id']) ?>" class="btn btn-sm btn-outline-danger">Hapus</a>
+                                    <div class="cart-actions mt-2 d-flex gap-2 align-items-center">
+                                        <div class="input-group input-group-sm" style="width:120px;">
+                                            <button class="btn btn-outline-secondary cart-qty-btn" type="button"
+                                                data-service-id="<?= (int) $item['service']['id'] ?>"
+                                                data-action="down">−</button>
+                                            <input type="number"
+                                                class="form-control text-center px-1 cart-qty-input"
+                                                min="1"
+                                                value="<?= (int) $item['quantity'] ?>"
+                                                data-service-id="<?= (int) $item['service']['id'] ?>"
+                                                data-price="<?= (int) $item['service']['price'] ?>">
+                                            <button class="btn btn-outline-secondary cart-qty-btn" type="button"
+                                                data-service-id="<?= (int) $item['service']['id'] ?>"
+                                                data-action="up">+</button>
+                                        </div>
+                                        <a href="<?= base_url('index.php?page=cart&action=remove&id=' . (int) $item['service']['id']) ?>"
+                                           class="btn btn-sm btn-outline-danger">Hapus</a>
+                                        <span class="text-muted small" id="saving-<?= (int) $item['service']['id'] ?>" style="display:none;">
+                                            <span class="spinner-border spinner-border-sm"></span>
+                                        </span>
                                     </div>
                                 </div>
-                                <div class="cart-product-price text-end">
-                                    <strong><?= e(format_rupiah($item['service']['price'])) ?> x <?= (int) $item['quantity'] ?></strong>
-                                    <div class="text-muted">Subtotal: <?= e(format_rupiah($item['sub_total'])) ?></div>
+                                <div class="cart-product-price text-end" id="price-box-<?= (int) $item['service']['id'] ?>">
+                                    <strong class="cart-price-line">
+                                        <?= e(format_rupiah($item['service']['price'])) ?> x <span class="qty-display"><?= (int) $item['quantity'] ?></span>
+                                    </strong>
+                                    <div class="text-muted">Subtotal: <span class="subtotal-display"><?= e(format_rupiah($item['sub_total'])) ?></span></div>
                                 </div>
                             </div>
                         </section>
@@ -76,9 +91,9 @@ if (!empty($_SESSION['cart'])) {
                     <h3 class="mb-3">Ringkasan Belanja</h3>
                     <div class="cart-summary-row mb-3">
                         <span>Total</span>
-                        <strong><?= e(format_rupiah($total)) ?></strong>
+                        <strong id="cart-total-display"><?= e(format_rupiah($total)) ?></strong>
                     </div>
-                    <div class="text-muted mb-4">Jumlah item: <?= count($cartItems) ?></div>
+                    <div class="text-muted mb-4">Jumlah item: <span id="cart-summary-count"><?= count($cartItems) ?></span></div>
                     <a href="<?= base_url('index.php?page=checkout') ?>" class="btn btn-primary-custom w-100<?= empty($cartItems) ? ' disabled' : '' ?>">Lanjutkan ke Checkout</a>
                     <?php if (!empty($cartItems)): ?>
                         <p class="small text-muted mt-3">Pastikan alamat dan tanggal pelaksanaan sudah sesuai di halaman checkout.</p>
@@ -88,3 +103,99 @@ if (!empty($_SESSION['cart'])) {
         </div>
     </div>
 </main>
+
+<script>
+(function () {
+    var cartUpdateUrl = '<?= base_url('index.php?page=cart&action=update') ?>';
+
+    function formatRupiah(num) {
+        return 'Rp' + Number(num).toLocaleString('id-ID');
+    }
+
+    function recalcTotal() {
+        var total = 0;
+        document.querySelectorAll('.cart-qty-input').forEach(function (input) {
+            var price = parseInt(input.dataset.price) || 0;
+            var qty   = parseInt(input.value) || 1;
+            total += price * qty;
+        });
+        var el = document.getElementById('cart-total-display');
+        if (el) el.textContent = formatRupiah(total);
+    }
+
+    function updateQtyOnServer(serviceId, quantity, input) {
+        var badge = document.getElementById('saving-' + serviceId);
+        if (badge) badge.style.display = '';
+
+        var formData = new FormData();
+        formData.append('service_id', serviceId);
+        formData.append('quantity', quantity);
+
+        fetch(cartUpdateUrl, {
+            method: 'POST',
+            headers: { 'X-Requested-With': 'XMLHttpRequest' },
+            body: formData
+        })
+        .then(function (res) { return res.json(); })
+        .then(function (data) {
+            if (data && !data.success && input) {
+                input.value = data.old_qty || 1;
+                recalcTotal();
+            }
+        })
+        .catch(function () {})
+        .finally(function () {
+            if (badge) badge.style.display = 'none';
+        });
+    }
+
+    function debounce(fn, ms) {
+        var timer;
+        return function () {
+            var args = arguments, ctx = this;
+            clearTimeout(timer);
+            timer = setTimeout(function () { fn.apply(ctx, args); }, ms);
+        };
+    }
+
+    function applyQtyChange(serviceId, qty, input) {
+        qty = Math.max(1, qty);
+        input.value = qty;
+
+        var priceBox = document.getElementById('price-box-' + serviceId);
+        if (priceBox) {
+            var price = parseInt(input.dataset.price) || 0;
+            var qtyEl = priceBox.querySelector('.qty-display');
+            var subEl = priceBox.querySelector('.subtotal-display');
+            if (qtyEl) qtyEl.textContent = qty;
+            if (subEl) subEl.textContent = formatRupiah(price * qty);
+        }
+        recalcTotal();
+        updateQtyOnServer(serviceId, qty, input);
+    }
+
+    // +/- buttons
+    document.querySelectorAll('.cart-qty-btn').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            var sid   = btn.dataset.serviceId;
+            var input = document.querySelector('.cart-qty-input[data-service-id="' + sid + '"]');
+            if (!input) return;
+            var qty = parseInt(input.value) || 1;
+            qty = btn.dataset.action === 'up' ? qty + 1 : qty - 1;
+            applyQtyChange(sid, qty, input);
+        });
+    });
+
+    // Manual number input (debounced)
+    document.querySelectorAll('.cart-qty-input').forEach(function (input) {
+        var sid = input.dataset.serviceId;
+        var debouncedSave = debounce(function () {
+            applyQtyChange(sid, parseInt(input.value) || 1, input);
+        }, 600);
+        input.addEventListener('input', debouncedSave);
+        input.addEventListener('change', function () {
+            applyQtyChange(sid, parseInt(input.value) || 1, input);
+        });
+    });
+})();
+</script>

@@ -47,10 +47,10 @@ CREATE TABLE `users` (
 ) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 INSERT INTO `users` VALUES 
-(1,'Rafli Aryadika','rafli@bisabantu.admin.com','$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi','admin',1,'','',NULL,'assets/uploads/profile/6a2819e0ea6e45.70898538.png','2026-06-01 13:47:36','2026-06-09 13:49:20'),
-(2,'Budi Wijaya','budi@bisabantu.com','$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi','provider',1,'','',NULL,'assets/uploads/profile/1780812028_6a2508fcc607f.jpg','2026-06-01 13:47:36','2026-06-07 06:00:28'),
-(3,'Sienna','sienna@bisabantu.com','$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi','provider',1,'0822222222','Jakarta Selatan',NULL,'assets/uploads/profile/6a2e7aa2168a05.85800877.png','2026-06-01 13:47:36','2026-06-14 09:55:46'),
-(5,'Nasyla Putri','nasyla@bisabantu.com','$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi','buyer',1,'','',NULL,'assets/uploads/profile/6a26bf489370f8.86045145.png','2026-06-01 13:47:36','2026-06-08 13:10:32'),
+(1,'Rafli Aryadika','rafli@bisabantu.admin.com','$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi','admin',1,'','',NULL,'src/assets/uploads/profile/6a2819e0ea6e45.70898538.png','2026-06-01 13:47:36','2026-06-09 13:49:20'),
+(2,'Budi Wijaya','budi@bisabantu.com','$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi','provider',1,'','',NULL,'src/assets/uploads/profile/1780812028_6a2508fcc607f.jpg','2026-06-01 13:47:36','2026-06-07 06:00:28'),
+(3,'Sienna','sienna@bisabantu.com','$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi','provider',1,'0822222222','Jakarta Selatan',NULL,'src/assets/uploads/profile/6a2e7aa2168a05.85800877.png','2026-06-01 13:47:36','2026-06-14 09:55:46'),
+(5,'Nasyla Putri','nasyla@bisabantu.com','$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi','buyer',1,'','',NULL,'src/assets/uploads/profile/6a26bf489370f8.86045145.png','2026-06-01 13:47:36','2026-06-08 13:10:32'),
 (6,'Arpi','arpi@bisabantu.com','$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi','buyer',1,'0833333333','Bekasi',NULL,NULL,'2026-06-03 14:16:50','2026-06-07 06:05:25'),
 (9,'Mat Sohe','Sohe@gmail.com','$2y$10$SvjDyvLBwaBpp9uPB./2vOK.4RpRItae4qcxEo8As53vghnziLbZe','provider',1,'085171076449','Jl. Perjuangan',NULL,NULL,'2026-06-09 13:38:42','2026-06-09 16:53:48'),
 (10,'Rafli Aryadika','rafliaryadika100@gmail.com','$2y$10$77CJei5zISvqUeNWItI.YOKo5xSiMRs68UsLOHE4IAM6DPfscOPjm','buyer',1,'085171076449','jalan simatupang',NULL,NULL,'2026-06-24 07:00:48','2026-06-24 07:00:48'),

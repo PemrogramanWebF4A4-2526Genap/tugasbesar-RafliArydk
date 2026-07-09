@@ -20,15 +20,15 @@ class NotificationModel {
         return $stmt->fetchAll();
     }
 
-    // Mark single notification as read
+    // Delete single notification (previously mark as read)
     public function markAsRead($id, $user_id) {
-        $stmt = $this->pdo->prepare('UPDATE notifications SET is_read = 1 WHERE id = ? AND user_id = ?');
+        $stmt = $this->pdo->prepare('DELETE FROM notifications WHERE id = ? AND user_id = ?');
         return $stmt->execute([$id, $user_id]);
     }
 
-    // Mark all notifications for a user as read
+    // Delete all notifications for a user (previously mark all as read)
     public function markAllAsRead($user_id) {
-        $stmt = $this->pdo->prepare('UPDATE notifications SET is_read = 1 WHERE user_id = ? AND is_read = 0');
+        $stmt = $this->pdo->prepare('DELETE FROM notifications WHERE user_id = ?');
         return $stmt->execute([$user_id]);
     }
 }

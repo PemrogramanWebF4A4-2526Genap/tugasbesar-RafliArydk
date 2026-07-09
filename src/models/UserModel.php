@@ -29,6 +29,11 @@ class UserModel {
         return $stmt->execute([$name, $email, $passwordHash, $role, $isVerified, $phone, $address]);
     }
 
+    public function updatePasswordByEmail($email, $newPasswordHash) {
+        $stmt = $this->pdo->prepare('UPDATE users SET password = ? WHERE email = ?');
+        return $stmt->execute([$newPasswordHash, $email]);
+    }
+
     public function getUnverifiedProviders() {
         $stmt = $this->pdo->query('SELECT * FROM users WHERE role = "provider" AND is_verified = 0 ORDER BY created_at ASC');
         return $stmt->fetchAll();

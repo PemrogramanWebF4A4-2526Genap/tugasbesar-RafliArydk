@@ -59,7 +59,7 @@ $quickMenus = [
         'badge' => $pendingPayments > 0 ? (string) $pendingPayments : null,
     ],
     [
-        'title' => 'Report & Analytics',
+        'title' => 'Report dan Analytics',
         'desc' => 'Grafik pendapatan, jasa terlaris, dan pertumbuhan pengguna.',
         'icon' => 'bi-pie-chart',
         'href' => base_url('index.php?page=admin_reports'),
@@ -148,11 +148,11 @@ $recentOrders = array_slice($allOrders, 0, 5);
                     <h2>Akses Admin</h2>
                     <ul>
                         <li><i class="bi bi-check-circle-fill"></i> Dashboard admin</li>
-                        <li><i class="bi bi-check-circle-fill"></i> Manage user pembeli & penyedia</li>
+                        <li><i class="bi bi-check-circle-fill"></i> Manage user pembeli dan penyedia</li>
                         <li><i class="bi bi-check-circle-fill"></i> Verifikasi penjual</li>
                         <li><i class="bi bi-check-circle-fill"></i> Manage kategori jasa</li>
                         <li><i class="bi bi-check-circle-fill"></i> Semua pesanan</li>
-                        <li><i class="bi bi-check-circle-fill"></i> Report & analytics</li>
+                        <li><i class="bi bi-check-circle-fill"></i> Report dan analytics</li>
                         <li><i class="bi bi-check-circle-fill"></i> System settings</li>
                     </ul>
                 </section>

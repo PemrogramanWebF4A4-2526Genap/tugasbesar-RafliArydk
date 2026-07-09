@@ -26,7 +26,10 @@ $redirect = base_url('index.php?page=admin_users&tab=' . urlencode($tab));
                     <h2>Manage User</h2>
                     <p>Kelola akun pembeli dan penyedia jasa, verifikasi, dan suspend pengguna.</p>
                 </div>
-                <a href="<?= base_url('index.php?page=dashboard') ?>" class="link-accent">Kembali</a>
+                <div class="d-flex gap-3 align-items-center">
+                    <input type="text" id="tableSearch" class="form-control form-control-sm" placeholder="Cari user..." style="width: 200px;">
+                    <a href="<?= base_url('index.php?page=dashboard') ?>" class="link-accent">Kembali</a>
+                </div>
             </div>
 
             <div class="admin-tabs">
@@ -103,3 +106,15 @@ $redirect = base_url('index.php?page=admin_users&tab=' . urlencode($tab));
         </section>
     </div>
 </main>
+
+<script>
+document.getElementById('tableSearch')?.addEventListener('input', function(e) {
+    const term = e.target.value.toLowerCase();
+    document.querySelectorAll('.admin-table tbody tr').forEach(row => {
+        // Skip the "Tidak ada pengguna" row
+        if (row.cells.length === 1) return;
+        const text = row.textContent.toLowerCase();
+        row.style.display = text.includes(term) ? '' : 'none';
+    });
+});
+</script>

@@ -14,58 +14,7 @@ $statusOptions = ['waiting_payment', 'paid', 'accepted', 'in_progress', 'complet
     <div class="container">
         <?php include __DIR__ . '/_alert.php'; ?>
 
-        <?php if (!empty($pendingPayments)): ?>
-        <section class="admin-panel mb-4">
-            <div class="admin-panel-head">
-                <div>
-                    <h2>Pembayaran Menunggu Verifikasi</h2>
-                    <p>Konfirmasi atau tolak bukti transfer dari pembeli.</p>
-                </div>
-            </div>
-            <div class="table-responsive">
-                <table class="table admin-table align-middle mb-0">
-                    <thead>
-                        <tr>
-                            <th>No. Pesanan</th>
-                            <th>Total</th>
-                            <th>Metode</th>
-                            <th>Bukti</th>
-                            <th class="text-end">Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php foreach ($pendingPayments as $payment): ?>
-                            <tr>
-                                <td><strong><?= e($payment['order_number']) ?></strong></td>
-                                <td><?= e(format_rupiah($payment['total_price'])) ?></td>
-                                <td><?= e($payment['method'] === 'bank_transfer' ? 'Transfer Bank' : 'Tunai') ?></td>
-                                <td>
-                                    <?php if ($payment['proof_image']): ?>
-                                        <a href="<?= base_url('src/assets/uploads/payments/' . $payment['proof_image']) ?>" target="_blank" class="link-accent">Lihat bukti</a>
-                                    <?php else: ?>
-                                        -
-                                    <?php endif; ?>
-                                </td>
-                                <td class="text-end" style="min-width: 280px;">
-                                    <form method="post" action="<?= base_url('index.php?page=payment&action=verify') ?>" class="admin-inline-form">
-                                        <input type="hidden" name="payment_id" value="<?= (int) $payment['id'] ?>">
-                                        <input type="hidden" name="status" value="verified">
-                                        <button type="submit" class="btn btn-sm btn-primary-custom">Konfirmasi</button>
-                                    </form>
-                                    <form method="post" action="<?= base_url('index.php?page=payment&action=verify') ?>" class="admin-inline-form">
-                                        <input type="hidden" name="payment_id" value="<?= (int) $payment['id'] ?>">
-                                        <input type="hidden" name="status" value="rejected">
-                                        <input type="text" name="notes" class="form-control form-control-sm d-inline-block" style="width:120px" placeholder="Alasan">
-                                        <button type="submit" class="btn btn-sm btn-outline-danger">Tolak</button>
-                                    </form>
-                                </td>
-                            </tr>
-                        <?php endforeach; ?>
-                    </tbody>
-                </table>
-            </div>
-        </section>
-        <?php endif; ?>
+
 
         <section class="admin-panel">
             <div class="admin-panel-head">
@@ -73,7 +22,10 @@ $statusOptions = ['waiting_payment', 'paid', 'accepted', 'in_progress', 'complet
                     <h2>Semua Pesanan</h2>
                     <p>Pantau dan override seluruh transaksi di platform.</p>
                 </div>
-                <a href="<?= base_url('index.php?page=dashboard') ?>" class="link-accent">Kembali</a>
+                <div class="d-flex gap-3 align-items-center">
+                    <input type="text" id="tableSearch" class="form-control form-control-sm" placeholder="Cari pesanan..." style="width: 200px;">
+                    <a href="<?= base_url('index.php?page=dashboard') ?>" class="link-accent">Kembali</a>
+                </div>
             </div>
             <div class="table-responsive">
                 <table class="table admin-table align-middle mb-0">
@@ -121,3 +73,14 @@ $statusOptions = ['waiting_payment', 'paid', 'accepted', 'in_progress', 'complet
         </section>
     </div>
 </main>
+
+<script>
+document.getElementById('tableSearch')?.addEventListener('input', function(e) {
+    const term = e.target.value.toLowerCase();
+    document.querySelectorAll('.admin-table tbody tr').forEach(row => {
+        if (row.cells.length === 1) return;
+        const text = row.textContent.toLowerCase();
+        row.style.display = text.includes(term) ? '' : 'none';
+    });
+});
+</script>
