@@ -1,6 +1,6 @@
 # Panduan Pengguna (User Manual) - BisaBantu
 
-Selamat datang di Panduan Pengguna **BisaBantu**. Dokumen ini dirancang untuk memandu seluruh peran pengguna (Pembeli, Penyedia Jasa, dan Admin) dalam mengoperasikan fitur-fitur yang ada di platform kami.
+Selamat datang di Panduan Pengguna **BisaBantu**. Dokumen ini dirancang untuk memandu seluruh peran pengguna (Pembeli, Penjual, dan Admin) dalam mengoperasikan fitur-fitur yang ada di platform kami.
 
 ---
 
@@ -49,10 +49,10 @@ Selamat datang di Panduan Pengguna **BisaBantu**. Dokumen ini dirancang untuk me
 
 ---
 
-## 🛠️ 2. Panduan Penyedia Jasa (Provider)
+## 🛠️ 2. Panduan Penjual (Seller/Provider)
 
 ### 2.1 Pendaftaran & Verifikasi Kemitraan
-1. Pada halaman registrasi, pilih opsi peran sebagai **Penyedia Jasa (Provider)**.
+1. Pada halaman registrasi, pilih opsi peran sebagai **Penjual (Seller/Provider)**.
 2. Isi formulir informasi data diri dan data usaha layanan Anda.
 3. Setelah mendaftar, akun Anda berstatus **Pending Verifikasi**.
 4. Akun Anda harus disetujui terlebih dahulu oleh Admin sebelum dapat mengakses dasbor penuh dan membuat iklan layanan jasa.

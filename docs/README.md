@@ -6,50 +6,51 @@
 
 ## 📖 Tentang Proyek
 
-**BisaBantu** adalah aplikasi web marketplace jasa lokal yang dibangun menggunakan **PHP Native** dengan arsitektur **MVC (Model-View-Controller)**. Platform ini menghubungkan tiga pihak utama: **Pembeli** yang membutuhkan jasa, **Penyedia Jasa** yang menawarkan layanan, dan **Administrator** yang mengelola seluruh platform.
+**BisaBantu** adalah aplikasi web marketplace jasa lokal yang dibangun menggunakan **PHP Native** dengan arsitektur **MVC (Model-View-Controller)**. Platform ini menghubungkan pihak-pihak dengan skema 4 Role User yang mengintegrasikan HTML, CSS, Bootstrap, PHP, dan MySQL.
 
-Proyek ini merupakan tugas akhir semester (UAS) mata kuliah Pemrograman Web yang memenuhi standar aplikasi e-commerce jasa dengan fitur lengkap, termasuk sistem pembayaran, tracking pesanan, invoice otomatis, review, dan analitik bisnis real-time.
+Proyek ini merupakan tugas akhir semester (UAS) mata kuliah Pemrograman Web yang memenuhi standar aplikasi e-commerce jasa dengan fitur lengkap untuk Pembeli, Penjual, System Automation, dan Admin sesuai spesifikasi wajib.
 
 ---
 
-## 🚀 Fitur Utama
+## 🚀 Fitur Utama (Skema 4 Role User)
 
-### 👤 Untuk Pembeli (Buyer)
-- Registrasi & login dengan hashing bcrypt
+### 1. PEMBELI
+- Register/Login dengan hashing bcrypt
 - Browse & filter jasa berdasarkan kategori dan lokasi
 - Tambah jasa ke keranjang belanja (session-based cart)
 - Checkout dengan memilih tanggal & alamat pelaksanaan
 - Upload bukti transfer pembayaran
 - Lacak status pesanan secara real-time (progress tracker)
 - Unduh invoice HTML setelah pembayaran terverifikasi
-- Beri review & rating setelah jasa selesai dikerjakan
-- Notifikasi otomatis setiap perubahan status
+- Beri review & rating (dengan foto opsional) setelah jasa selesai dikerjakan
+- Order tracking dan Payment confirmation
 
-### 🛠️ Untuk Penyedia Jasa (Seller/Provider)
-- Registrasi sebagai penyedia, menunggu verifikasi admin
-- CRUD jasa (tambah, edit, hapus, nonaktifkan listing)
+### 2. PENJUAL
+- Register/Login (memerlukan Verifikasi Admin)
+- Manage produk/jasa (CRUD: tambah, edit, hapus, nonaktifkan listing)
 - Upload foto layanan
 - Kelola jadwal ketersediaan (hari & jam operasional)
 - Lihat & update status pesanan masuk
 - Dashboard pendapatan dengan grafik bulanan (Line, Bar, Pie Chart)
 - Lacak statistik: total pesanan, pendapatan, rating rata-rata
+- Dashboard penjualan dan Konfirmasi pengiriman / pelaksanaan
 
-### 🔑 Untuk Admin
-- Dashboard ringkasan platform (total user, pesanan, pendapatan)
-- Verifikasi & tolak pendaftaran penyedia jasa baru
-- Kelola semua pengguna (suspend/aktifkan/hapus)
+### 3. SYSTEM OTOMASI
+- Auto update stok (dalam bentuk ketersediaan jadwal/slot)
+- Auto calculate ongkir (berdasarkan area jangkauan)
+- Auto send email notification / in-app notification
+- Auto update order status (berdasarkan aksi provider/buyer)
+- Auto generate invoice setelah pembayaran dikonfirmasi
+
+### 4. ADMIN
+- Dashboard admin ringkasan platform (total user, pesanan, pendapatan)
+- Manage user (Pembeli & Penjual: verifikasi, suspend, hapus)
 - CRUD kategori jasa
 - Verifikasi bukti pembayaran (konfirmasi/tolak)
 - Override status pesanan
 - Laporan & analitik: grafik pendapatan 6 bulan, jasa terlaris
 - Export laporan ke CSV
-- System Settings: komisi, metode pembayaran, notifikasi
-
-### ⚙️ Otomasi Sistem
-- Invoice HTML dibuat otomatis saat pembayaran diverifikasi
-- Notifikasi dikirim otomatis pada setiap event penting
-- Toast popup berhasil/gagal di setiap aksi pengguna
-- Grafik report menggunakan **tanggal pelaksanaan jasa** (bukan tanggal pesan)
+- Report & Analytics - System settings: komisi, metode pembayaran
 
 ---
 
@@ -69,32 +70,34 @@ Proyek ini merupakan tugas akhir semester (UAS) mata kuliah Pemrograman Web yang
 
 ---
 
-## 📁 Struktur Direktori
+## 📁 Struktur Direktori Sesuai Standar
 
 ```
 UAS_INFO2425_RafliAryadika_202410715061/
 ├── src/                     # Seluruh source code aplikasi
 │   ├── config/              # Konfigurasi koneksi database
+│   │   └── database.php
 │   ├── controllers/         # Logika bisnis & request handling
 │   ├── models/              # Interaksi database (query PDO)
 │   ├── views/               # Tampilan HTML/PHP
 │   │   ├── admin/           # Halaman khusus Admin
-│   │   ├── buyer/           # Halaman khusus Pembeli
 │   │   ├── seller/          # Halaman khusus Penyedia
-│   │   ├── public/          # Halaman publik (home, invoice)
-│   │   └── layout/          # Header, footer, sidebar
-│   ├── helpers/             # Fungsi bantu (upload, format, dll)
-│   └── assets/              # File statis CSS, JS, gambar, upload
-│       ├── css/             # Stylesheet per role
-│       ├── js/              # JavaScript modular
-│       ├── uploads/         # File upload pengguna
-│       └── invoices/        # Invoice HTML yang digenerate
+│   │   ├── buyer/           # Halaman khusus Pembeli
+│   │   └── public/          # Halaman publik (home, invoice)
+│   ├── assets/              # File statis CSS, JS, gambar, upload
+│   │   ├── css/             
+│   │   ├── js/              
+│   │   └── images/        
+│   └── uploads/             # File upload pengguna
 ├── database/
-│   └── bisabantu.sql        # File dump database lengkap
+│   └── database.sql         # File dump database lengkap
 ├── docs/                    # Dokumentasi teknis
+│   ├── README.md
+│   ├── USER_MANUAL.md
+│   └── DATABASE_SCHEMA.pdf
 ├── presentation/            # Materi presentasi UAS
-├── index.php                # Entry point utama (front controller)
-└── .htaccess               # URL routing Apache
+│   └── PRESENTASI_UAS.pptx
+└── TESTING_REPORT.pdf       # Hasil testing aplikasi
 ```
 
 ---
@@ -115,7 +118,7 @@ UAS_INFO2425_RafliAryadika_202410715061/
 2. **Import Database**
    - Buka phpMyAdmin di `http://localhost/phpmyadmin`
    - Buat database baru bernama `bisabantu`
-   - Import file: `database/bisabantu.sql`
+   - Import file: `database/database.sql`
 
 3. **Konfigurasi Database** (jika perlu)
    - Edit file: `src/config/database.php`
