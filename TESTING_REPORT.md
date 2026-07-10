@@ -18,14 +18,14 @@ Pengujian dilakukan secara menyeluruh pada semua alur utama aplikasi marketplace
 | No | Skenario Uji | Metode | Status |
 |---|---|---|---|
 | 1 | Register akun Pembeli dengan validasi form | Manual | ✅ Lulus |
-| 2 | Register akun Penyedia Jasa | Manual | ✅ Lulus |
+| 2 | Register akun Penjual (Seller) | Manual | ✅ Lulus |
 | 3 | Login dengan kredensial benar | Manual | ✅ Lulus |
 | 4 | Login dengan password salah → pesan error | Manual | ✅ Lulus |
 | 5 | Logout & session dihapus | Manual | ✅ Lulus |
 | 6 | Password di-hash bcrypt (`password_hash`) | Code Review | ✅ Lulus |
 | 7 | Login menggunakan `password_verify()` | Code Review | ✅ Lulus |
 | 8 | Akses halaman admin tanpa login → redirect | Manual | ✅ Lulus |
-| 9 | Akses halaman provider sebagai buyer → redirect | Manual | ✅ Lulus |
+| 9 | Akses halaman seller sebagai buyer → redirect | Manual | ✅ Lulus |
 | 10 | Semua query DB menggunakan PDO prepared statement | Code Review | ✅ Lulus |
 | 11 | Semua output HTML di-escape via `e()` (`htmlspecialchars`) | Code Review | ✅ Lulus |
 | 12 | Upload file hanya menerima JPG/PNG | Manual | ✅ Lulus |
@@ -40,7 +40,7 @@ Pengujian dilakukan secara menyeluruh pada semua alur utama aplikasi marketplace
 | 14 | Daftar jasa & kategori ditampilkan dari database | ✅ Lulus |
 | 15 | Fitur pencarian jasa berjalan | ✅ Lulus |
 | 16 | Filter jasa per kategori berjalan | ✅ Lulus |
-| 17 | Statistik platform (jumlah jasa, penyedia, pesanan selesai) dinamis | ✅ Lulus |
+| 17 | Statistik platform (jumlah jasa, penjual, pesanan selesai) dinamis | ✅ Lulus |
 | 18 | Ulasan terbaru ditampilkan di beranda | ✅ Lulus |
 
 ---
@@ -49,7 +49,7 @@ Pengujian dilakukan secara menyeluruh pada semua alur utama aplikasi marketplace
 
 | No | Skenario Uji | Status |
 |---|---|---|
-| 19 | Lihat detail jasa & rating penyedia | ✅ Lulus |
+| 19 | Lihat detail jasa & rating penjual | ✅ Lulus |
 | 20 | Tambah jasa ke keranjang → toast popup muncul | ✅ Lulus |
 | 21 | Update & hapus item di keranjang | ✅ Lulus |
 | 22 | Checkout dengan memilih tanggal & alamat | ✅ Lulus |
@@ -64,11 +64,11 @@ Pengujian dilakukan secara menyeluruh pada semua alur utama aplikasi marketplace
 
 ---
 
-### 🛠️ Penyedia Jasa (Seller/Provider)
+### 🛠️ Penjual (Seller/Provider)
 
 | No | Skenario Uji | Status |
 |---|---|---|
-| 31 | Provider belum diverifikasi → tidak bisa akses dashboard | ✅ Lulus |
+| 31 | Seller belum diverifikasi → tidak bisa akses dashboard | ✅ Lulus |
 | 32 | Tambah jasa baru dengan upload foto | ✅ Lulus |
 | 33 | Edit jasa yang sudah ada | ✅ Lulus |
 | 34 | Nonaktifkan / aktifkan listing jasa | ✅ Lulus |
@@ -85,8 +85,8 @@ Pengujian dilakukan secara menyeluruh pada semua alur utama aplikasi marketplace
 
 | No | Skenario Uji | Status |
 |---|---|---|
-| 41 | Verifikasi pendaftaran penyedia jasa | ✅ Lulus |
-| 42 | Tolak pendaftaran penyedia jasa | ✅ Lulus |
+| 41 | Verifikasi pendaftaran penjual (seller) | ✅ Lulus |
+| 42 | Tolak pendaftaran penjual (seller) | ✅ Lulus |
 | 43 | Lihat & kelola semua pengguna | ✅ Lulus |
 | 44 | Suspend & aktifkan kembali pengguna | ✅ Lulus |
 | 45 | Hapus akun pengguna | ✅ Lulus |
@@ -106,10 +106,10 @@ Pengujian dilakukan secara menyeluruh pada semua alur utama aplikasi marketplace
 | 52 | Invoice HTML dibuat otomatis saat pembayaran diverifikasi | ✅ Lulus |
 | 53 | Invoice dibuat otomatis saat COD checkout | ✅ Lulus |
 | 54 | Notifikasi ke buyer saat checkout berhasil | ✅ Lulus |
-| 55 | Notifikasi ke provider saat pesanan baru masuk | ✅ Lulus |
+| 55 | Notifikasi ke seller saat pesanan baru masuk | ✅ Lulus |
 | 56 | Notifikasi ke buyer saat pembayaran diverifikasi | ✅ Lulus |
-| 57 | Notifikasi ke buyer saat status pesanan diubah provider | ✅ Lulus |
-| 58 | Notifikasi ke provider saat akun diverifikasi admin | ✅ Lulus |
+| 57 | Notifikasi ke buyer saat status pesanan diubah seller | ✅ Lulus |
+| 58 | Notifikasi ke seller saat akun diverifikasi admin | ✅ Lulus |
 | 59 | Toast popup berhasil muncul di setiap aksi form | ✅ Lulus |
 
 ---
@@ -133,7 +133,7 @@ Pengujian dilakukan secara menyeluruh pada semua alur utama aplikasi marketplace
 | Role | Email |
 |---|---|
 | **Admin** | `rafli@bisabantu.admin.com` |
-| **Provider** | `budi@bisabantu.com` |
+| **Seller** | `budi@bisabantu.com` |
 | **Buyer** | `arpi@bisabantu.com` |
 
 ---
@@ -153,5 +153,5 @@ Pengujian dilakukan secara menyeluruh pada semua alur utama aplikasi marketplace
 
 1. Pembeli login → cari jasa → keranjang → checkout → upload pembayaran
 2. Admin verifikasi pembayaran → sistem generate invoice & notifikasi
-3. Provider terima pesanan → update status → selesai
+3. Penjual (Seller) terima pesanan → update status → selesai
 4. Pembeli beri review → data masuk ke laporan analitik admin
