@@ -85,6 +85,7 @@ $averageRating = number_format($service['avg_rating'] ?? 0, 1);
                     <p class="mb-2"><strong>Lokasi:</strong> <?= e($service['location']) ?></p>
                     <?php if (isset($_SESSION['user']) && ($_SESSION['user']['role'] ?? '') === 'buyer'): ?>
                         <form method="post" action="<?= base_url('index.php?page=cart&action=add') ?>" class="js-cart-add">
+                            <?= csrf_field() ?>
                             <input type="hidden" name="service_id" value="<?= (int) $serviceId ?>">
                             <div class="mb-3">
                                 <label class="form-label">Jumlah</label>

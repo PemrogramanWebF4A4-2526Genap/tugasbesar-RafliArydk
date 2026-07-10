@@ -1,14 +1,14 @@
 <?php
 
 /**
- * Menyinkronkan isi database MySQL ke file database/bisabantu.sql.
+ * Menyinkronkan isi database MySQL ke file database/database.sql.
  * Dipanggil setelah operasi tulis (register, CRUD jasa, dll.) agar dump
  * selalu mencerminkan data terbaru di phpMyAdmin maupun saat import ulang.
  */
 
 function bisabantu_dump_file_path(): string
 {
-    return dirname(__DIR__) . '/database/bisabantu.sql';
+    return dirname(__DIR__, 2) . '/database/database.sql';
 }
 
 function bisabantu_dump_table_order(): array

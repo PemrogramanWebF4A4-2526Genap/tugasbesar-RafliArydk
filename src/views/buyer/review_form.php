@@ -45,6 +45,7 @@ $serviceId = $items[0]['service_id'] ?? 0;
                 </div>
 
                 <form method="post" action="<?= base_url('index.php?page=review') ?>" enctype="multipart/form-data">
+                    <?= csrf_field() ?>
                     <input type="hidden" name="order_id" value="<?= (int) $orderId ?>">
                     <input type="hidden" name="service_id" value="<?= (int) $serviceId ?>">
 

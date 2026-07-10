@@ -1999,6 +1999,10 @@ body > .site-footer {
         margin-top: 10px;
         padding: 12px 0 4px;
         border-top: 1px solid rgba(245, 240, 232, 0.12);
+        max-height: calc(100vh - 88px);
+        overflow-y: auto;
+        overscroll-behavior: contain;
+        -webkit-overflow-scrolling: touch;
     }
 
     .role-header .navbar-nav {
@@ -2523,5 +2527,330 @@ textarea {
     .feature-badge:hover {
         transform: none;
         box-shadow: none;
+    }
+}
+
+/* All services catalogue */
+.services-page {
+    min-height: 72vh;
+    padding: 34px 0 54px;
+    background: linear-gradient(180deg, #f8f3e8 0%, var(--cream) 60%, #f1eadc 100%);
+}
+
+.services-breadcrumb {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    color: var(--ink-60);
+    font-size: 0.82rem;
+    margin-bottom: 14px;
+}
+
+.services-breadcrumb a {
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 700;
+}
+
+.services-heading {
+    margin-bottom: 22px;
+}
+
+.services-heading h1 {
+    margin: 0;
+    color: var(--ink);
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.9rem, 4.1vw, 3.1rem);
+    font-weight: 600;
+    line-height: 1.04;
+}
+
+.services-heading h1 em {
+    color: var(--gold);
+}
+
+.services-heading p {
+    max-width: 680px;
+    margin: 10px 0 0;
+    color: var(--ink-60);
+    font-size: 0.96rem;
+}
+
+.services-toolbar {
+    display: grid;
+    grid-template-columns: minmax(260px, 1fr) minmax(180px, 0.38fr) minmax(190px, 0.42fr);
+    gap: 10px;
+    padding: 12px;
+    margin-bottom: 18px;
+    background: #fff;
+    border: 1px solid var(--warm-200);
+    border-radius: 12px;
+    box-shadow: 0 8px 22px rgba(28, 26, 22, 0.045);
+}
+
+.services-search {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 42px;
+    padding: 0 12px;
+    border: 1px solid var(--warm-200);
+    border-radius: 8px;
+    background: #fbf7ee;
+    color: var(--ink-60);
+}
+
+.services-search input,
+.services-select {
+    width: 100%;
+    min-height: 42px;
+    border: 1px solid var(--warm-200);
+    border-radius: 8px;
+    background: #fbf7ee;
+    color: var(--ink);
+    font-size: 0.86rem;
+}
+
+.services-search input {
+    min-height: 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    outline: 0;
+}
+
+.services-search:focus-within,
+.services-select:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(181, 69, 27, 0.12);
+    outline: 0;
+}
+
+.services-select {
+    padding: 0 34px 0 12px;
+    cursor: pointer;
+}
+
+.services-category-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 20px;
+}
+
+.services-category-pill {
+    min-height: 36px;
+    padding: 7px 13px;
+    border: 1px solid var(--warm-200);
+    border-radius: 999px;
+    background: #fff;
+    color: var(--ink);
+    font-size: 0.88rem;
+    font-weight: 700;
+    transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.services-category-pill span {
+    margin-left: 4px;
+    color: var(--ink-60);
+    font-size: 0.76rem;
+}
+
+.services-category-pill.active,
+.services-category-pill:hover {
+    border-color: var(--accent);
+    background: var(--accent);
+    color: #fff;
+}
+
+.services-category-pill.active span,
+.services-category-pill:hover span {
+    color: rgba(255, 255, 255, 0.78);
+}
+
+.services-result-count {
+    margin: 0 0 14px;
+    color: var(--ink-60);
+    font-size: 0.92rem;
+}
+
+.services-result-count strong {
+    color: var(--ink);
+}
+
+.all-service-card {
+    height: 100%;
+    overflow: hidden;
+    border: 1px solid var(--warm-200);
+    border-radius: 12px;
+    background: #fff;
+    box-shadow: 0 8px 20px rgba(28, 26, 22, 0.045);
+    transition: transform 0.24s ease, box-shadow 0.24s ease, border-color 0.24s ease;
+}
+
+.all-service-card:hover {
+    transform: translateY(-3px);
+    border-color: var(--gold);
+    box-shadow: 0 14px 28px rgba(28, 26, 22, 0.1);
+}
+
+.all-service-image {
+    position: relative;
+    height: 154px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    background: linear-gradient(135deg, var(--accent-lt), var(--gold-lt));
+    color: var(--accent);
+    font-size: 2.8rem;
+}
+
+.all-service-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.all-service-category {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    z-index: 1;
+    padding: 5px 9px;
+    border-radius: 6px;
+    background: rgba(28, 26, 22, 0.82);
+    color: #fff;
+    font-size: 0.68rem;
+    font-weight: 800;
+}
+
+.all-service-body {
+    display: flex;
+    height: calc(100% - 154px);
+    flex-direction: column;
+    padding: 14px 15px 15px;
+}
+
+.all-service-body h2 {
+    margin: 0 0 8px;
+    color: var(--ink);
+    font-size: 0.98rem;
+    font-weight: 800;
+    line-height: 1.3;
+}
+
+.all-service-rating {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: var(--gold);
+    font-size: 0.82rem;
+}
+
+.all-service-rating strong {
+    color: var(--ink);
+}
+
+.all-service-rating span {
+    color: var(--ink-60);
+}
+
+.all-service-price {
+    margin: 11px 0 7px;
+    color: var(--ink);
+    font-size: 1.12rem;
+    font-weight: 800;
+}
+
+.all-service-price span {
+    color: var(--ink-60);
+    font-size: 0.76rem;
+    font-weight: 500;
+}
+
+.all-service-provider {
+    margin: 0 0 14px;
+    color: var(--ink-60);
+    font-size: 0.78rem;
+}
+
+.all-service-provider i {
+    margin-right: 6px;
+}
+
+.all-service-provider span {
+    margin: 0 3px;
+}
+
+.all-service-body .btn {
+    min-height: 38px;
+    margin-top: auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.86rem;
+    padding: 8px 12px;
+}
+
+.services-empty-state {
+    padding: 38px 18px;
+    border: 1px dashed var(--warm-200);
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.58);
+    color: var(--ink-60);
+    text-align: center;
+}
+
+.services-empty-state i {
+    display: block;
+    margin-bottom: 12px;
+    color: var(--accent);
+    font-size: 2.4rem;
+}
+
+.services-empty-state h2 {
+    color: var(--ink);
+    font-size: 1.15rem;
+    font-weight: 800;
+}
+
+@media (max-width: 767.98px) {
+    .services-page {
+        padding: 24px 0 38px;
+    }
+
+    .services-heading {
+        margin-bottom: 18px;
+    }
+
+    .services-heading p {
+        font-size: 0.9rem;
+    }
+
+    .services-toolbar {
+        grid-template-columns: 1fr;
+        padding: 10px;
+        gap: 8px;
+    }
+
+    .services-category-pills {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        margin-right: -12px;
+        padding: 2px 2px 10px;
+    }
+
+    .services-category-pill {
+        flex: 0 0 auto;
+    }
+
+    .all-service-image {
+        height: 142px;
+    }
+
+    .all-service-body {
+        height: calc(100% - 142px);
+        padding: 13px;
     }
 }

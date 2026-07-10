@@ -16,8 +16,20 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
+require_csrf();
+
 $action = $_GET['action'] ?? '';
 $redirect = $_POST['redirect'] ?? 'index.php?page=dashboard';
+$allowedRedirectPages = ['admin_users', 'admin_verify', 'admin_categories', 'admin_orders', 'admin_reports', 'admin_settings', 'dashboard'];
+$redirectParts = parse_url($redirect);
+parse_str($redirectParts['query'] ?? '', $redirectQuery);
+$redirectHost = $redirectParts['host'] ?? '';
+$currentHost = $_SERVER['HTTP_HOST'] ?? '';
+if (($redirectHost !== '' && $redirectHost !== $currentHost) || (($redirectParts['path'] ?? '') !== '' && basename($redirectParts['path']) !== 'index.php')) {
+    $redirect = 'index.php?page=dashboard';
+} elseif (!in_array($redirectQuery['page'] ?? 'dashboard', $allowedRedirectPages, true)) {
+    $redirect = 'index.php?page=dashboard';
+}
 
 $userModel = new UserModel($pdo);
 $categoryModel = new CategoryModel($pdo);

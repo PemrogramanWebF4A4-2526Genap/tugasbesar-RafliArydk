@@ -15,6 +15,7 @@ $scheduleModel = new ScheduleModel($pdo);
 $action = $_GET['action'] ?? '';
 
 if ($action === 'create' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    require_csrf();
     $day = max(0, min(6, (int) ($_POST['day_of_week'] ?? 0)));
     $start = $_POST['start_time'] ?? '08:00';
     $end = $_POST['end_time'] ?? '17:00';
@@ -29,7 +30,12 @@ if ($action === 'create' && $_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 if ($action === 'delete') {
-    $scheduleModel->delete((int) ($_GET['id'] ?? 0), $_SESSION['user']['id']);
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+        header('Location: index.php?page=provider_shipping&error=invalid_request');
+        exit;
+    }
+    require_csrf();
+    $scheduleModel->delete((int) ($_POST['id'] ?? 0), $_SESSION['user']['id']);
     header('Location: index.php?page=provider_shipping&msg=schedule_deleted');
     exit;
 }

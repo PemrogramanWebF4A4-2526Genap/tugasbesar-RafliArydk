@@ -45,6 +45,7 @@ if (isset($_GET['error'])) {
             <div class="row g-4">
                 <div class="col-lg-8">
                     <form method="post" action="<?= base_url('index.php?page=checkout') ?>">
+                        <?= csrf_field() ?>
                         <div class="checkout-card">
                             <div class="card-body">
                                 <div class="checkout-section mb-4">

@@ -64,6 +64,7 @@ $statusMap = [
     </div>
 
     <form method="post" action="<?= base_url('index.php?page=schedule&action=create') ?>" class="row g-2 align-items-end mb-4">
+        <?= csrf_field() ?>
         <div class="col-md-3">
             <label class="form-label">Hari</label>
             <select name="day_of_week" class="form-select">
@@ -104,7 +105,11 @@ $statusMap = [
                             <td><?= e(substr($schedule['start_time'], 0, 5)) ?> - <?= e(substr($schedule['end_time'], 0, 5)) ?></td>
                             <td><?= (int) $schedule['is_available'] === 1 ? '<span class="badge bg-success">Tersedia</span>' : '<span class="badge bg-secondary">Tidak tersedia</span>' ?></td>
                             <td class="text-end">
-                                <a class="btn btn-sm btn-outline-danger rounded-pill" href="<?= base_url('index.php?page=schedule&action=delete&id=' . (int) $schedule['id']) ?>" onclick="return confirm('Hapus slot ini?')">Hapus</a>
+                                <form method="post" action="<?= base_url('index.php?page=schedule&action=delete') ?>" class="d-inline" onsubmit="return confirm('Hapus slot ini?')">
+                                    <?= csrf_field() ?>
+                                    <input type="hidden" name="id" value="<?= (int) $schedule['id'] ?>">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger rounded-pill">Hapus</button>
+                                </form>
                             </td>
                         </tr>
                     <?php endforeach; ?>

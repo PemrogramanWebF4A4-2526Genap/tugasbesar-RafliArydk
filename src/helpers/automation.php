@@ -22,28 +22,7 @@ function generate_invoice($pdo, $order_id) {
         return null;
     }
 
-    $safeNumber = preg_replace('/[^A-Za-z0-9_-]/', '', $order['order_number']);
-    $relativePath = 'src/assets/invoices/invoice_' . $safeNumber . '.html';
-    $absolutePath = dirname(__DIR__, 2) . '/' . $relativePath;
-    $dir = dirname($absolutePath);
-    if (!is_dir($dir)) {
-        mkdir($dir, 0775, true);
-    }
-
-    $invoice = $invoiceModel->createIfMissing($order_id, $order['order_number'], $relativePath);
-    $html = '<!doctype html><html lang="id"><head><meta charset="utf-8"><title>' . htmlspecialchars($invoice['invoice_number'], ENT_QUOTES, 'UTF-8') . '</title>'
-        . '<style>body{font-family:Arial,sans-serif;margin:40px;color:#1f2937}.box{border:1px solid #ddd;padding:24px;max-width:720px}.muted{color:#6b7280}.total{font-size:22px;font-weight:700}</style></head><body>'
-        . '<div class="box"><h1>Invoice BisaBantu</h1><p class="muted">' . htmlspecialchars($invoice['invoice_number'], ENT_QUOTES, 'UTF-8') . '</p>'
-        . '<p><strong>No. Pesanan:</strong> ' . htmlspecialchars($order['order_number'], ENT_QUOTES, 'UTF-8') . '</p>'
-        . '<p><strong>Pembeli:</strong> ' . htmlspecialchars($order['buyer_name'], ENT_QUOTES, 'UTF-8') . '</p>'
-        . '<p><strong>Penyedia:</strong> ' . htmlspecialchars($order['provider_name'], ENT_QUOTES, 'UTF-8') . '</p>'
-        . '<p><strong>Tanggal Layanan:</strong> ' . htmlspecialchars($order['service_date'], ENT_QUOTES, 'UTF-8') . '</p>'
-        . '<p><strong>Alamat:</strong> ' . nl2br(htmlspecialchars($order['service_address'], ENT_QUOTES, 'UTF-8')) . '</p>'
-        . '<hr><p class="total">Total: Rp' . number_format((float) $order['total_price'], 0, ',', '.') . '</p>'
-        . '<p class="muted">Invoice otomatis dibuat saat pembayaran diverifikasi.</p></div></body></html>';
-    file_put_contents($absolutePath, $html);
-
-    return $invoice;
+    return $invoiceModel->createIfMissing($order_id, $order['order_number'], '');
 }
 
 function send_automation_notification($pdo, $userId, $title, $message) {
@@ -56,6 +35,18 @@ function send_automation_email($to, $subject, $message) {
         return false;
     }
 
+    $smtpHost = getenv('BISABANTU_SMTP_HOST') ?: '';
+    $smtpUser = getenv('BISABANTU_SMTP_USER') ?: '';
+    $smtpPass = getenv('BISABANTU_SMTP_PASS') ?: '';
+    $smtpPort = (int) (getenv('BISABANTU_SMTP_PORT') ?: 587);
+    $smtpFrom = getenv('BISABANTU_SMTP_FROM') ?: $smtpUser;
+    $smtpFromName = getenv('BISABANTU_SMTP_FROM_NAME') ?: 'BisaBantu';
+
+    if ($smtpHost === '' || $smtpUser === '' || $smtpPass === '' || $smtpFrom === '') {
+        error_log('Email automation skipped: SMTP environment variables are not configured.');
+        return false;
+    }
+
     // Load Composer's autoloader
     require_once __DIR__ . '/../../vendor/autoload.php';
 
@@ -64,15 +55,15 @@ function send_automation_email($to, $subject, $message) {
     try {
         // Server settings
         $mail->isSMTP();
-        $mail->Host       = 'smtp.gmail.com';
+        $mail->Host       = $smtpHost;
         $mail->SMTPAuth   = true;
-        $mail->Username   = 'rafliaryadika100@gmail.com';
-        $mail->Password   = 'flsfkfnjjowegmbe';
+        $mail->Username   = $smtpUser;
+        $mail->Password   = $smtpPass;
         $mail->SMTPSecure = \PHPMailer\PHPMailer\PHPMailer::ENCRYPTION_STARTTLS;
-        $mail->Port       = 587;
+        $mail->Port       = $smtpPort;
 
         // Recipients
-        $mail->setFrom('rafliaryadika100@gmail.com', 'BisaBantu');
+        $mail->setFrom($smtpFrom, $smtpFromName);
         $mail->addAddress($to);
 
         // Content

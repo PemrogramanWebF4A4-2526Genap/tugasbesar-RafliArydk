@@ -27,6 +27,7 @@ if (isset($_GET['profile_update']) && $_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
+    require_csrf();
     ensure_user_profile_photo_column($pdo);
 
     $userId = (int) $_SESSION['user']['id'];
@@ -158,6 +159,10 @@ if ($page == 'home') {
     $dashboard_css = 'buyer';
     include 'src/views/layout/header.php';
     include 'src/views/buyer/service_detail.php';
+    include 'src/views/layout/footer.php';
+} elseif ($page == 'services') {
+    include 'src/views/layout/header.php';
+    include 'src/views/public/services.php';
     include 'src/views/layout/footer.php';
 } elseif ($page == 'cart') {
     if (isset($_GET['action'])) {

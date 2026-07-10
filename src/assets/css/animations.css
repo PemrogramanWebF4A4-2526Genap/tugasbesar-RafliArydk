@@ -16,6 +16,23 @@ body {
     opacity: 1;
 }
 
+body.page-enter {
+    transition:
+        opacity var(--bb-motion-base) var(--bb-motion-ease),
+        transform var(--bb-motion-base) var(--bb-motion-ease);
+    will-change: opacity, transform;
+}
+
+body.page-enter:not(.loaded) {
+    opacity: 0;
+    transform: translate3d(0, 6px, 0);
+}
+
+body.page-enter.loaded {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+}
+
 .page-loader {
     display: none;
 }
@@ -471,6 +488,7 @@ input:focus {
 
     body,
     body.loaded,
+    body.page-enter,
     .animate-on-scroll {
         opacity: 1 !important;
         transform: none !important;

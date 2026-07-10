@@ -27,7 +27,7 @@ Panduan singkat menjalankan BisaBantu di lingkungan lokal.
 3. Import file database:
 
    ```text
-   database/bisabantu.sql
+   database/database.sql
    ```
 
    File ini otomatis diperbarui setiap ada data baru lewat aplikasi (register, tambah/edit jasa, dll.).

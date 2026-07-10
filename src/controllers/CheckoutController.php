@@ -10,6 +10,7 @@ if (!isset($_SESSION['user']) || $_SESSION['user']['role'] !== 'buyer') {
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    require_csrf();
     if (empty($_SESSION['cart'])) {
         header('Location: index.php?page=cart&error=empty');
         exit;
@@ -21,7 +22,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $payment_method = trim($_POST['payment_method'] ?? 'bank_transfer');
     $allowedPaymentMethods = ['bank_transfer', 'cod'];
     
-    if (!$service_date || !$service_address || !in_array($payment_method, $allowedPaymentMethods, true)) {
+    $serviceTimestamp = strtotime($service_date);
+    $today = strtotime(date('Y-m-d'));
+
+    if (!$service_date || !$service_address || !in_array($payment_method, $allowedPaymentMethods, true) || !$serviceTimestamp || $serviceTimestamp < $today) {
         header('Location: index.php?page=checkout&error=missing_fields');
         exit;
     }
@@ -34,7 +38,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $providerItems = [];
     foreach ($_SESSION['cart'] as $service_id => $quantity) {
         $service = $serviceModel->getById($service_id);
-        if ($service) {
+        if ($service && (int) ($service['is_active'] ?? 0) === 1 && (int) ($service['provider_verified'] ?? 0) === 1) {
             $provider_id = $service['provider_id'];
             if (!isset($providerItems[$provider_id])) {
                 $providerItems[$provider_id] = [];
@@ -47,6 +51,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     $buyer_id = $_SESSION['user']['id'];
+
+    if (empty($providerItems)) {
+        header('Location: index.php?page=cart&error=checkout_failed');
+        exit;
+    }
     
     try {
         $pdo->beginTransaction();

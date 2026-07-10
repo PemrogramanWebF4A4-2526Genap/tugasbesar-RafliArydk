@@ -13,6 +13,7 @@ $action = $_GET['action'] ?? 'list';
 
 // Action: Mark single notification as read
 if ($action === 'read' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    require_csrf();
     $notificationModel->markAsRead((int) ($_POST['id'] ?? 0), (int) $_SESSION['user']['id']);
     header('Location: index.php?page=notification');
     exit;
@@ -20,6 +21,7 @@ if ($action === 'read' && $_SERVER['REQUEST_METHOD'] === 'POST') {
 
 // Action: Mark all notifications as read
 if ($action === 'read_all' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    require_csrf();
     $notificationModel->markAllAsRead((int) $_SESSION['user']['id']);
     header('Location: index.php?page=notification');
     exit;

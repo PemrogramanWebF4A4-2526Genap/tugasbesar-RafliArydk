@@ -199,6 +199,99 @@
     padding: 24px;
 }
 
+.admin-confirm-open {
+    overflow: hidden;
+}
+
+.admin-confirm-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 1080;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background: rgba(17, 24, 39, 0.58);
+    backdrop-filter: blur(3px);
+}
+
+.admin-confirm-backdrop[hidden] {
+    display: none;
+}
+
+.admin-confirm-modal {
+    width: min(420px, 100%);
+    padding: 28px;
+    border-radius: 8px;
+    background: #fff;
+    border: 1px solid rgba(28, 26, 22, 0.08);
+    box-shadow: 0 24px 70px rgba(17, 24, 39, 0.24);
+    text-align: center;
+    animation: adminConfirmIn 0.18s ease-out;
+}
+
+.admin-confirm-icon {
+    width: 54px;
+    height: 54px;
+    margin: 0 auto 14px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: #fee2e2;
+    color: #dc2626;
+    font-size: 1.55rem;
+}
+
+.admin-confirm-modal h3 {
+    margin: 0 0 10px;
+    color: var(--ink);
+    font-size: 1.15rem;
+    font-weight: 800;
+}
+
+.admin-confirm-modal p {
+    margin: 0;
+    color: var(--ink-60);
+    font-size: 0.92rem;
+    line-height: 1.55;
+}
+
+.admin-confirm-user {
+    margin-top: 12px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    background: #f8fafc;
+    color: #475569;
+    font-size: 0.86rem;
+    word-break: break-word;
+}
+
+.admin-confirm-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-top: 22px;
+}
+
+.admin-confirm-actions .btn {
+    min-height: 42px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+@keyframes adminConfirmIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px) scale(0.98);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
 .admin-panel-head {
     display: flex;
     justify-content: space-between;

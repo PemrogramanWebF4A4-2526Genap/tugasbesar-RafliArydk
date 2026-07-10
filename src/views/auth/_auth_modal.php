@@ -46,6 +46,7 @@
                     </div>
                 <?php endif; ?>
                 <form id="authLoginForm" method="post" action="<?= base_url('index.php?page=auth&action=login') ?>" novalidate>
+                    <?= csrf_field() ?>
                     <div class="auth-form-group">
                         <label class="auth-form-label" for="login-email">Email</label>
                         <div class="auth-input-wrap">
@@ -198,6 +199,7 @@
                     </div>
                     <div style="font-size:12px;color:var(--color-text-secondary);margin-bottom:1rem;font-weight:500">Selesai</div>
                     <form method="post" action="<?= base_url('index.php?page=auth&action=register') ?>" id="authRegisterForm" novalidate>
+                        <?= csrf_field() ?>
                         <input type="hidden" name="role" id="reg-role-input" value="<?= htmlspecialchars($regRole, ENT_QUOTES) ?>">
                         <div class="auth-form-group">
                             <label class="auth-form-label">Konfirmasi password</label>
@@ -254,8 +256,22 @@
                         <?= e($verifyErrorMessages[$_GET['verify_error']] ?? 'Kode tidak valid.') ?>
                     </div>
                 <?php endif; ?>
+                <?php if (isset($_GET['resend_error']) && ($_GET['auth'] ?? '') === 'verify'): ?>
+                    <div class="auth-alert-error show">
+                        <i class="bi bi-exclamation-circle" style="font-size:16px" aria-hidden="true"></i>
+                        <?php
+                        $resendErrorMessages = [
+                            'cooldown' => 'Tunggu sebentar sebelum meminta kode baru.',
+                            'limit' => 'Batas kirim ulang kode sudah tercapai. Silakan ulangi pendaftaran.',
+                            'no_pending' => 'Tidak ada sesi verifikasi aktif.',
+                        ];
+                        ?>
+                        <?= e($resendErrorMessages[$_GET['resend_error']] ?? 'Kode belum bisa dikirim ulang.') ?>
+                    </div>
+                <?php endif; ?>
 
                 <form method="post" action="<?= base_url('index.php?page=auth&action=verify_email') ?>" id="authVerifyForm" novalidate data-no-validate>
+                    <?= csrf_field() ?>
                     <div class="auth-otp-wrap">
                         <input class="auth-otp-input" type="text" maxlength="1" id="otp0" inputmode="numeric" pattern="[0-9]" autocomplete="one-time-code" aria-label="Digit 1">
                         <input class="auth-otp-input" type="text" maxlength="1" id="otp1" inputmode="numeric" pattern="[0-9]" aria-label="Digit 2">
@@ -278,7 +294,10 @@
 
                 <div class="auth-otp-resend">
                     Tidak menerima kode?
-                    <a href="<?= base_url('index.php?page=auth&action=resend_otp') ?>" id="auth-resend-otp">Kirim ulang</a>
+                    <form method="post" action="<?= base_url('index.php?page=auth&action=resend_otp') ?>" class="d-inline">
+                        <?= csrf_field() ?>
+                        <button type="submit" id="auth-resend-otp" class="btn btn-link p-0 align-baseline">Kirim ulang</button>
+                    </form>
                 </div>
                 <div class="auth-form-footer" style="margin-top:0.5rem">
                     <a onclick="switchAuthTab('register'); goAuthStep(1);" style="cursor:pointer">Kembali ke pendaftaran</a>
@@ -308,6 +327,7 @@
                 <?php endif; ?>
 
                 <form id="authForgotRequestForm" method="post" action="<?= base_url('index.php?page=auth&action=forgot_password') ?>" novalidate>
+                    <?= csrf_field() ?>
                     <div class="auth-form-group">
                         <label class="auth-form-label">Email</label>
                         <div class="auth-input-wrap">
@@ -352,8 +372,22 @@
                         <?= e($verifyErrors[$_GET['verify_error']] ?? 'Kode tidak valid.') ?>
                     </div>
                 <?php endif; ?>
+                <?php if (isset($_GET['resend_error']) && ($_GET['auth'] ?? '') === 'forgot-verify'): ?>
+                    <div class="auth-alert-error show" style="margin-bottom:14px">
+                        <i class="bi bi-exclamation-circle" style="font-size:16px" aria-hidden="true"></i>
+                        <?php
+                        $forgotResendErrors = [
+                            'cooldown' => 'Tunggu sebentar sebelum meminta kode baru.',
+                            'limit' => 'Batas kirim ulang kode sudah tercapai. Silakan ulangi proses lupa password.',
+                            'no_pending' => 'Sesi tidak ditemukan. Silakan ulangi.',
+                        ];
+                        ?>
+                        <?= e($forgotResendErrors[$_GET['resend_error']] ?? 'Kode belum bisa dikirim ulang.') ?>
+                    </div>
+                <?php endif; ?>
 
                 <form method="post" action="<?= base_url('index.php?page=auth&action=forgot_verify') ?>" id="authForgotVerifyForm" novalidate data-no-validate>
+                    <?= csrf_field() ?>
                     <div class="auth-otp-wrap" style="margin-bottom:20px">
                         <input class="auth-otp-input" type="text" maxlength="1" id="fotp0" inputmode="numeric" pattern="[0-9]" autocomplete="one-time-code">
                         <input class="auth-otp-input" type="text" maxlength="1" id="fotp1" inputmode="numeric" pattern="[0-9]">
@@ -371,9 +405,12 @@
 
                 <div style="text-align:center;margin-top:14px;font-size:13px;color:var(--color-text-secondary)">
                     Kirim ulang kode &nbsp;
-                    <a href="<?= base_url('index.php?page=auth&action=forgot_resend') ?>" style="color:var(--auth-accent);font-weight:500">
-                        (<span id="fotp-countdown">01:00</span>)
-                    </a>
+                    <form method="post" action="<?= base_url('index.php?page=auth&action=forgot_resend') ?>" class="d-inline">
+                        <?= csrf_field() ?>
+                        <button type="submit" class="btn btn-link p-0 align-baseline" style="color:var(--auth-accent);font-weight:500">
+                            (<span id="fotp-countdown">01:00</span>)
+                        </button>
+                    </form>
                 </div>
             </div>
 
@@ -403,6 +440,7 @@
                 <?php endif; ?>
 
                 <form id="authForgotResetForm" method="post" action="<?= base_url('index.php?page=auth&action=forgot_reset') ?>" novalidate>
+                    <?= csrf_field() ?>
                     <div class="auth-form-group">
                         <label class="auth-form-label">Password Baru</label>
                         <div class="auth-input-wrap">

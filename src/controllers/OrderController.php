@@ -13,6 +13,7 @@ $orderModel = new OrderModel($pdo);
 $notifModel = new NotificationModel($pdo);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    require_csrf();
     $order_id = $_POST['order_id'] ?? 0;
     $status = $_POST['status'] ?? '';
 
@@ -41,7 +42,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
     } elseif ($_SESSION['user']['role'] === 'buyer' && (int) $order['buyer_id'] === (int) $_SESSION['user']['id']) {
-        if (in_array($status, ['completed', 'cancelled'])) {
+        $buyerTransitions = [
+            'waiting_payment' => ['cancelled'],
+            'paid' => ['cancelled'],
+            'accepted' => ['cancelled'],
+            'in_progress' => ['completed'],
+        ];
+        if (in_array($status, $buyerTransitions[$order['status']] ?? [], true)) {
             $valid = true;
             $redirect = 'index.php?page=orders';
             $notifModel->create($order['provider_id'], 'Status Pesanan Diperbarui', "Pembeli mengubah status pesanan {$order['order_number']} menjadi: " . order_status_info($status)[0] . '.');

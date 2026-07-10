@@ -55,6 +55,7 @@ $statusOptions = ['waiting_payment', 'paid', 'accepted', 'in_progress', 'complet
                                     <td class="text-end"><?= e(format_rupiah($order['total_price'])) ?></td>
                                     <td class="text-end">
                                         <form method="post" action="<?= base_url('index.php?page=admin&action=order_status') ?>" class="admin-status-form">
+                                            <?= csrf_field() ?>
                                             <input type="hidden" name="order_id" value="<?= (int) $order['id'] ?>">
                                             <select name="status" class="form-select form-select-sm">
                                                 <?php foreach ($statusOptions as $opt): ?>

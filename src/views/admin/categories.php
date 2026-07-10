@@ -24,6 +24,7 @@ $editCategory = $editId ? $categoryModel->getById($editId) : null;
             </div>
 
             <form method="post" action="<?= base_url('index.php?page=admin&action=' . ($editCategory ? 'category_update' : 'category_create')) ?>" class="admin-form-row">
+                <?= csrf_field() ?>
                 <?php if ($editCategory): ?>
                     <input type="hidden" name="id" value="<?= (int) $editCategory['id'] ?>">
                 <?php endif; ?>
@@ -65,6 +66,7 @@ $editCategory = $editId ? $categoryModel->getById($editId) : null;
                             <div class="admin-category-actions">
                                 <a href="<?= base_url('index.php?page=admin_categories&edit=' . (int) $cat['id']) ?>" class="btn btn-sm btn-outline-custom">Edit</a>
                                 <form method="post" action="<?= base_url('index.php?page=admin&action=category_delete') ?>" onsubmit="return confirm('Hapus kategori ini?');">
+                                    <?= csrf_field() ?>
                                     <input type="hidden" name="id" value="<?= (int) $cat['id'] ?>">
                                     <button type="submit" class="btn btn-sm btn-outline-danger">Hapus</button>
                                 </form>

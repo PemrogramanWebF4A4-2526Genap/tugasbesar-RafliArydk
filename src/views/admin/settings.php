@@ -19,6 +19,7 @@ $settings = $settingsModel->getAll();
             </div>
 
             <form method="post" action="<?= base_url('index.php?page=admin&action=save_settings') ?>" class="admin-settings-form">
+                <?= csrf_field() ?>
                 <div class="row g-4">
                     <div class="col-md-6">
                         <div class="admin-settings-card">

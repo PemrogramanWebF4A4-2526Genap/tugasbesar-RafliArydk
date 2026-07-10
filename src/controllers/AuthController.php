@@ -46,6 +46,33 @@ function send_otp_email($to, $otp)
     return send_automation_email($to, $subject, $message);
 }
 
+function set_otp_send_state($sessionKey, $countAsResend = true)
+{
+    $_SESSION[$sessionKey]['last_sent_at'] = time();
+    if ($countAsResend) {
+        $_SESSION[$sessionKey]['resend_count'] = (int) ($_SESSION[$sessionKey]['resend_count'] ?? 0) + 1;
+    }
+}
+
+function can_resend_otp($sessionKey, $cooldownSeconds = 60, $maxResends = 5)
+{
+    $state = $_SESSION[$sessionKey] ?? null;
+    if (!$state) {
+        return [false, 'no_pending'];
+    }
+
+    $lastSentAt = (int) ($state['last_sent_at'] ?? 0);
+    if ($lastSentAt > 0 && (time() - $lastSentAt) < $cooldownSeconds) {
+        return [false, 'cooldown'];
+    }
+
+    if ((int) ($state['resend_count'] ?? 0) >= $maxResends) {
+        return [false, 'limit'];
+    }
+
+    return [true, 'ok'];
+}
+
 // ---------------------------------------------------------------------------
 // ACTION: login
 // ---------------------------------------------------------------------------
@@ -54,6 +81,7 @@ if ($action === 'login') {
         header('Location: index.php?page=home&auth=login');
         exit;
     }
+    require_csrf();
 
     $email    = trim($_POST['email'] ?? '');
     $password = $_POST['password'] ?? '';
@@ -100,6 +128,7 @@ if ($action === 'register') {
         header('Location: index.php?page=home&auth=register');
         exit;
     }
+    require_csrf();
 
     $role          = $_POST['role'] ?? 'buyer';
     $firstName     = trim($_POST['first_name'] ?? '');
@@ -159,9 +188,12 @@ if ($action === 'register') {
         'address'    => $address,
         'otp'        => $otp,
         'expires_at' => time() + 900, // 15 minutes
+        'last_sent_at' => 0,
+        'resend_count' => 0,
     ];
 
     send_otp_email($email, $otp);
+    set_otp_send_state('pending_reg', false);
 
     header('Location: index.php?page=home&auth=verify&pending_email=' . urlencode($email));
     exit;
@@ -175,6 +207,7 @@ if ($action === 'verify_email') {
         header('Location: index.php?page=home&auth=verify');
         exit;
     }
+    require_csrf();
 
     $pending = $_SESSION['pending_reg'] ?? null;
 
@@ -229,10 +262,21 @@ if ($action === 'verify_email') {
 // ACTION: resend_otp  — regenerate OTP and re-send email
 // ---------------------------------------------------------------------------
 if ($action === 'resend_otp') {
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+        header('Location: index.php?page=home&auth=verify');
+        exit;
+    }
+    require_csrf();
     $pending = $_SESSION['pending_reg'] ?? null;
 
     if (!$pending) {
         header('Location: index.php?page=home&auth=register');
+        exit;
+    }
+
+    [$canResend, $resendReason] = can_resend_otp('pending_reg');
+    if (!$canResend) {
+        header('Location: index.php?page=home&auth=verify&pending_email=' . urlencode($pending['email']) . '&resend_error=' . urlencode($resendReason));
         exit;
     }
 
@@ -241,6 +285,7 @@ if ($action === 'resend_otp') {
     $_SESSION['pending_reg']['expires_at'] = time() + 900;
 
     send_otp_email($pending['email'], $otp);
+    set_otp_send_state('pending_reg');
 
     header('Location: index.php?page=home&auth=verify&pending_email=' . urlencode($pending['email']) . '&resent=1');
     exit;
@@ -254,6 +299,7 @@ if ($action === 'forgot_password') {
         header('Location: index.php?page=home&auth=forgot');
         exit;
     }
+    require_csrf();
 
     $email = trim($_POST['email'] ?? '');
     $user = $userModel->getAuthUserByEmail($email);
@@ -269,10 +315,13 @@ if ($action === 'forgot_password') {
         'email'      => $email,
         'otp'        => $otp,
         'expires_at' => time() + 900,
-        'verified'   => false
+        'verified'   => false,
+        'last_sent_at' => 0,
+        'resend_count' => 0,
     ];
 
     send_otp_email($email, $otp);
+    set_otp_send_state('forgot_pwd', false);
 
     header('Location: index.php?page=home&auth=forgot-verify&pending_email=' . urlencode($email));
     exit;
@@ -286,6 +335,7 @@ if ($action === 'forgot_verify') {
         header('Location: index.php?page=home&auth=forgot-verify');
         exit;
     }
+    require_csrf();
 
     $forgot = $_SESSION['forgot_pwd'] ?? null;
     if (!$forgot) {
@@ -319,6 +369,7 @@ if ($action === 'forgot_reset') {
         header('Location: index.php?page=home&auth=forgot-reset');
         exit;
     }
+    require_csrf();
 
     $forgot = $_SESSION['forgot_pwd'] ?? null;
     if (!$forgot || empty($forgot['verified'])) {
@@ -351,9 +402,20 @@ if ($action === 'forgot_reset') {
 // ACTION: forgot_resend
 // ---------------------------------------------------------------------------
 if ($action === 'forgot_resend') {
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+        header('Location: index.php?page=home&auth=forgot-verify');
+        exit;
+    }
+    require_csrf();
     $forgot = $_SESSION['forgot_pwd'] ?? null;
     if (!$forgot) {
         header('Location: index.php?page=home&auth=forgot');
+        exit;
+    }
+
+    [$canResend, $resendReason] = can_resend_otp('forgot_pwd');
+    if (!$canResend) {
+        header('Location: index.php?page=home&auth=forgot-verify&pending_email=' . urlencode($forgot['email']) . '&resend_error=' . urlencode($resendReason));
         exit;
     }
 
@@ -362,6 +424,7 @@ if ($action === 'forgot_resend') {
     $_SESSION['forgot_pwd']['expires_at'] = time() + 900;
     
     send_otp_email($forgot['email'], $otp);
+    set_otp_send_state('forgot_pwd');
 
     header('Location: index.php?page=home&auth=forgot-verify&pending_email=' . urlencode($forgot['email']) . '&resent=1');
     exit;

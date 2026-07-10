@@ -42,12 +42,12 @@ if (isset($_GET['error']) && $_GET['error'] === 'upload_failed') {
                     <div class="alert alert-warning">Bukti sebelumnya ditolak<?= $latestPayment['notes'] ? ': ' . e($latestPayment['notes']) : '.' ?></div>
                 <?php endif; ?>
                 <form method="post" action="<?= base_url('index.php?page=payment&action=upload') ?>" enctype="multipart/form-data">
+                    <?= csrf_field() ?>
                     <input type="hidden" name="order_id" value="<?= (int) $orderId ?>">
                     <div class="mb-3">
                         <label class="form-label">Metode Pembayaran</label>
                         <select class="form-select" name="method">
                             <option value="bank_transfer">Bank Transfer</option>
-                            <option value="cash">Tunai</option>
                         </select>
                     </div>
                     <div class="mb-3">

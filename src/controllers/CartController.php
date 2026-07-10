@@ -11,8 +11,23 @@ if (!isset($_SESSION['cart'])) {
     $_SESSION['cart'] = [];
 }
 
+if (!isset($_SESSION['user']) || ($_SESSION['user']['role'] ?? '') !== 'buyer') {
+    if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest') {
+        header('Content-Type: application/json');
+        echo json_encode(['success' => false, 'error' => 'auth']);
+        exit;
+    }
+    header('Location: index.php?page=home&auth=login');
+    exit;
+}
+
 // Action: Add Item to Cart
 if ($action === 'add') {
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+        header('Location: index.php?page=cart&error=invalid_request');
+        exit;
+    }
+    require_csrf();
     $service_id = (int) ($_POST['service_id'] ?? 0);
     $quantity = (int) ($_POST['quantity'] ?? 1);
 
@@ -78,6 +93,11 @@ if ($action === 'add') {
 
 // Action: Update Cart Quantity
 if ($action === 'update') {
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+        header('Location: index.php?page=cart&error=invalid_request');
+        exit;
+    }
+    require_csrf();
     $service_id = (int) ($_POST['service_id'] ?? 0);
     $quantity = (int) ($_POST['quantity'] ?? 0);
 
@@ -107,7 +127,12 @@ if ($action === 'update') {
 
 // Action: Remove Item from Cart
 if ($action === 'remove') {
-    $service_id = (int) ($_GET['id'] ?? 0);
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+        header('Location: index.php?page=cart&error=invalid_request');
+        exit;
+    }
+    require_csrf();
+    $service_id = (int) ($_POST['id'] ?? 0);
     if (isset($_SESSION['cart'][$service_id])) {
         unset($_SESSION['cart'][$service_id]);
     }
@@ -117,6 +142,11 @@ if ($action === 'remove') {
 
 // Action: Clear Cart
 if ($action === 'clear') {
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+        header('Location: index.php?page=cart&error=invalid_request');
+        exit;
+    }
+    require_csrf();
     $_SESSION['cart'] = [];
     header('Location: index.php?page=cart&msg=cleared');
     exit;

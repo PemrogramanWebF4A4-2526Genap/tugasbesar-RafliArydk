@@ -19,7 +19,8 @@ $userModel = new UserModel($pdo);
 $orderModel = new OrderModel($pdo);
 $reviewModel = new ReviewModel($pdo);
 
-$homeServices = $serviceModel->getAllActive();
+$activeHomeServices = $serviceModel->getAllActive();
+$homeServices = $serviceModel->getPopularActive(8);
 $homeCategories = $categoryModel->getAllWithServiceCount();
 $homeReviews = $reviewModel->getRecentReviews(3);
 $activeServiceCount = $serviceModel->countActive();
@@ -32,7 +33,7 @@ $brandImageFile = __DIR__ . '/../../' . $brandImagePath;
 if (is_file($brandImageFile)) {
     $brandImageUrl .= '?v=' . filemtime($brandImageFile);
 }
-$ratingRows = array_filter($homeServices, fn($service) => (int) $service['review_count'] > 0);
+$ratingRows = array_filter($activeHomeServices, fn($service) => (int) $service['review_count'] > 0);
 if (!empty($ratingRows)) {
     $avgRating = array_sum(array_map(fn($service) => (float) $service['avg_rating'], $ratingRows)) / count($ratingRows);
 }
@@ -46,19 +47,20 @@ if (!empty($ratingRows)) {
                 <div class="hero-eyebrow">Marketplace Jasa Terpercaya</div>
                 <h1 class="hero-title">Temukan jasa <em>terbaik</em> di sekitar Anda</h1>
                 <p class="hero-desc">Dari bersih-bersih, perbaikan rumah, hingga les privat — semua tersedia dengan penyedia terverifikasi.</p>
-                <form class="search-box mt-4" id="heroSearchForm" role="search">
+                <form class="search-box mt-4" id="heroSearchForm" role="search" action="<?= base_url('index.php') ?>" method="get">
+                    <input type="hidden" name="page" value="services">
                     <div class="row g-2 align-items-center">
                         <div class="col-md-5">
                             <i class="bi bi-search ms-2"></i>
-                            <input type="search" id="heroSearchInput" class="form-control-plaintext d-inline w-75" placeholder="Cari jasa ..." style="padding-left: 8px;" autocomplete="off">
+                            <input type="search" id="heroSearchInput" name="search" class="form-control-plaintext d-inline w-75" placeholder="Cari jasa ..." style="padding-left: 8px;" autocomplete="off">
                         </div>
                         <div class="col-md-4">
                             <i class="bi bi-geo-alt ms-2"></i>
-                            <select id="heroSearchCity" class="form-select-plaintext d-inline w-75" aria-label="Pilih kota">
-                                <option>Semua Kota</option>
-                                <option>Jakarta</option>
-                                <option>Bandung</option>
-                                <option>Surabaya</option>
+                            <select id="heroSearchCity" name="location" class="form-select-plaintext d-inline w-75" aria-label="Pilih kota">
+                                <option value="">Semua Kota</option>
+                                <?php foreach (array_slice(array_values(array_unique(array_filter(array_map(static fn($service) => trim((string) $service['location']), $activeHomeServices)))), 0, 6) as $location): ?>
+                                    <option value="<?= e($location) ?>"><?= e($location) ?></option>
+                                <?php endforeach; ?>
                             </select>
                         </div>
                         <div class="col-md-3">
@@ -101,16 +103,16 @@ if (!empty($ratingRows)) {
                 <p class="small section-sub mt-2 mb-0">Semua diverifikasi admin</p>
             </div>
             <div class="col-md-3">
-                <div class="feature-badge" data-toast="Pembayaran Anda dilindungi sistem escrow hingga jasa selesai" data-toast-type="info"><i class="bi bi-lock me-2"></i>Pembayaran Aman</div>
-                <p class="small section-sub mt-2 mb-0">Dana terlindungi escrow</p>
+                <div class="feature-badge" data-toast="Bukti transfer diverifikasi admin sebelum pesanan diproses" data-toast-type="info"><i class="bi bi-lock me-2"></i>Pembayaran Aman</div>
+                <p class="small section-sub mt-2 mb-0">Transfer diverifikasi admin</p>
             </div>
             <div class="col-md-3">
-                <div class="feature-badge" data-toast="Tim dukungan siap membantu 24 jam" data-toast-type="info"><i class="bi bi-headset me-2"></i>Dukungan 24/7</div>
-                <p class="small section-sub mt-2 mb-0">Siap membantu kapanpun</p>
+                <div class="feature-badge" data-toast="Notifikasi membantu pembeli dan penyedia mengikuti status pesanan" data-toast-type="info"><i class="bi bi-headset me-2"></i>Status Transparan</div>
+                <p class="small section-sub mt-2 mb-0">Pantau progres pesanan</p>
             </div>
             <div class="col-md-3">
-                <div class="feature-badge" data-toast="Garansi kepuasan 100% atau uang kembali" data-toast-type="info"><i class="bi bi-arrow-return-left me-2"></i>Garansi Kepuasan</div>
-                <p class="small section-sub mt-2 mb-0">Uang kembali jika tidak puas</p>
+                <div class="feature-badge" data-toast="Ulasan pelanggan membantu menjaga kualitas penyedia jasa" data-toast-type="info"><i class="bi bi-arrow-return-left me-2"></i>Ulasan Terbuka</div>
+                <p class="small section-sub mt-2 mb-0">Rating dari pelanggan</p>
             </div>
         </div>
     </div>
@@ -125,7 +127,7 @@ if (!empty($ratingRows)) {
         <?php foreach ($homeCategories as $category): ?>
             <?php $categorySlug = slugify($category['name']); ?>
             <div class="col-6 col-md-3">
-                <div class="category-card" data-category="<?= e($categorySlug) ?>">
+                <div class="category-card" data-category="<?= e($categorySlug) ?>" data-services-url="<?= e(base_url('index.php?page=services&category=' . rawurlencode($categorySlug))) ?>">
                     <div class="category-icon"><i class="bi <?= e(category_icon($category['name'])) ?>"></i></div>
                     <h5 class="mb-0"><?= e($category['name']) ?></h5>
                     <small class="section-sub"><?= (int) $category['service_count'] ?> jasa</small>
@@ -142,11 +144,11 @@ if (!empty($ratingRows)) {
             <div class="section-eyebrow">Unggulan</div>
             <h2 class="section-title">Jasa populer <em>minggu ini</em></h2>
         </div>
-        <a href="#" class="link-accent" id="viewAllServices">Lihat semua →</a>
+        <a href="<?= base_url('index.php?page=services') ?>" class="link-accent" id="viewAllServices">Lihat semua →</a>
     </div>
     <div class="mt-3 mb-4 filter-pills d-flex flex-wrap gap-2" role="group" aria-label="Filter kategori jasa">
         <button type="button" class="filter-pill active" data-filter="semua" aria-pressed="true">Semua</button>
-        <?php foreach (array_slice($homeCategories, 0, 6) as $category): ?>
+        <?php foreach ($homeCategories as $category): ?>
             <button type="button" class="filter-pill" data-filter="<?= e(slugify($category['name'])) ?>" aria-pressed="false"><?= e($category['name']) ?></button>
         <?php endforeach; ?>
     </div>
@@ -167,7 +169,7 @@ if (!empty($ratingRows)) {
                 $imagePath = $service['image'] ? 'src/assets/uploads/services/' . $service['image'] : '';
                 $hasImage = $imagePath && is_file(__DIR__ . '/../../../' . ltrim($imagePath, '/'));
                 ?>
-                <div class="col-md-6 col-lg-3" data-service-card data-category="<?= e($serviceCategorySlug) ?>" data-title="<?= e($service['title']) ?>">
+                <div class="col-md-6 col-lg-3" data-service-card data-category="<?= e($serviceCategorySlug) ?>" data-title="<?= e($service['title']) ?>" data-detail-url="<?= e(base_url('index.php?page=service_detail&id=' . (int) $service['id'])) ?>">
                     <div class="service-card">
                         <div class="service-img">
                             <a href="<?= base_url('index.php?page=service_detail&id=' . (int) $service['id']) ?>" class="d-flex align-items-center justify-content-center w-100 h-100" style="text-decoration: none; color: inherit;">
@@ -190,6 +192,7 @@ if (!empty($ratingRows)) {
                                 <a href="<?= base_url('index.php?page=service_detail&id=' . (int) $service['id']) ?>" class="btn btn-sm btn-outline-custom w-100">Detail</a>
                                 <?php if (isset($_SESSION['user']) && ($_SESSION['user']['role'] ?? '') === 'buyer'): ?>
                                     <form method="post" action="<?= base_url('index.php?page=cart&action=add') ?>" class="m-0 js-cart-add" onclick="event.stopPropagation();">
+                                        <?= csrf_field() ?>
                                         <input type="hidden" name="service_id" value="<?= (int) $service['id'] ?>">
                                         <input type="hidden" name="quantity" value="1">
                                         <button type="submit" class="btn btn-sm btn-primary-custom w-100">Tambah ke Keranjang</button>
@@ -231,7 +234,7 @@ if (!empty($ratingRows)) {
                 <div class="step-card">
                     <div class="step-number">3</div>
                     <h5>Bayar dengan aman</h5>
-                    <p class="small section-sub">Upload bukti transfer atau bayar tunai. Dana hanya diteruskan setelah pekerjaan selesai.</p>
+                    <p class="small section-sub">Upload bukti transfer atau pilih COD. Admin dapat memverifikasi pembayaran sebelum pesanan diproses.</p>
                 </div>
             </div>
             <div class="col-md-3">

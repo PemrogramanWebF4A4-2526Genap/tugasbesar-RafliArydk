@@ -14,9 +14,9 @@
                 <h6>Platform</h6>
                 <ul class="list-unstyled">
                     <li><a href="<?= base_url('index.php?page=home') ?>">Beranda</a></li>
-                    <li><a href="<?= base_url('index.php?page=home') ?>#layanan-jasa" data-scroll="#layanan-jasa">Semua Jasa</a></li>
+                    <li><a href="<?= base_url('index.php?page=services') ?>">Semua Jasa</a></li>
                     <li><a href="<?= base_url('index.php?page=home') ?>#cara-kerja" data-scroll="#cara-kerja">Cara Kerja</a></li>
-                    <li><a href="<?= base_url('index.php?page=home') ?>#testimoni" data-scroll="#testimoni">Tentang Kami</a></li>
+                    <li><a href="<?= base_url('index.php?page=home') ?>#testimoni" data-scroll="#testimoni">Testimoni</a></li>
                 </ul>
             </div>
             <div class="col-6 col-lg-2">
@@ -39,9 +39,9 @@
             <div class="col-6 col-lg-2">
                 <h6>Legal</h6>
                 <ul class="list-unstyled">
-                    <li><a href="#">Syarat dan Ketentuan</a></li>
-                    <li><a href="#">Kebijakan Privasi</a></li>
-                    <li><a href="#">Cookie</a></li>
+                    <li><a href="#" data-toast="Halaman syarat dan ketentuan segera hadir" data-toast-type="info">Syarat dan Ketentuan</a></li>
+                    <li><a href="#" data-toast="Halaman kebijakan privasi segera hadir" data-toast-type="info">Kebijakan Privasi</a></li>
+                    <li><a href="#" data-toast="Pengaturan cookie segera hadir" data-toast-type="info">Cookie</a></li>
                 </ul>
             </div>
         </div>
@@ -55,11 +55,14 @@
 <?php endif; ?>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-<script src="<?= base_url('src/assets/js/ui.js?v=' . time()) ?>"></script>
-<script src="<?= base_url('src/assets/js/auth-modal.js?v=' . time()) ?>"></script>
+<script src="<?= asset_url('src/assets/js/ui.js') ?>"></script>
+<script src="<?= asset_url('src/assets/js/auth-modal.js') ?>"></script>
 <script src="<?= asset_url('src/assets/js/animations.js') ?>"></script>
 <?php if (($page ?? '') === 'home'): ?>
-<script src="<?= base_url('src/assets/js/home.js') ?>"></script>
+<script src="<?= asset_url('src/assets/js/home.js') ?>"></script>
+<?php endif; ?>
+<?php if (($page ?? '') === 'services'): ?>
+<script src="<?= asset_url('src/assets/js/services.js') ?>"></script>
 <?php endif; ?>
 </body>
 </html>

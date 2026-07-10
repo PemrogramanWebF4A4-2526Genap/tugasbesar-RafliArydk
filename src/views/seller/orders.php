@@ -52,6 +52,7 @@ $statusMap = [
                     <td class="text-center">
                         <?php if (in_array($o['status'], ['waiting_payment', 'paid', 'accepted'])): ?>
                         <form method="POST" action="<?= base_url('index.php?page=order&action=update_status') ?>" style="display:inline">
+                            <?= csrf_field() ?>
                             <input type="hidden" name="order_id" value="<?= $o['id'] ?>">
                             <?php if (in_array($o['status'], ['waiting_payment', 'paid'])): ?>
                                 <button type="submit" name="status" value="accepted" class="btn btn-sm btn-outline-primary">Terima</button>
@@ -62,6 +63,7 @@ $statusMap = [
                         </form>
                         <?php elseif ($o['status'] === 'in_progress'): ?>
                         <form method="POST" action="<?= base_url('index.php?page=order&action=update_status') ?>" style="display:inline">
+                            <?= csrf_field() ?>
                             <input type="hidden" name="order_id" value="<?= $o['id'] ?>">
                             <button type="submit" name="status" value="completed" class="btn btn-sm btn-outline-success">Selesai</button>
                         </form>

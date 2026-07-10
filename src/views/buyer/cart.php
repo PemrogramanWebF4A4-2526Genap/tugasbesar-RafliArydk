@@ -36,7 +36,10 @@ if (!empty($_SESSION['cart'])) {
                                 <h5 class="mb-0">Ringkasan Keranjang</h5>
                                 <small class="text-muted"><?= count($cartItems) ?> item</small>
                             </div>
-                            <a href="<?= base_url('index.php?page=cart&action=clear') ?>" class="btn btn-sm btn-outline-danger">Bersihkan Keranjang</a>
+                            <form method="post" action="<?= base_url('index.php?page=cart&action=clear') ?>" class="m-0">
+                                <?= csrf_field() ?>
+                                <button type="submit" class="btn btn-sm btn-outline-danger">Bersihkan Keranjang</button>
+                            </form>
                         </div>
                     </section>
 
@@ -67,8 +70,11 @@ if (!empty($_SESSION['cart'])) {
                                                 data-service-id="<?= (int) $item['service']['id'] ?>"
                                                 data-action="up">+</button>
                                         </div>
-                                        <a href="<?= base_url('index.php?page=cart&action=remove&id=' . (int) $item['service']['id']) ?>"
-                                           class="btn btn-sm btn-outline-danger">Hapus</a>
+                                        <form method="post" action="<?= base_url('index.php?page=cart&action=remove') ?>" class="m-0">
+                                            <?= csrf_field() ?>
+                                            <input type="hidden" name="id" value="<?= (int) $item['service']['id'] ?>">
+                                            <button type="submit" class="btn btn-sm btn-outline-danger">Hapus</button>
+                                        </form>
                                         <span class="text-muted small" id="saving-<?= (int) $item['service']['id'] ?>" style="display:none;">
                                             <span class="spinner-border spinner-border-sm"></span>
                                         </span>
@@ -107,6 +113,7 @@ if (!empty($_SESSION['cart'])) {
 <script>
 (function () {
     var cartUpdateUrl = '<?= base_url('index.php?page=cart&action=update') ?>';
+    var csrfToken = '<?= e(csrf_token()) ?>';
 
     function formatRupiah(num) {
         return 'Rp' + Number(num).toLocaleString('id-ID');
@@ -128,6 +135,7 @@ if (!empty($_SESSION['cart'])) {
         if (badge) badge.style.display = '';
 
         var formData = new FormData();
+        formData.append('csrf_token', csrfToken);
         formData.append('service_id', serviceId);
         formData.append('quantity', quantity);
 

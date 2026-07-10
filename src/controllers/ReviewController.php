@@ -9,10 +9,16 @@ if (!isset($_SESSION['user']) || $_SESSION['user']['role'] !== 'buyer') {
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    require_csrf();
     $order_id = $_POST['order_id'] ?? 0;
     $service_id = $_POST['service_id'] ?? 0;
     $rating = (int) ($_POST['rating'] ?? 5);
     $comment = trim($_POST['comment'] ?? '');
+
+    if ($rating < 1 || $rating > 5) {
+        header('Location: index.php?page=orders&error=invalid_review');
+        exit;
+    }
 
     $orderModel = new OrderModel($pdo);
     $reviewModel = new ReviewModel($pdo);

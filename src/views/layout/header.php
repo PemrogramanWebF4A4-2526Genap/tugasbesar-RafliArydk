@@ -31,7 +31,7 @@ function asset_url($path) {
 $page = $page ?? ($_GET['page'] ?? 'home');
 $currentPage = $page;
 ?>
-<body class="<?= isset($_SESSION['user']) ? 'user-logged-in' : '' ?> <?= isset($_SESSION['user']['role']) ? 'role-' . e($_SESSION['user']['role']) : '' ?> <?= (isset($_SESSION['user']) && $page !== 'home') ? 'has-role-sidebar' : '' ?>">
+<body class="page-enter <?= isset($_SESSION['user']) ? 'user-logged-in' : '' ?> <?= isset($_SESSION['user']['role']) ? 'role-' . e($_SESSION['user']['role']) : '' ?> <?= (isset($_SESSION['user']) && !in_array($page, ['home', 'services'], true)) ? 'has-role-sidebar' : '' ?>">
 
 <?php
 $homeUrl = base_url('index.php?page=home');
@@ -196,26 +196,24 @@ $activeSideNav = $isLoggedIn && isset($sideNav[$userRole]) ? $sideNav[$userRole]
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="<?= $homeUrl ?>#kategori" id="categoryDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Kategori</a>
                     <ul class="dropdown-menu bb-nav-dropdown" aria-labelledby="categoryDropdown">
-                        <li><a class="dropdown-item" href="<?= $homeUrl ?>#kategori" data-scroll="#kategori">Semua Kategori</a></li>
-                        <li><a class="dropdown-item" href="<?= $homeUrl ?>#layanan-jasa" data-scroll="#layanan-jasa" data-nav-category="bersih-bersih">Bersih-bersih</a></li>
-                        <li><a class="dropdown-item" href="<?= $homeUrl ?>#layanan-jasa" data-scroll="#layanan-jasa" data-nav-category="perbaikan">Perbaikan</a></li>
-                        <li><a class="dropdown-item" href="<?= $homeUrl ?>#layanan-jasa" data-scroll="#layanan-jasa" data-nav-category="les-privat">Les Privat</a></li>
-                        <li><a class="dropdown-item" href="<?= $homeUrl ?>#layanan-jasa" data-scroll="#layanan-jasa" data-nav-category="laundry">Laundry</a></li>
+                        <li><a class="dropdown-item" href="<?= base_url('index.php?page=services') ?>">Semua Kategori</a></li>
+                        <li><a class="dropdown-item" href="<?= base_url('index.php?page=services&category=bersih-bersih') ?>">Bersih-bersih</a></li>
+                        <li><a class="dropdown-item" href="<?= base_url('index.php?page=services&category=perbaikan') ?>">Perbaikan</a></li>
+                        <li><a class="dropdown-item" href="<?= base_url('index.php?page=services&category=les-privat') ?>">Les Privat</a></li>
+                        <li><a class="dropdown-item" href="<?= base_url('index.php?page=services&category=laundry') ?>">Laundry</a></li>
+                        <li><a class="dropdown-item" href="<?= base_url('index.php?page=services&category=taman') ?>">Taman</a></li>
+                        <li><a class="dropdown-item" href="<?= base_url('index.php?page=services&category=penitipan') ?>">Penitipan</a></li>
+                        <li><a class="dropdown-item" href="<?= base_url('index.php?page=services&category=memasak') ?>">Memasak</a></li>
                     </ul>
                 </li>
-                <li class="nav-item"><a class="nav-link" href="<?= $homeUrl ?>#layanan-jasa" data-scroll="#layanan-jasa">Jasa</a></li>
+                <li class="nav-item"><a class="nav-link" href="<?= base_url('index.php?page=services') ?>">Jasa</a></li>
                 <li class="nav-item"><a class="nav-link" href="<?= $homeUrl ?>#cara-kerja" data-scroll="#cara-kerja">Cara Kerja</a></li>
-                <li class="nav-item"><a class="nav-link" href="<?= $homeUrl ?>#testimoni" data-scroll="#testimoni">Tentang Kami</a></li>
+                <li class="nav-item"><a class="nav-link" href="<?= $homeUrl ?>#testimoni" data-scroll="#testimoni">Testimoni</a></li>
             </ul>
 
             <!-- Mobile / tablet: auth dan akun (tidak ada di desktop karena sudah di role-actions) -->
             <div class="mobile-auth-panel d-lg-none">
                 <?php if ($isLoggedIn): ?>
-                    <?php if ($userRole === 'provider'): ?>
-                        <a href="<?= base_url('index.php?page=dashboard') ?>" class="btn btn-outline-custom w-100">
-                            <i class="bi bi-grid me-1"></i>Dashboard
-                        </a>
-                    <?php endif; ?>
                     <a href="<?= base_url('index.php?page=notification') ?>" class="mobile-menu-link">
                         <span><i class="bi bi-bell me-2"></i>Notifikasi</span>
                         <?php if (count($unreadNotifications) > 0): ?>
@@ -230,9 +228,6 @@ $activeSideNav = $isLoggedIn && isset($sideNav[$userRole]) ? $sideNav[$userRole]
                             <?php endif; ?>
                         </a>
                     <?php endif; ?>
-                    <a href="<?= base_url('index.php?page=account_settings') ?>" class="mobile-menu-link">
-                        <span><i class="bi bi-person-circle me-2"></i>Pengaturan Akun</span>
-                    </a>
                     <a href="<?= base_url('index.php?page=auth&action=logout') ?>" class="mobile-menu-link mobile-menu-link-danger">
                         <span><i class="bi bi-box-arrow-right me-2"></i>Logout</span>
                     </a>
@@ -329,7 +324,7 @@ $activeSideNav = $isLoggedIn && isset($sideNav[$userRole]) ? $sideNav[$userRole]
         </div>
     </div>
 </nav>
-<?php if ($isLoggedIn && $page !== 'home'): ?>
+<?php if ($isLoggedIn && !in_array($page, ['home', 'services'], true)): ?>
     <aside class="role-sidebar" aria-label="Navigasi fitur <?= e($roleLabel) ?>">
         <div class="role-sidebar-brand">
             <span><?= e($roleShortLabel) ?></span>

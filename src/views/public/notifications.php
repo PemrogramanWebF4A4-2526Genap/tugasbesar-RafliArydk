@@ -4,6 +4,7 @@
         <h1 class="fw-bold mb-0">Notifikasi</h1>
         <?php if (!empty($notifications)): ?>
             <form method="post" action="<?= base_url('index.php?page=notification&action=read_all') ?>">
+                <?= csrf_field() ?>
                 <button type="submit" class="btn btn-sm btn-primary-custom">Tandai Semua Dibaca</button>
             </form>
         <?php endif; ?>
@@ -14,6 +15,7 @@
         <div class="list-group">
             <?php foreach ($notifications as $notification): ?>
                 <form method="post" action="<?= base_url('index.php?page=notification&action=read') ?>" class="list-group-item">
+                    <?= csrf_field() ?>
                     <input type="hidden" name="id" value="<?= (int) $notification['id'] ?>">
                     <div class="d-flex justify-content-between gap-3">
                         <div>

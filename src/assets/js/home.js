@@ -60,21 +60,22 @@
     function handleHeroSearch(e) {
         if (e) e.preventDefault();
         const query = document.getElementById('heroSearchInput')?.value.trim();
-        const city = document.getElementById('heroSearchCity')?.value || 'Semua Kota';
-
-        smoothScrollTo('#layanan-jasa');
-        const count = filterServices();
-
-        if (query) {
-            showToast('Menampilkan hasil untuk "' + query + '" di ' + city + ' (' + count + ' jasa)', count ? 'success' : 'warning');
-        } else {
-            showToast('Menampilkan semua jasa di ' + city, 'info');
-        }
+        const city = document.getElementById('heroSearchCity')?.value || '';
+        const url = new URL('index.php', window.location.href);
+        url.searchParams.set('page', 'services');
+        if (query) url.searchParams.set('search', query);
+        if (city) url.searchParams.set('location', city);
+        window.location.href = url.toString();
     }
 
     function handleCategoryClick(card) {
         const slug = card.getAttribute('data-category');
         if (!slug) return;
+        const servicesUrl = card.getAttribute('data-services-url');
+        if (servicesUrl) {
+            window.location.href = servicesUrl;
+            return;
+        }
         setActiveFilter(slug);
         smoothScrollTo('#layanan-jasa');
         const label = CATEGORY_MAP[slug] || slug;
@@ -82,6 +83,11 @@
     }
 
     function handleServiceCard(card) {
+        const detailUrl = card.getAttribute('data-detail-url');
+        if (detailUrl) {
+            window.location.href = detailUrl;
+            return;
+        }
         const title = card.getAttribute('data-title') || 'Jasa';
         const isLoggedIn = document.body.classList.contains('user-logged-in');
 
@@ -179,6 +185,7 @@ function initViewAll() {
     const link = document.getElementById('viewAllServices');
     if (!link) return;
     link.addEventListener('click', function (e) {
+        if (link.getAttribute('href') && link.getAttribute('href') !== '#') return;
         e.preventDefault();
         setActiveFilter('semua');
         const searchInput =

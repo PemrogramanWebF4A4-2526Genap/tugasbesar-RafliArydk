@@ -21,9 +21,14 @@ if ($action === 'upload') {
         header('Location: index.php');
         exit;
     }
+    require_csrf();
 
     $order_id = $_POST['order_id'] ?? 0;
     $method = $_POST['method'] ?? 'bank_transfer';
+    if ($method !== 'bank_transfer') {
+        header('Location: index.php?page=upload_payment&id=' . (int) $order_id . '&error=upload_failed');
+        exit;
+    }
     
     $order = $orderModel->getById($order_id);
     if (!$order || $order['buyer_id'] !== $_SESSION['user']['id'] || $order['status'] !== 'waiting_payment') {
@@ -49,10 +54,16 @@ if ($action === 'verify') {
         header('Location: index.php');
         exit;
     }
+    require_csrf();
 
     $payment_id = $_POST['payment_id'] ?? 0;
     $status = $_POST['status'] ?? 'pending';
     $notes = trim($_POST['notes'] ?? '');
+
+    if (!in_array($status, ['verified', 'rejected'], true)) {
+        header('Location: index.php?page=admin_orders&error=order_failed');
+        exit;
+    }
 
     $payment = $paymentModel->getWithOrderForVerification($payment_id);
 

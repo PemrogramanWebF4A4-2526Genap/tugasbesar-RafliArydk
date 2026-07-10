@@ -39,6 +39,7 @@ $profilePhotoStyle = $profilePhotoStyle ?? ($profilePhotoExists ? "background-im
         </div>
 
         <form id="accountSettingsForm" method="post" action="<?= base_url('index.php?page=account_settings&profile_update=1') ?>" enctype="multipart/form-data">
+            <?= csrf_field() ?>
             <div class="account-settings-grid">
                 <section class="account-panel account-panel-main" id="personal-detail">
                     <div class="account-panel-heading">

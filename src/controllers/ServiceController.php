@@ -17,6 +17,7 @@ $action = $_GET['action'] ?? '';
 
 if ($action === 'create') {
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        require_csrf();
         $category_id = $_POST['category_id'] ?? 1;
         $title = trim($_POST['title'] ?? '');
         $description = trim($_POST['description'] ?? '');
@@ -36,6 +37,7 @@ if ($action === 'create') {
 
 if ($action === 'update') {
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        require_csrf();
         $id = $_POST['id'] ?? 0;
         $category_id = $_POST['category_id'] ?? 1;
         $title = trim($_POST['title'] ?? '');
@@ -55,7 +57,12 @@ if ($action === 'update') {
 }
 
 if ($action === 'delete') {
-    $id = $_GET['id'] ?? 0;
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+        header('Location: index.php?page=provider_services&error=invalid_request');
+        exit;
+    }
+    require_csrf();
+    $id = $_POST['id'] ?? 0;
     $serviceModel->delete($id, $_SESSION['user']['id']);
     bisabantu_sync_sql_dump_after_write($pdo);
     header('Location: index.php?page=provider_services&msg=deleted');
@@ -63,8 +70,14 @@ if ($action === 'delete') {
 }
 
 if ($action === 'toggle') {
-    $id = $_GET['id'] ?? 0;
-    $status = $_GET['status'] ?? 1;
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+        header('Location: index.php?page=provider_services&error=invalid_request');
+        exit;
+    }
+    require_csrf();
+    $id = $_POST['id'] ?? 0;
+    $status = (int) ($_POST['status'] ?? 1);
+    $status = $status === 1 ? 1 : 0;
     $serviceModel->toggleActive($id, $_SESSION['user']['id'], $status);
     bisabantu_sync_sql_dump_after_write($pdo);
     header('Location: index.php?page=provider_services&msg=status_changed');

@@ -44,17 +44,18 @@ CREATE TABLE `users` (
   `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `email` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 INSERT INTO `users` VALUES 
-(1,'Rafli Aryadika','rafli@bisabantu.admin.com','$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi','admin',1,'','',NULL,'src/assets/uploads/profile/6a2819e0ea6e45.70898538.png','2026-06-01 13:47:36','2026-06-09 13:49:20'),
+(1,'Admin Demo','admindemo@bisabantu.com','$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi','admin',1,'','',NULL,'src/assets/uploads/profile/6a2819e0ea6e45.70898538.png','2026-06-01 13:47:36','2026-06-09 13:49:20'),
 (2,'Budi Wijaya','budi@bisabantu.com','$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi','provider',1,'','',NULL,'src/assets/uploads/profile/1780812028_6a2508fcc607f.jpg','2026-06-01 13:47:36','2026-06-07 06:00:28'),
 (3,'Sienna','sienna@bisabantu.com','$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi','provider',1,'0822222222','Jakarta Selatan',NULL,'src/assets/uploads/profile/6a2e7aa2168a05.85800877.png','2026-06-01 13:47:36','2026-06-14 09:55:46'),
-(5,'Nasyla Putri','nasyla@bisabantu.com','$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi','buyer',1,'','',NULL,'src/assets/uploads/profile/6a26bf489370f8.86045145.png','2026-06-01 13:47:36','2026-06-08 13:10:32'),
+(5,'Buyer Demo','buyerdemo@bisabantu.com','$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi','buyer',1,'','',NULL,'src/assets/uploads/profile/6a26bf489370f8.86045145.png','2026-06-01 13:47:36','2026-06-08 13:10:32'),
 (6,'Arpi','arpi@bisabantu.com','$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi','buyer',1,'0833333333','Bekasi',NULL,NULL,'2026-06-03 14:16:50','2026-06-07 06:05:25'),
 (9,'Mat Sohe','Sohe@gmail.com','$2y$10$SvjDyvLBwaBpp9uPB./2vOK.4RpRItae4qcxEo8As53vghnziLbZe','provider',1,'085171076449','Jl. Perjuangan',NULL,NULL,'2026-06-09 13:38:42','2026-06-09 16:53:48'),
 (10,'Rafli Aryadika','rafliaryadika100@gmail.com','$2y$10$77CJei5zISvqUeNWItI.YOKo5xSiMRs68UsLOHE4IAM6DPfscOPjm','buyer',1,'085171076449','jalan simatupang',NULL,NULL,'2026-06-24 07:00:48','2026-06-24 07:00:48'),
-(11,'Arpi Aryadika','rafliaryadika243@gmail.com','$2y$10$PkDWrG1piMfii7vcJpEYH.BWEXQi7lHa/gEjpT/0HHGv/6GJKPt3q','provider',0,'0822222222','jalan raya',NULL,NULL,'2026-06-24 07:22:20','2026-06-24 07:22:20');
+(11,'Arpi Aryadika','rafliaryadika243@gmail.com','$2y$10$PkDWrG1piMfii7vcJpEYH.BWEXQi7lHa/gEjpT/0HHGv/6GJKPt3q','provider',0,'0822222222','jalan raya',NULL,NULL,'2026-06-24 07:22:20','2026-06-24 07:22:20'),
+(12,'BisaBantu Multi Jasa','alljasa@bisabantu.com','$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi','provider',1,'0812-7000-2026','Bekasi Utara',NULL,NULL,'2026-07-10 10:00:00','2026-07-10 10:00:00');
 
 
 -- ==========================================
@@ -80,14 +81,21 @@ CREATE TABLE `services` (
   KEY `category_id` (`category_id`),
   CONSTRAINT `services_ibfk_1` FOREIGN KEY (`provider_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
   CONSTRAINT `services_ibfk_2` FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`) ON DELETE RESTRICT
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 INSERT INTO `services` VALUES 
 (1,2,1,'Jasa Bersih Rumah Profesional','Membersihkan seluruh rumah dengan standar hotel',150000.00,'per kunjungan','3-4 jam','Bandung Raya','service1.jpg',1,'2026-06-01 13:47:36','2026-06-05 06:20:37'),
 (2,2,2,'Servis AC & Kulkas Rumahan','Service AC dan kulkas untuk rumah tangga',200000.00,'per unit','1-2 jam','Bandung','service2.jpg',1,'2026-06-01 13:47:36','2026-06-01 13:47:36'),
 (3,3,3,'Les Matematika SD-SMP','Guru privat matematika, persiapan ujian',75000.00,'per jam','1 jam','Jakarta Selatan','1780755468_6a242c0cc8ace.png',1,'2026-06-01 13:47:36','2026-06-06 14:17:48'),
 (4,3,4,'Laundry Kiloan Antar Jemput','Laundry kiloan dengan kualitas bersih dan wangi',8000.00,'per kg','2 hari','Jakarta Selatan','6a2e7c1015a815.39695712.jpg',1,'2026-06-01 13:47:36','2026-06-14 10:01:52'),
-(5,9,2,'Service TV','Memperbaiki TV anda yang rusak, LCD maupun TV Tabung',150000.00,'per kunjungan','2 jam','Bekasi Utara',NULL,1,'2026-06-09 14:05:45','2026-06-09 14:05:45');
+(5,9,2,'Service TV','Memperbaiki TV anda yang rusak, LCD maupun TV Tabung',150000.00,'per kunjungan','2 jam','Bekasi Utara',NULL,1,'2026-06-09 14:05:45','2026-06-09 14:05:45'),
+(6,12,1,'Paket Bersih Rumah Harian','Layanan bersih-bersih rumah untuk ruang tamu, kamar, dapur, dan kamar mandi.',135000.00,'per kunjungan','3 jam','Bekasi Utara',NULL,1,'2026-07-10 10:00:00','2026-07-10 10:00:00'),
+(7,12,2,'Teknisi Perbaikan Rumah','Perbaikan ringan untuk AC, listrik kecil, kran, pintu, dan perlengkapan rumah.',175000.00,'per kunjungan','1-2 jam','Bekasi Utara',NULL,1,'2026-07-10 10:00:00','2026-07-10 10:00:00'),
+(8,12,3,'Les Privat SD-SMA','Bimbingan belajar matematika, bahasa Inggris, dan persiapan ujian sekolah.',85000.00,'per jam','1 jam','Bekasi Utara',NULL,1,'2026-07-10 10:00:00','2026-07-10 10:00:00'),
+(9,12,4,'Laundry Kiloan Cepat','Cuci, setrika, dan lipat pakaian dengan opsi antar jemput area sekitar.',9000.00,'per kg','2 hari','Bekasi Utara',NULL,1,'2026-07-10 10:00:00','2026-07-10 10:00:00'),
+(10,12,5,'Perawatan Taman Rumah','Potong rumput, rapikan tanaman, bersihkan daun kering, dan tata pot sederhana.',120000.00,'per kunjungan','2 jam','Bekasi Utara',NULL,1,'2026-07-10 10:00:00','2026-07-10 10:00:00'),
+(11,12,6,'Penitipan Anak dan Hewan','Jasa penitipan harian dengan pendampingan, jadwal makan, dan laporan singkat.',100000.00,'per hari','1 hari','Bekasi Utara',NULL,1,'2026-07-10 10:00:00','2026-07-10 10:00:00'),
+(12,12,7,'Jasa Masak Harian Rumahan','Bantuan memasak menu harian keluarga, meal prep, dan catering kecil rumahan.',65000.00,'per porsi','2-3 jam','Bekasi Utara',NULL,1,'2026-07-10 10:00:00','2026-07-10 10:00:00');
 
 
 -- ==========================================

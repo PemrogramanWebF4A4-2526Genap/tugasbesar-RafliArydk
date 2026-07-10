@@ -19,7 +19,6 @@
         '.alert',
         '.table-responsive',
         'section',
-        'main > .container',
         '.admin-dashboard > *'
     ];
     var counterSelectors = [
@@ -75,6 +74,9 @@
         scrollSelectors.forEach(function (selector) {
             document.querySelectorAll(selector).forEach(function (node) {
                 if (node.closest('.navbar') || node.closest('.role-sidebar') || node.closest('.site-footer')) {
+                    return;
+                }
+                if (node.matches('section') && node.closest('section')) {
                     return;
                 }
                 if (compactMotion && (node.matches('section') || node.matches('.table-responsive'))) {

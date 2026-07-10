@@ -55,10 +55,17 @@ $categories = $categoryModel->getAll();
                             </td>
                             <td class="text-end">
                                 <button class="btn btn-sm btn-outline-warning" data-bs-toggle="modal" data-bs-target="#editModal<?= (int) $service['id'] ?>">Edit</button>
-                                <a class="btn btn-sm btn-outline-secondary" href="<?= base_url('index.php?page=service&action=toggle&id=' . (int) $service['id'] . '&status=' . ((int) $service['is_active'] === 1 ? 0 : 1)) ?>">
-                                    <?= (int) $service['is_active'] === 1 ? 'Nonaktifkan' : 'Aktifkan' ?>
-                                </a>
-                                <a class="btn btn-sm btn-outline-danger" href="<?= base_url('index.php?page=service&action=delete&id=' . (int) $service['id']) ?>" onclick="return confirm('Hapus jasa ini?')">Hapus</a>
+                                <form method="post" action="<?= base_url('index.php?page=service&action=toggle') ?>" class="d-inline">
+                                    <?= csrf_field() ?>
+                                    <input type="hidden" name="id" value="<?= (int) $service['id'] ?>">
+                                    <input type="hidden" name="status" value="<?= (int) $service['is_active'] === 1 ? 0 : 1 ?>">
+                                    <button type="submit" class="btn btn-sm btn-outline-secondary"><?= (int) $service['is_active'] === 1 ? 'Nonaktifkan' : 'Aktifkan' ?></button>
+                                </form>
+                                <form method="post" action="<?= base_url('index.php?page=service&action=delete') ?>" class="d-inline" onsubmit="return confirm('Hapus jasa ini?')">
+                                    <?= csrf_field() ?>
+                                    <input type="hidden" name="id" value="<?= (int) $service['id'] ?>">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger">Hapus</button>
+                                </form>
                             </td>
                         </tr>
                     <?php endforeach; ?>
@@ -79,6 +86,7 @@ $categories = $categoryModel->getAll();
                     </div>
                     <div class="modal-body">
                         <form method="post" action="<?= base_url('index.php?page=service&action=update') ?>" enctype="multipart/form-data">
+                            <?= csrf_field() ?>
                             <input type="hidden" name="id" value="<?= (int) $service['id'] ?>">
                             <div class="mb-3">
                                 <label class="form-label">Judul Jasa</label>
@@ -134,6 +142,7 @@ $categories = $categoryModel->getAll();
             </div>
             <div class="modal-body">
                 <form method="post" action="<?= base_url('index.php?page=service&action=create') ?>" enctype="multipart/form-data">
+                    <?= csrf_field() ?>
                     <div class="mb-3">
                         <label class="form-label">Judul Jasa</label>
                         <input type="text" name="title" class="form-control rounded-pill" required>

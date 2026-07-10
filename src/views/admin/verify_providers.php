@@ -43,6 +43,7 @@ $redirect = base_url('index.php?page=admin_verify');
                             </ul>
                             <div class="admin-verify-actions">
                                 <form method="post" action="<?= base_url('index.php?page=admin&action=verify_provider') ?>">
+                                    <?= csrf_field() ?>
                                     <input type="hidden" name="user_id" value="<?= (int) $provider['id'] ?>">
                                     <input type="hidden" name="redirect" value="<?= e($redirect) ?>">
                                     <button type="submit" class="btn btn-primary-custom btn-sm">
@@ -50,6 +51,7 @@ $redirect = base_url('index.php?page=admin_verify');
                                     </button>
                                 </form>
                                 <form method="post" action="<?= base_url('index.php?page=admin&action=reject_provider') ?>" onsubmit="return confirm('Tolak pendaftaran penyedia ini?');">
+                                    <?= csrf_field() ?>
                                     <input type="hidden" name="user_id" value="<?= (int) $provider['id'] ?>">
                                     <input type="hidden" name="redirect" value="<?= e($redirect) ?>">
                                     <button type="submit" class="btn btn-outline-danger btn-sm">
