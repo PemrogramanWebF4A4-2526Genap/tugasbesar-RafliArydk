@@ -30,17 +30,49 @@ function send_automation_notification($pdo, $userId, $title, $message) {
     return $notificationModel->create((int) $userId, $title, $message);
 }
 
+function bisabantu_mail_config(): array {
+    $config = [
+        'host' => getenv('BISABANTU_SMTP_HOST') ?: '',
+        'username' => getenv('BISABANTU_SMTP_USER') ?: '',
+        'password' => getenv('BISABANTU_SMTP_PASS') ?: '',
+        'port' => (int) (getenv('BISABANTU_SMTP_PORT') ?: 587),
+        'from' => getenv('BISABANTU_SMTP_FROM') ?: '',
+        'from_name' => getenv('BISABANTU_SMTP_FROM_NAME') ?: 'BisaBantu',
+    ];
+
+    $localConfigPath = __DIR__ . '/../config/mail.php';
+    if (is_file($localConfigPath)) {
+        $localConfig = require $localConfigPath;
+        if (is_array($localConfig)) {
+            foreach ($localConfig as $key => $value) {
+                if (($config[$key] ?? '') === '' || ($key === 'port' && (int) $config[$key] <= 0)) {
+                    $config[$key] = $value;
+                }
+            }
+        }
+    }
+
+    if ($config['from'] === '') {
+        $config['from'] = $config['username'];
+    }
+
+    $config['port'] = (int) ($config['port'] ?: 587);
+
+    return $config;
+}
+
 function send_automation_email($to, $subject, $message) {
     if (!filter_var($to, FILTER_VALIDATE_EMAIL)) {
         return false;
     }
 
-    $smtpHost = getenv('BISABANTU_SMTP_HOST') ?: '';
-    $smtpUser = getenv('BISABANTU_SMTP_USER') ?: '';
-    $smtpPass = getenv('BISABANTU_SMTP_PASS') ?: '';
-    $smtpPort = (int) (getenv('BISABANTU_SMTP_PORT') ?: 587);
-    $smtpFrom = getenv('BISABANTU_SMTP_FROM') ?: $smtpUser;
-    $smtpFromName = getenv('BISABANTU_SMTP_FROM_NAME') ?: 'BisaBantu';
+    $smtpConfig = bisabantu_mail_config();
+    $smtpHost = $smtpConfig['host'] ?? '';
+    $smtpUser = $smtpConfig['username'] ?? '';
+    $smtpPass = $smtpConfig['password'] ?? '';
+    $smtpPort = (int) ($smtpConfig['port'] ?? 587);
+    $smtpFrom = $smtpConfig['from'] ?? $smtpUser;
+    $smtpFromName = $smtpConfig['from_name'] ?? 'BisaBantu';
 
     if ($smtpHost === '' || $smtpUser === '' || $smtpPass === '' || $smtpFrom === '') {
         error_log('Email automation skipped: SMTP environment variables are not configured.');

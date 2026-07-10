@@ -204,8 +204,8 @@
                         <div class="auth-form-group">
                             <label class="auth-form-label">Konfirmasi password</label>
                             <div class="auth-input-wrap">
-                                <input class="auth-form-input" type="password" name="password_confirm" form="authRegisterForm" placeholder="Ulangi password" required>
-                                <i class="bi bi-eye auth-input-icon" aria-hidden="true"></i>
+                                <input class="auth-form-input" type="password" name="password_confirm" id="reg-pass-confirm" form="authRegisterForm" placeholder="Ulangi password" required>
+                                <i class="bi bi-eye auth-input-icon" id="toggle-reg-pass-confirm" onclick="toggleAuthPass('reg-pass-confirm','toggle-reg-pass-confirm')" role="button" tabindex="0" aria-label="Tampilkan password konfirmasi"></i>
                             </div>
                         </div>
                         <div class="auth-form-group">

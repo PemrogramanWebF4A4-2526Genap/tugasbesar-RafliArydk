@@ -209,6 +209,7 @@ function bisabantu_export_sql_via_mysqldump(array $dbConfig): ?string
         '--triggers',
         '--single-transaction',
         '--add-drop-table',
+        '--databases',
         '--comments',
     ];
 
@@ -246,10 +247,7 @@ function sync_bisabantu_sql_dump(PDO $pdo, array $dbConfig = []): bool
             $databaseName = $pdo->query('SELECT DATABASE()')->fetchColumn() ?: 'bisabantu';
         }
 
-        $dump = bisabantu_export_sql_via_mysqldump($dbConfig);
-        if ($dump === null) {
-            $dump = bisabantu_export_sql_via_pdo($pdo, $databaseName);
-        }
+        $dump = bisabantu_export_sql_via_pdo($pdo, $databaseName);
 
         $targetFile = bisabantu_dump_file_path();
         $directory = dirname($targetFile);
