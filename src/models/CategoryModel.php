@@ -44,9 +44,4 @@ class CategoryModel {
         return $stmt->fetchAll();
     }
 
-    public function countServices($categoryId) {
-        $stmt = $this->pdo->prepare('SELECT COUNT(id) FROM services WHERE category_id = ? AND is_active = 1');
-        $stmt->execute([$categoryId]);
-        return (int) $stmt->fetchColumn();
-    }
 }

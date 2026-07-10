@@ -145,16 +145,6 @@ function checkAuthStrength(val) {
     lbl.style.color = score <= 1 ? '#A32D2D' : score <= 2 ? '#854F0B' : '#9a3615';
 }
 
-function showAuthSuccess(id) {
-    const el = document.getElementById(id);
-    if (el) {
-        el.classList.add('show');
-        setTimeout(function () {
-            el.classList.remove('show');
-        }, 3000);
-    }
-}
-
 function showInlineError(inputElement, message) {
     if (!inputElement) return;
     inputElement.classList.add('error');

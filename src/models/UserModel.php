@@ -6,12 +6,6 @@ class UserModel {
         $this->pdo = $pdo;
     }
 
-    public function getAllByRole($role) {
-        $stmt = $this->pdo->prepare('SELECT * FROM users WHERE role = ? ORDER BY created_at DESC');
-        $stmt->execute([$role]);
-        return $stmt->fetchAll();
-    }
-
     public function getById($id) {
         $stmt = $this->pdo->prepare('SELECT * FROM users WHERE id = ?');
         $stmt->execute([$id]);

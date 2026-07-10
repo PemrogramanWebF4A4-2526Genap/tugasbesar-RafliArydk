@@ -42,13 +42,14 @@ $roleLabels = [
     'provider' => 'Penyedia',
     'admin' => 'Admin',
 ];
-$roleLabel = $roleLabels[$userRole] ?? 'Akun';
+$roleKey = is_string($userRole) ? $userRole : '';
+$roleLabel = $roleLabels[$roleKey] ?? 'Akun';
 $roleShortLabels = [
     'buyer' => 'Buyer',
     'provider' => 'Penyedia',
     'admin' => 'Admin',
 ];
-$roleShortLabel = $roleShortLabels[$userRole] ?? $roleLabel;
+$roleShortLabel = $roleShortLabels[$roleKey] ?? $roleLabel;
 $userName = $_SESSION['user']['name'] ?? 'Pengguna';
 $userInitial = strtoupper(substr($userName, 0, 1));
 $profilePhotoPath = $_SESSION['user']['profile_photo'] ?? '';

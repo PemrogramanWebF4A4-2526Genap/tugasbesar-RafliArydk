@@ -2,10 +2,6 @@
 require_once __DIR__ . '/../models/InvoiceModel.php';
 require_once __DIR__ . '/../models/NotificationModel.php';
 
-function calculate_platform_fee($amount, $commissionRate = 10) {
-    return round(((float) $amount * (float) $commissionRate) / 100);
-}
-
 function generate_invoice($pdo, $order_id) {
     $invoiceModel = new InvoiceModel($pdo);
     $existing = $invoiceModel->getByOrderId($order_id);
@@ -28,7 +24,7 @@ function generate_invoice($pdo, $order_id) {
 
     $safeNumber = preg_replace('/[^A-Za-z0-9_-]/', '', $order['order_number']);
     $relativePath = 'src/assets/invoices/invoice_' . $safeNumber . '.html';
-    $absolutePath = __DIR__ . '/../' . $relativePath;
+    $absolutePath = dirname(__DIR__, 2) . '/' . $relativePath;
     $dir = dirname($absolutePath);
     if (!is_dir($dir)) {
         mkdir($dir, 0775, true);

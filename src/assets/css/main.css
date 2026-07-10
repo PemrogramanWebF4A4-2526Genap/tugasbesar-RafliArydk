@@ -2275,3 +2275,253 @@ input[type=number]::-webkit-outer-spin-button {
 input[type=number] {
   -moz-appearance: textfield;
 }
+
+/* Responsive refinements: keep every layout stable from tablet to small phones. */
+html,
+body {
+    max-width: 100%;
+    overflow-x: clip;
+}
+
+img,
+svg,
+canvas {
+    max-width: 100%;
+}
+
+button,
+input,
+select,
+textarea {
+    font: inherit;
+}
+
+:focus-visible {
+    outline: 3px solid rgba(200, 146, 42, 0.8);
+    outline-offset: 3px;
+}
+
+@media (min-width: 992px) and (max-width: 1199.98px) {
+    .role-header-container {
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+
+    .hero {
+        padding: 68px 0 56px;
+    }
+
+    .hero-stats-row {
+        gap: 18px 24px;
+        margin-top: 36px;
+        padding-top: 24px;
+    }
+
+    .service-img {
+        height: 160px;
+    }
+}
+
+@media (max-width: 767.98px) {
+    .navbar.navbar-custom,
+    .navbar {
+        padding: 10px 0;
+    }
+
+    .navbar .navbar-brand {
+        font-size: 1.32rem;
+    }
+
+    .hero {
+        padding: 42px 0 38px;
+    }
+
+    .hero-title {
+        font-size: clamp(2rem, 10vw, 2.6rem);
+        margin-bottom: 14px;
+    }
+
+    .hero-desc,
+    .hero .lead {
+        font-size: 0.94rem;
+        line-height: 1.6;
+    }
+
+    .search-box {
+        padding: 10px;
+    }
+
+    .search-box .row {
+        row-gap: 10px !important;
+    }
+
+    .search-box .col-md-5,
+    .search-box .col-md-4,
+    .search-box .col-md-3 {
+        padding-left: 8px;
+        padding-right: 8px;
+    }
+
+    .search-box input,
+    .search-box select {
+        min-height: 38px;
+    }
+
+    .search-box button,
+    .mobile-auth-panel .btn,
+    .cart-buy-btn {
+        min-height: 46px;
+    }
+
+    .hero-stats-row {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 18px 12px;
+        margin-top: 30px;
+        padding-top: 22px;
+    }
+
+    .stat-number {
+        font-size: 1.55rem;
+    }
+
+    .feature-badge {
+        width: 100%;
+        min-height: 44px;
+        justify-content: center;
+        padding: 0.6rem 0.8rem;
+    }
+
+    .filter-pills {
+        flex-wrap: nowrap !important;
+        overflow-x: auto;
+        padding: 2px 1px 10px;
+        margin-right: -12px;
+        scrollbar-width: thin;
+        scroll-snap-type: x proximity;
+    }
+
+    .filter-pills .filter-pill {
+        flex: 0 0 auto;
+        min-height: 40px;
+        scroll-snap-align: start;
+    }
+
+    .category-card {
+        min-height: 150px;
+        padding: 1.15rem 0.75rem;
+    }
+
+    .category-icon {
+        font-size: 1.7rem;
+        margin-bottom: 0.55rem;
+    }
+
+    .service-img {
+        height: 148px;
+    }
+
+    .service-card .p-3 {
+        padding: 1rem !important;
+    }
+
+    .service-card .btn-outline-custom {
+        min-height: 42px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .table-responsive {
+        margin-left: -4px;
+        margin-right: -4px;
+        padding-bottom: 5px;
+    }
+
+    .table-responsive table {
+        min-width: 620px;
+    }
+
+    .role-sidebar {
+        height: 70px;
+        padding: 7px 8px calc(7px + env(safe-area-inset-bottom));
+    }
+
+    body.has-role-sidebar {
+        padding-bottom: calc(78px + env(safe-area-inset-bottom));
+    }
+
+    .role-sidebar-nav {
+        gap: 5px;
+    }
+
+    .role-sidebar-nav a {
+        min-width: 76px;
+        min-height: 54px;
+        padding: 6px;
+    }
+
+    .profile-dropdown {
+        max-height: calc(100dvh - 88px);
+        overflow-y: auto;
+    }
+}
+
+@media (max-width: 575.98px) {
+    .container {
+        --bs-gutter-x: 1.1rem;
+    }
+
+    .hero-eyebrow,
+    .section-eyebrow {
+        letter-spacing: 1.5px;
+    }
+
+    .section-title {
+        font-size: 1.55rem;
+    }
+
+    .cart-page {
+        padding: 22px 0 36px;
+    }
+
+    .cart-select-all,
+    .cart-shop {
+        padding-left: 16px;
+        padding-right: 16px;
+    }
+
+    .cart-product-info h3 {
+        font-size: 0.92rem;
+    }
+
+    .cart-qty {
+        min-height: 38px;
+    }
+
+    .admin-inline-form,
+    .admin-status-form,
+    .admin-verify-actions {
+        flex-wrap: wrap;
+    }
+
+    .admin-status-form select {
+        width: 100%;
+    }
+
+    .bb-toast {
+        width: 100%;
+    }
+}
+
+@media (hover: none) {
+    .card:hover,
+    .service-card:hover,
+    .order-card:hover,
+    .dashboard-card:hover,
+    .category-card:hover,
+    .feature-badge:hover {
+        transform: none;
+        box-shadow: none;
+    }
+}
