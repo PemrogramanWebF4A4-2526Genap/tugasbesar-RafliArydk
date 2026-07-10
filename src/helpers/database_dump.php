@@ -85,10 +85,8 @@ function bisabantu_export_sql_via_pdo(PDO $pdo, string $databaseName): string
     $lines[] = '-- Dump otomatis: ' . date('Y-m-d H:i:s');
     $lines[] = '-- ======================================================';
     $lines[] = '';
-    $lines[] = 'CREATE DATABASE IF NOT EXISTS `' . $databaseName . '`';
-    $lines[] = 'CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;';
-    $lines[] = '';
-    $lines[] = 'USE `' . $databaseName . '`;';
+    $lines[] = '-- Import file ini ke database yang sudah dibuat/dipilih di phpMyAdmin.';
+    $lines[] = '-- Tidak memakai CREATE DATABASE/USE agar kompatibel dengan hosting.';
     $lines[] = '';
     $lines[] = 'SET FOREIGN_KEY_CHECKS=0;';
     $lines[] = 'SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";';
@@ -196,6 +194,7 @@ function bisabantu_export_sql_via_mysqldump(array $dbConfig): ?string
     }
 
     $host = $dbConfig['host'] ?? 'localhost';
+    $port = $dbConfig['port'] ?? '3306';
     $user = $dbConfig['username'] ?? 'root';
     $password = $dbConfig['password'] ?? '';
     $database = $dbConfig['dbname'] ?? 'bisabantu';
@@ -203,13 +202,14 @@ function bisabantu_export_sql_via_mysqldump(array $dbConfig): ?string
     $commandParts = [
         escapeshellarg($binary),
         '--host=' . escapeshellarg($host),
+        '--port=' . escapeshellarg((string) $port),
         '--user=' . escapeshellarg($user),
         '--default-character-set=utf8mb4',
         '--routines',
         '--triggers',
         '--single-transaction',
         '--add-drop-table',
-        '--databases',
+        '--no-create-db',
         '--comments',
     ];
 
@@ -275,7 +275,8 @@ function sync_bisabantu_sql_dump(PDO $pdo, array $dbConfig = []): bool
 function bisabantu_db_config_from_constants(): array
 {
     return [
-        'host' => defined('DB_HOST') ? DB_HOST : 'localhost',
+        'host' => defined('DB_HOST') ? DB_HOST : '127.0.0.1',
+        'port' => defined('DB_PORT') ? DB_PORT : '3306',
         'dbname' => defined('DB_NAME') ? DB_NAME : 'bisabantu',
         'username' => defined('DB_USER') ? DB_USER : 'root',
         'password' => defined('DB_PASS') ? DB_PASS : '',

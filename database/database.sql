@@ -5,10 +5,8 @@
 -- Dump otomatis: 2026-07-10 18:19:26
 -- ======================================================
 
-CREATE DATABASE IF NOT EXISTS `bisabantu`
-CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
-
-USE `bisabantu`;
+-- Import file ini ke database yang sudah dibuat/dipilih di phpMyAdmin.
+-- Tidak memakai CREATE DATABASE/USE agar kompatibel dengan hosting.
 
 SET FOREIGN_KEY_CHECKS=0;
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
