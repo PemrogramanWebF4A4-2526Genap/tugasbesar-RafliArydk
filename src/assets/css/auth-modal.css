@@ -30,6 +30,11 @@
 }
 .auth-overlay.show {
     display: flex;
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100dvh;
+    min-height: 100vh;
 }
 .auth-modal {
     position: relative;
@@ -40,6 +45,7 @@
     max-width: 440px;
     max-height: 90vh;
     overflow-y: auto;
+    margin: auto;
 }
 .auth-modal-close {
     position: absolute;
