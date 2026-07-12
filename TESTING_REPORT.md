@@ -132,9 +132,9 @@ Pengujian dilakukan secara menyeluruh pada semua alur utama aplikasi marketplace
 
 | Role | Email |
 |---|---|
-| **Admin** | `rafli@bisabantu.admin.com` |
-| **Seller** | `budi@bisabantu.com` |
-| **Buyer** | `arpi@bisabantu.com` |
+| **Admin** | `admindemo@bisabantu.com` |
+| **Seller** | `alljasa@bisabantu.com` |
+| **Buyer** | `buyerdemo@bisabantu.com` |
 
 ---
 
