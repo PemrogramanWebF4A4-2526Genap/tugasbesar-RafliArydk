@@ -1,2 +1,5 @@
 src/config/mail.php
 /vendor/
+.env
+.env.*
+!.env.example

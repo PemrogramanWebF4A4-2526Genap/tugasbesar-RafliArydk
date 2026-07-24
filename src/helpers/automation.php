@@ -31,6 +31,28 @@ function send_automation_notification($pdo, $userId, $title, $message) {
 }
 
 function bisabantu_mail_config(): array {
+    $envFile = __DIR__ . '/../../.env';
+    if (is_file($envFile)) {
+        $lines = file($envFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+        if ($lines !== false) {
+            foreach ($lines as $line) {
+                $line = trim($line);
+                if ($line === '' || strpos($line, '#') === 0) {
+                    continue;
+                }
+                if (strpos($line, '=') !== false) {
+                    list($name, $val) = explode('=', $line, 2);
+                    $name = trim($name);
+                    $val = trim($val, " \t\n\r\0\x0B\"'");
+                    if (getenv($name) === false) {
+                        putenv("{$name}={$val}");
+                        $_ENV[$name] = $val;
+                    }
+                }
+            }
+        }
+    }
+
     $config = [
         'host' => getenv('BISABANTU_SMTP_HOST') ?: '',
         'username' => getenv('BISABANTU_SMTP_USER') ?: '',
